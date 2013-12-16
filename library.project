@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Project Name="library" InternalType="Console">
+  <Plugins>
+    <Plugin Name="qmake">
+      <![CDATA[00010001N0005Debug000000000000]]>
+    </Plugin>
+  </Plugins>
+  <VirtualDirectory Name="library">
+    <VirtualDirectory Name="bitmap">
+      <File Name="library/bitmap/bitmap.cpp"/>
+      <File Name="library/bitmap/bitmap.hpp"/>
+      <File Name="library/bitmap/colortools.cpp"/>
+      <File Name="library/bitmap/colortools.hpp"/>
+      <File Name="library/bitmap/lodepng.cpp"/>
+      <File Name="library/bitmap/lodepng.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="compression">
+      <File Name="library/compression/lzo.cpp"/>
+      <File Name="library/compression/lzo.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="math">
+      <File Name="library/math/baseconv.cpp"/>
+      <File Name="library/math/baseconv.hpp"/>
+      <File Name="library/math/frustum.cpp"/>
+      <File Name="library/math/frustum.hpp"/>
+      <File Name="library/math/matrix.cpp"/>
+      <File Name="library/math/matrix.hpp"/>
+      <File Name="library/math/quaternion.cpp"/>
+      <File Name="library/math/quaternion.hpp"/>
+      <File Name="library/math/toolbox.hpp"/>
+      <File Name="library/math/vec3.cpp"/>
+      <File Name="library/math/vec4.cpp"/>
+      <File Name="library/math/vector.cpp"/>
+      <File Name="library/math/vector.hpp"/>
+      <File Name="library/math/voronoi.cpp"/>
+      <File Name="library/math/voronoi.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="network">
+      <File Name="library/network/hostaddr.cpp"/>
+      <File Name="library/network/hostaddr.hpp"/>
+      <File Name="library/network/socket.cpp"/>
+      <File Name="library/network/socket.hpp"/>
+      <File Name="library/network/tcpsocket.cpp"/>
+      <File Name="library/network/tcpsocket.hpp"/>
+      <File Name="library/network/tcpsocket_thread.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="noise">
+      <File Name="library/noise/cosnoise.cpp"/>
+      <File Name="library/noise/cosnoise.hpp"/>
+      <File Name="library/noise/gabor.c"/>
+      <File Name="library/noise/gabor.h"/>
+      <File Name="library/noise/multifractal.c"/>
+      <File Name="library/noise/multifractal.h"/>
+      <File Name="library/noise/noise1234.c"/>
+      <File Name="library/noise/noise1234.h"/>
+      <File Name="library/noise/sdnoise1234.c"/>
+      <File Name="library/noise/sdnoise1234.h"/>
+      <File Name="library/noise/simplex1234.c"/>
+      <File Name="library/noise/simplex1234.h"/>
+      <File Name="library/noise/srdnoise23.c"/>
+      <File Name="library/noise/srdnoise23.h"/>
+      <File Name="library/noise/torusnoise.c"/>
+      <File Name="library/noise/torusnoise.h"/>
+      <File Name="library/noise/turbulence.c"/>
+      <File Name="library/noise/worley.c"/>
+      <File Name="library/noise/worley.h"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="opengl">
+      <File Name="library/opengl/camera.cpp"/>
+      <File Name="library/opengl/camera.hpp"/>
+      <File Name="library/opengl/fbo.cpp"/>
+      <File Name="library/opengl/fbo.hpp"/>
+      <File Name="library/opengl/input.cpp"/>
+      <File Name="library/opengl/input.hpp"/>
+      <File Name="library/opengl/oglfont.cpp"/>
+      <File Name="library/opengl/oglfont.hpp"/>
+      <File Name="library/opengl/oglfont_shader.cpp"/>
+      <File Name="library/opengl/opengl.cpp"/>
+      <File Name="library/opengl/opengl.hpp"/>
+      <File Name="library/opengl/openglext.cpp"/>
+      <File Name="library/opengl/shader.cpp"/>
+      <File Name="library/opengl/shader.hpp"/>
+      <File Name="library/opengl/texture.cpp"/>
+      <File Name="library/opengl/texture.hpp"/>
+      <File Name="library/opengl/vao.cpp"/>
+      <File Name="library/opengl/vao.hpp"/>
+      <File Name="library/opengl/window.cpp"/>
+      <File Name="library/opengl/window.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="script">
+      <File Name="library/script/script.cpp"/>
+      <File Name="library/script/script.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="sound">
+      <File Name="library/sound/sound.cpp"/>
+      <File Name="library/sound/sound.hpp"/>
+      <File Name="library/sound/soundhandle.hpp"/>
+      <File Name="library/sound/soundsystem.cpp"/>
+      <File Name="library/sound/soundsystem.hpp"/>
+      <File Name="library/sound/stream.cpp"/>
+      <File Name="library/sound/stream.hpp"/>
+      <File Name="library/sound/stream_channel.cpp"/>
+      <File Name="library/sound/stream_channel.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="storage">
+      <File Name="library/storage/bitarray.cpp"/>
+      <File Name="library/storage/bitarray.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="threading">
+      <File Name="library/threading/TThread.cpp"/>
+      <File Name="library/threading/TThreadPool.cpp"/>
+      <File Name="library/threading/TThreadPool.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="timing">
+      <File Name="library/timing/highperf.cpp"/>
+      <File Name="library/timing/highperf.hpp"/>
+      <File Name="library/timing/timer.cpp"/>
+      <File Name="library/timing/timer.hpp"/>
+    </VirtualDirectory>
+    <VirtualDirectory Name="voxels">
+      <File Name="library/voxels/voxelizer.cpp"/>
+      <File Name="library/voxels/voxelizer.hpp"/>
+      <File Name="library/voxels/voxelmodel.cpp"/>
+      <File Name="library/voxels/voxelmodel.hpp"/>
+    </VirtualDirectory>
+    <File Name="library/config.cpp"/>
+    <File Name="library/config.hpp"/>
+    <File Name="library/log.cpp"/>
+    <File Name="library/log.hpp"/>
+    <File Name="library/main.cpp"/>
+  </VirtualDirectory>
+  <Description/>
+  <Dependencies/>
+  <VirtualDirectory Name="misc">
+    <File Name="makefile"/>
+    <File Name="res/library.rc"/>
+  </VirtualDirectory>
+  <VirtualDirectory Name="src">
+    <File Name="src/main.cpp"/>
+    <File Name="src/gltest.cpp"/>
+    <File Name="src/socktest.cpp"/>
+    <File Name="src/threadtest.cpp"/>
+    <File Name="src/timetest.cpp"/>
+  </VirtualDirectory>
+  <Settings Type="Executable">
+    <GlobalSettings>
+      <Compiler Options="" C_Options="" Assembler="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="">
+        <LibraryPath Value="."/>
+      </Linker>
+      <ResourceCompiler Options=""/>
+    </GlobalSettings>
+    <Configuration Name="Debug" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="Executable" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-g;-O0;-Wall" C_Options="-g;-O0;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Debug" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="no"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="yes">
+        <RebuildCommand>mingw32-make rebuild</RebuildCommand>
+        <CleanCommand>mingw32-make clean</CleanCommand>
+        <BuildCommand>mingw32-make -j8</BuildCommand>
+        <PreprocessFileCommand/>
+        <SingleFileCommand>mingw32-make $(currentFile)</SingleFileCommand>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+    <Configuration Name="Release" CompilerType="gnu g++" DebuggerType="GNU gdb debugger" Type="" BuildCmpWithGlobalSettings="append" BuildLnkWithGlobalSettings="append" BuildResWithGlobalSettings="append">
+      <Compiler Options="-O2;-Wall" C_Options="-O2;-Wall" Assembler="" Required="yes" PreCompiledHeader="" PCHInCommandLine="no" UseDifferentPCHFlags="no" PCHFlags="">
+        <IncludePath Value="."/>
+      </Compiler>
+      <Linker Options="" Required="yes"/>
+      <ResourceCompiler Options="" Required="no"/>
+      <General OutputFile="$(IntermediateDirectory)/$(ProjectName)" IntermediateDirectory="./Release" Command="./$(ProjectName)" CommandArguments="" UseSeparateDebugArgs="no" DebugArguments="" WorkingDirectory="$(IntermediateDirectory)" PauseExecWhenProcTerminates="yes"/>
+      <Environment EnvVarSetName="&lt;Use Defaults&gt;" DbgSetName="&lt;Use Defaults&gt;">
+        <![CDATA[]]>
+      </Environment>
+      <Debugger IsRemote="no" RemoteHostName="" RemoteHostPort="" DebuggerPath="">
+        <DebuggerSearchPaths/>
+        <PostConnectCommands/>
+        <StartupCommands/>
+      </Debugger>
+      <PreBuild/>
+      <PostBuild/>
+      <CustomBuild Enabled="no">
+        <RebuildCommand/>
+        <CleanCommand/>
+        <BuildCommand/>
+        <PreprocessFileCommand/>
+        <SingleFileCommand/>
+        <MakefileGenerationCommand/>
+        <ThirdPartyToolName>None</ThirdPartyToolName>
+        <WorkingDirectory/>
+      </CustomBuild>
+      <AdditionalRules>
+        <CustomPostBuild/>
+        <CustomPreBuild/>
+      </AdditionalRules>
+      <Completion EnableCpp11="no">
+        <ClangCmpFlagsC/>
+        <ClangCmpFlags/>
+        <ClangPP/>
+        <SearchPaths/>
+      </Completion>
+    </Configuration>
+  </Settings>
+</CodeLite_Project>
