@@ -249,9 +249,9 @@ namespace library
 	{
 		glUniform4fv(uniform, 1, (GLfloat*) &v.x);
 	}
-	void Shader::sendMatrix(GLint uniform, const Matrix& m)
+	void Shader::sendMatrix(GLint uniform, const mat4& m)
 	{
-		glUniformMatrix4fv(uniform, 1, false, const_cast<Matrix&> (m).data());
+		glUniformMatrix4fv(uniform, 1, false, const_cast<mat4&> (m).data());
 	}
 	
 	void Shader::sendFloat(std::string uniform, float v)
@@ -274,7 +274,7 @@ namespace library
 		GLint location = getUniform(uniform);
 		if (location+1) sendVec4(location, v);
 	}
-	void Shader::sendMatrix(std::string uniform, const Matrix& m)
+	void Shader::sendMatrix(std::string uniform, const mat4& m)
 	{
 		GLint location = getUniform(uniform);
 		if (location+1) sendMatrix(location, m);

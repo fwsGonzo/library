@@ -16,7 +16,7 @@ namespace library
 		this->zfar  = zfar;
 		
 		// projection matrix
-		matproj.perspective(FOV, aspect, znear, zfar);
+		matproj = perspectiveMatrix(FOV, aspect, znear, zfar);
 		
 		// initialize matrices
 		setRotation(0, 0, 0);
@@ -34,42 +34,42 @@ namespace library
 	
 	void Camera::setRotation(float rx, float ry, float rz)
 	{
-		matrot.rotateZYX(rx, ry, rz);
+		matrot = rotationMatrix(rx, ry, rz);
 	}
 	
 	void Camera::setTranslation(float tx, float ty, float tz)
 	{
 		// view matrix = rotation & translation
 		matview = matrot;
-		matview.translated(tx, ty, tz);
+		matview.translate(tx, ty, tz);
 		
 		// modelview projection matrix
 		matviewproj = matproj * matview;
 	}
 	
-	void Camera::setRotationMatrix(const Matrix& rot)
+	void Camera::setRotationMatrix(const mat4& rot)
 	{
 		matrot = rot;
 	}
-	void Camera::setViewMatrix(const Matrix& view)
+	void Camera::setViewMatrix(const mat4& view)
 	{
 		matview = view;
 		matviewproj = matproj * matview;
 	}
 	
-	const Matrix& Camera::getProjection() const
+	const mat4& Camera::getProjection() const
 	{
 		return matproj;
 	}
-	const Matrix& Camera::getViewMatrix() const
+	const mat4& Camera::getViewMatrix() const
 	{
 		return matview;
 	}
-	const Matrix& Camera::getRotationMatrix() const
+	const mat4& Camera::getRotationMatrix() const
 	{
 		return matrot;
 	}
-	const Matrix& Camera::getMVP() const
+	const mat4& Camera::getMVP() const
 	{
 		return matviewproj;
 	}

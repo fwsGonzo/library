@@ -1,6 +1,6 @@
-#include "../library/log.hpp"
-#include "../library/network/tcpsocket.hpp"
-#include "sleep.hpp"
+#include <log.hpp>
+#include <network/tcpsocket.hpp>
+#include <sleep.hpp>
 
 #include <iostream>
 #include <vector>
@@ -101,7 +101,7 @@ void serverThread(std::string hostname, int port)
 			server.listen();
 			break;
 		}
-		sleep(0);
+		relinquishCPU();
 	}
 	
 	// if we failed to start a listening socket, exit
@@ -123,7 +123,7 @@ void serverThread(std::string hostname, int port)
 		// poll for events
 		server.poll();
 		// relinquish cpu
-		sleep(0);
+		relinquishCPU();
 		
 		if (serverRetirement) break;
 	}
@@ -214,7 +214,7 @@ void clientThread(int id, std::string hostname, int port)
 			// send stuff
 			//sock.writeLine("ABCDEFGH");
 			
-			sleep(0);
+			relinquishCPU();
 		}
 		
 		sock.disconnect();
@@ -246,7 +246,7 @@ void test_sockets()
 	// create server thread
 	std::thread server(serverThread, "127.0.0.1", serverPort);
 	// relinquish to hopefully make server start
-	sleep(0);
+	relinquishCPU();
 	
 	std::cout << "Starting threaded clients..." << std::endl;
 	

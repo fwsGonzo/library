@@ -1,4 +1,4 @@
-#include "sleep.hpp"
+#include <sleep.hpp>
 #include <iostream>
 
 //using namespace library;
@@ -6,7 +6,7 @@
 void threadTestFunc(void* data)
 {
 	int i = *(int*)data;
-	sleep(i);
+	library::sleepMillis(i * 1000);
 }
 
 void test_threads()

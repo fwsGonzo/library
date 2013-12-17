@@ -241,13 +241,13 @@ namespace library
 	}
 	
 	// to 4x4 matrix
-	Quaternion::operator Matrix() const
+	Quaternion::operator mat4() const
 	{
 		return toMatrix();
 	}
-	Matrix Quaternion::toMatrix() const
+	mat4 Quaternion::toMatrix() const
 	{
-		Matrix::matrix_t m[] =
+		mat4::matrix_t m[] =
 		{
 			// 1 - 2y^2 - 2z^2, 2xy - 2wz, 2xz + 2wy, 0
 			1 - 2 * imag.y * imag.y - 2 * imag.z * imag.z, 2 * imag.x * imag.y - 2 * real * imag.z, 2 * imag.x * imag.z + 2 * real * imag.y, 0,
@@ -255,9 +255,9 @@ namespace library
 			2 * imag.x * imag.y + 2 * real * imag.z, 1 - 2 * imag.x * imag.x - 2 * imag.z * imag.z, 2 * imag.y * imag.z + 2 * real * imag.x, 0,
 			// 2xz - 2wy, 2yz - 2wx, 1 - 2x^2 - 2y^2, 0
 			2 * imag.x * imag.z - 2 * real * imag.y, 2 * imag.y * imag.z - 2 * real * imag.x, 1 - 2 * imag.x * imag.x - 2 * imag.y * imag.y, 0,
-			0, 0, 0, 1
+			0.0, 0.0, 0.0, 1.0
 		};		
-		return Matrix(m);
+		return mat4(m);
 	}
 	
 	///////////////////////////////

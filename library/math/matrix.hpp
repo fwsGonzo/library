@@ -26,18 +26,22 @@
 
 namespace library
 {
-	class Matrix
+	class mat4
 	{
 	public:
 		// datatype must be 32bit float (or the matrix will be useless)
 		typedef float matrix_t;
 		
-		Matrix();
-		Matrix(const Matrix&);
-		Matrix(matrix_t[]);
+		mat4();
+		mat4(const mat4&);
+		mat4(matrix_t[]);
 		// scaling matrix constructors
-		Matrix(matrix_t scale);
-		Matrix(matrix_t sx, matrix_t sy, matrix_t sz);
+		mat4(matrix_t scale);
+		mat4(matrix_t sx, matrix_t sy, matrix_t sz);
+		// axes to matrix
+		mat4(const vec3& right, const vec3& up, const vec3& forward);
+		// translation matrix constructor
+		mat4(const vec3& translation);
 		
 		matrix_t* data();
 		
@@ -47,38 +51,42 @@ namespace library
 		vec4 vtranslate() const; // translation-vector
 		
 		// ye olde identity matrix
-		Matrix& identity();
+		mat4& identity();
 		// normalized device coordinates matrix
-		Matrix& bias();
+		mat4& bias();
 		
 		inline const matrix_t& operator[] (int i) const
 		{
 			return m[i];
 		}
 		
-		vec3    operator * (const vec3&) const;
-		vec4    operator * (const vec4&) const;
-		Matrix  operator * (const Matrix&) const;
-		Matrix& operator *=(const Matrix&);
+		vec3  operator * (const vec3&) const;
+		vec4  operator * (const vec4&) const;
+		mat4  operator * (const mat4&) const;
+		mat4& operator *=(const mat4&);
 		
 		// permanent transpose
-		Matrix& transpose();
+		mat4& transpose();
 		// new matrix from transpose
-		Matrix transposed() const;
+		mat4 transposed() const;
 		
-		void scale(matrix_t scale);
-		void scale(matrix_t x, matrix_t y, matrix_t z);
+		mat4& scale(matrix_t scale);
+		mat4& scale(matrix_t sx, matrix_t sy, matrix_t sz);
 		
-		void translate(matrix_t x, matrix_t y, matrix_t z);
-		void translated(matrix_t x, matrix_t y, matrix_t z);
-		void translate_xy(matrix_t x, matrix_t y);
-		void translate_xz(matrix_t x, matrix_t z);
+		inline mat4& translate(const vec3& v)
+		{
+			return translate(v.x, v.y, v.z);
+		}
+		mat4& translate(matrix_t x, matrix_t y, matrix_t z);
+		mat4& translate_xy(matrix_t x, matrix_t y);
+		mat4& translate_xz(matrix_t x, matrix_t z);
 		
-		void rotateZYX(matrix_t x, matrix_t y, matrix_t z);
-		
-		void ortho(matrix_t width, matrix_t height, matrix_t znear, matrix_t zfar);
-		void orthoScreen(matrix_t width, matrix_t height, matrix_t znear, matrix_t zfar);
-		void perspective(matrix_t fov, matrix_t aspect, matrix_t znear, matrix_t zfar);
+		// rotate this matrix, in radians
+		inline mat4& rotateZYX(const vec3& angles)
+		{
+			return rotateZYX(angles.x, angles.y, angles.z);
+		}
+		mat4& rotateZYX(matrix_t ax, matrix_t ay, matrix_t az);
 		
 		void batch(void* first, int stride, int count);
 		
@@ -86,8 +94,7 @@ namespace library
 		// essentially returning translation and hom.coord: (tx, ty, tz, w)
 		vec3 transVector() const;
 		vec3 lookVector() const;
-		
-		Matrix rotation() const;
+		mat4 rotation() const;
 		
 		static const int AXES     = 4;
 		static const int ELEMENTS = AXES * AXES;
@@ -98,10 +105,26 @@ namespace library
 	};
 	
 	// additional operators
-	vec4 operator* (const vec4&, const Matrix&); // transpose multiply
+	inline vec4 operator* (const vec4& v, const mat4& m) // transpose multiply
+	{
+		return m.transposed() * v;
+	}
 	
-	// additional functions
-	Matrix transpose(const Matrix&);
+	// additional constructors
+	inline mat4 translationMatrix(const vec3& translation)
+	{
+		return mat4(translation);
+	}
+	inline mat4 translationMatrix(mat4::matrix_t x, mat4::matrix_t y, mat4::matrix_t z)
+	{
+		return mat4(vec3(x, y, z));
+	}
+	mat4 directionMatrix(const vec3& direction, const vec3& up);
+	mat4 rotationMatrix(mat4::matrix_t ax, mat4::matrix_t ay, mat4::matrix_t az);
+	
+	mat4 perspectiveMatrix(mat4::matrix_t fov, mat4::matrix_t aspect, mat4::matrix_t znear, mat4::matrix_t zfar);
+	mat4 orthoMatrix(mat4::matrix_t width, mat4::matrix_t height, mat4::matrix_t znear, mat4::matrix_t zfar);
+	mat4 ortho2dMatrix(mat4::matrix_t width, mat4::matrix_t height, mat4::matrix_t znear, mat4::matrix_t zfar);
 	
 }
 

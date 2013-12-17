@@ -1,5 +1,5 @@
-#include "../library/timing/highperf.hpp"
-#include "sleep.hpp"
+#include <timing/highperf.hpp>
+#include <sleep.hpp>
 
 #include <iostream>
 
@@ -16,7 +16,7 @@ void test_timing()
 		auto t0 = clock::now();
 		std::cout << count << ",   ";
 		
-		sleep(2);
+		sleepMillis(2000);
 		
 		auto t1 = clock::now();
 		std::chrono::microseconds micros = std::chrono::duration_cast<std::chrono::microseconds>(t1 - t0);

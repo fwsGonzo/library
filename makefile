@@ -5,7 +5,7 @@
 # code folders
 SOURCE_DIRS  = src
 
-LIBRARY_DIRS = library library/bitmap library/compression library/math      \
+LIBRARY_DIRS = library library/bitmap library/compression library/math library/math/kine \
 				library/network library/noise library/opengl library/script    \
 				library/sound library/storage library/threading library/timing \
 				library/voxels
@@ -17,7 +17,7 @@ endif
 # build options
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
-BUILDOPT = -g
+BUILDOPT = -ggdb3
 # output file
 OUTPUT   = ./Debug/library
 
@@ -26,12 +26,12 @@ OUTPUT   = ./Debug/library
 # compiler
 CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
-CCFLAGS = -c -Wall -Wno-write-strings -Iinc
+CCFLAGS = -c -Wall -Wno-write-strings -Iinc -Ilibrary
 # linker flags
 ifeq ($(OS),Windows_NT)
-	LFLAGS  = -Llib -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
+	LFLAGS  = -Llib/win -static -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
 else
-	LFLAGS  = -Llib -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
+	LFLAGS  = -Llib/linux -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
 endif
 # resource builder
 RES = windres

@@ -18,10 +18,10 @@ namespace library
 		library::Frustum frustum;
 		
 		// camera matrices
-		library::Matrix matproj; // P
-		library::Matrix matrot;  // R
-		library::Matrix matview; // MV
-		library::Matrix matviewproj; // MVP
+		library::mat4 matproj; // P
+		library::mat4 matrot;  // R
+		library::mat4 matview; // MV
+		library::mat4 matviewproj; // MVP
 		
 	public:
 		Camera() {}
@@ -37,13 +37,13 @@ namespace library
 		void setRotation   (float rx, float ry, float rz);
 		void setTranslation(float tx, float ty, float tz);
 		
-		void setRotationMatrix(const Matrix& rot);
-		void setViewMatrix(const Matrix& view);
+		void setRotationMatrix(const mat4& rot);
+		void setViewMatrix(const mat4& view);
 		
-		const library::Matrix& getProjection() const;
-		const library::Matrix& getViewMatrix() const;
-		const library::Matrix& getRotationMatrix() const;
-		const library::Matrix& getMVP() const;
+		const library::mat4& getProjection() const;
+		const library::mat4& getViewMatrix() const;
+		const library::mat4& getRotationMatrix() const;
+		const library::mat4& getMVP() const;
 	};
 	
 }

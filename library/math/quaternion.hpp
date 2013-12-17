@@ -12,7 +12,7 @@
 
 namespace library
 {
-	class Matrix;
+	class mat4;
 	class Log;
 	
 	class Quaternion
@@ -76,8 +76,8 @@ namespace library
 		void toAxisAngle(vec3& axis, float& angle) const;
 		
 		// 4x4 matrix representation using this quaternion
-		operator Matrix() const;
-		Matrix toMatrix() const;
+		operator mat4() const;
+		mat4 toMatrix() const;
 		
 		// assignment operator
 		Quaternion& operator = (const Quaternion& q);

@@ -1,10 +1,13 @@
 #include "window.hpp"
 
 #include "../log.hpp"
+#include "../sleep.hpp"
 #include <GL/glfw3.h>
 
 namespace library
 {
+	bool WindowClass::init = false;
+	
 	WindowConfig::WindowConfig()
 	{
 		// set default window settings
@@ -33,8 +36,9 @@ namespace library
 		if (this->init == false)
 		{
 			glfwInit();
-			init = true;
+			this->init = true;
 		}
+		this->closing = false;
 		
 		// renderer initialization settings
 		this->SW = wndconf.SW;
@@ -83,6 +87,13 @@ namespace library
 		wndHandle = nullptr;
 	}
 	
+	void WindowClass::waitClose()
+	{
+		while (this->closing == false)
+			relinquishCPU();
+		close();
+	}
+	
 	GLFWwindow* WindowClass::window()
 	{
 		return this->wndHandle;
@@ -119,6 +130,8 @@ namespace library
 			if (renderfunc(*this, dtime, t0) == false) break;
 			
 		}
+		
+		this->closing = true;
 	}
 	
 }

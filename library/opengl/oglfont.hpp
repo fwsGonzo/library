@@ -39,7 +39,7 @@
 
 namespace library
 {
-	class Matrix;
+	class mat4;
 	
 	class OglFont
 	{
@@ -50,7 +50,7 @@ namespace library
 		bool load(std::string filename, int size);
 		
 		void bind(GLenum unit);
-		void sendMatrix(Matrix& matrix);
+		void sendMatrix(mat4& matrix);
 		
 		void setBackColor(const vec4& color);
 		void setColor(const vec4& color);

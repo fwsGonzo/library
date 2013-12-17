@@ -34,6 +34,10 @@
       <File Name="library/math/vector.hpp"/>
       <File Name="library/math/voronoi.cpp"/>
       <File Name="library/math/voronoi.hpp"/>
+      <VirtualDirectory Name="kine">
+        <File Name="library/math/kine/bone.hpp"/>
+        <File Name="library/math/kine/bone.cpp"/>
+      </VirtualDirectory>
     </VirtualDirectory>
     <VirtualDirectory Name="network">
       <File Name="library/network/hostaddr.cpp"/>
@@ -128,6 +132,7 @@
     <File Name="library/log.cpp"/>
     <File Name="library/log.hpp"/>
     <File Name="library/main.cpp"/>
+    <File Name="library/sleep.hpp"/>
   </VirtualDirectory>
   <Description/>
   <Dependencies/>

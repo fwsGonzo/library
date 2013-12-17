@@ -1,13 +1,14 @@
 // opengl window
-#include "../library/opengl/window.hpp"
+#include <opengl/window.hpp>
 // matrix and vector
-#include "../library/math/vector.hpp"
-#include "../library/math/matrix.hpp"
+#include <math/vector.hpp>
+#include <math/matrix.hpp>
+// wait mechanisms
+#include <sleep.hpp>
 
 #include <GL/glfw3.h>
 #include <iostream>
 #include <cmath>
-#include "sleep.hpp"
 
 using namespace library;
 
@@ -18,7 +19,7 @@ bool blueScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	
 	// swap frontbuffer with backbuffer (frame change)
 	glfwSwapBuffers(wnd.window());
-	// close window after 2 seconds (2000ms)
+	// close window after 1 seconds (1000ms)
 	return (timeElapsed < 1);
 }
 
@@ -43,25 +44,27 @@ bool triangleScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	// set up orthographic matrix
-	Matrix matproj;
-	matproj.orthoScreen(wnd.SW, wnd.SH, 0, 2);
+	mat4 matproj = ortho2dMatrix(wnd.SW, wnd.SH, 0, 2);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(matproj.data());
 	
 	// create rotation matrix, for rotating the "screen" around itself
-	Matrix matrot;
-	matrot.rotateZYX(0, 0, timeElapsed * 2.5);
+	mat4 matrot = rotationMatrix(0, 0, timeElapsed * 2.0);
 	
 	// modelview matrix
-	Matrix matview;
-	matview.translated(wnd.SW / 2, wnd.SH / 2, 0.0);
+	mat4 matview(1.0);
+	// translation to center
+	matview.translate(wnd.SW / 2, wnd.SH / 2, 0.0);
+	// rotate (around itself)
+	matview *= matrot;
+	// modulated scaling
 	matview.scale(0.75 + 0.25 * sin(timeElapsed * 5.0));
-	matview = matview * matrot;
-	matview.translated(-wnd.SW / 2, -wnd.SH / 2, 0.0);
+	// translate back
+	matview.translate(-wnd.SW / 2, -wnd.SH / 2, 0.0);
 	
 	// translate camera back, allowing stuff located at Z < z to appear in front
-	matview.translated(0.0, 0.0, -2.0);
+	matview.translate(0.0, 0.0, -2.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(matview.data());
@@ -104,8 +107,8 @@ bool triangleScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	
 	// swap frontbuffer with backbuffer (frame change)
 	glfwSwapBuffers(wnd.window());
-	// close window after 2 seconds (2000ms)
-	return (timeElapsed < 4);
+	// close window after 4 seconds (4000ms)
+	return (timeElapsed < 5);
 }
 
 void test_opengl_window()
@@ -134,6 +137,7 @@ void test_opengl_window()
 	const double timing_granularity = 1.0;
 	
 	bluescr.startRenderingLoop(blueScreen, timing_granularity);
+	bluescr.waitClose();
 	
 	//////////////////////////////////////////////////////////////////
 	std::cout << "Starting rendering loop: Rotating triangle" << std::endl;
@@ -151,5 +155,5 @@ void test_opengl_window()
 	
 	//////////////////////////////////////////////////////////////////
 	std::cout << "OpenGL tests completed, exiting module..." << std::endl;
-	sleep(1);
+	sleepMillis(500);
 }

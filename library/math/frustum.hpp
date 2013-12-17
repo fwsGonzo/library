@@ -3,7 +3,7 @@
 
 namespace library
 {
-	class Matrix;
+	class mat4;
 	
 	class Frustum
 	{
@@ -11,8 +11,8 @@ namespace library
 		typedef float frustum_t;
 		
 		// call this every time the camera moves to update the frustum
-		void calculate(const Matrix& matproj, const Matrix& matview);
-		void calculate(const Matrix& matclip);
+		void calculate(const mat4& matproj, const mat4& matview);
+		void calculate(const mat4& matclip);
 		
 		// this takes a 3D point and returns TRUE if it's inside of the frustum
 		bool point(frustum_t x, frustum_t y, frustum_t z) const;

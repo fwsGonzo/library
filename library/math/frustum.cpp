@@ -45,7 +45,7 @@ namespace library
 		
 	}
 	
-	void Frustum::calculate(const Matrix& matproj, const Matrix& matview)
+	void Frustum::calculate(const mat4& matproj, const mat4& matview)
 	{
 		// We have our modelview and projection matrix, if we combine these 2 matrices,
 		// it will give us our clipping planes.
@@ -54,7 +54,7 @@ namespace library
 	
 	// CALCULATE FRUSTUM 
 	// This extracts our frustum from the projection and modelview matrix.
-	void Frustum::calculate(const Matrix& clip)
+	void Frustum::calculate(const mat4& clip)
 	{
 		// Now we actually want to get the sides of the frustum.  To do this we take
 		// the clipping planes we received above and extract the sides from them.

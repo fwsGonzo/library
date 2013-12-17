@@ -38,13 +38,13 @@ namespace library
 		void sendVec2  (GLint uniform, const vec2& v);
 		void sendVec3  (GLint uniform, const vec3& v);
 		void sendVec4  (GLint uniform, const vec4& v);
-		void sendMatrix(GLint uniform, const Matrix& m);
+		void sendMatrix(GLint uniform, const mat4& m);
 		// std::string version
 		void sendFloat (std::string uniform, float v);
 		void sendVec2  (std::string uniform, const vec2& v);
 		void sendVec3  (std::string uniform, const vec3& v);
 		void sendVec4  (std::string uniform, const vec4& v);
-		void sendMatrix(std::string uniform, const Matrix& m);
+		void sendMatrix(std::string uniform, const mat4& m);
 		// set-once senders
 		void sendInteger(std::string uniform, int id);
 		

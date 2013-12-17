@@ -7,14 +7,14 @@
 
 namespace library
 {
-	Matrix::Matrix() {}
+	mat4::mat4() {}
 	
-	Matrix::Matrix(const Matrix& matrix)
+	mat4::mat4(const mat4& matrix)
 	{
 		for (int i = 0; i < ELEMENTS; i++)
 			m[i] = matrix[i];
 	}
-	Matrix::Matrix(matrix_t matrix[ELEMENTS])
+	mat4::mat4(matrix_t matrix[ELEMENTS])
 	{
 		for (int i = 0; i < ELEMENTS; i++)
 			m[i] = matrix[i];
@@ -22,27 +22,43 @@ namespace library
 	}
 	
 	// scale matrices
-	Matrix::Matrix(matrix_t sc)
+	mat4::mat4(matrix_t sc)
 	{
 		m[0] = sc;  m[4] = 0.0; m[ 8] = 0.0; m[12] = 0.0;
 		m[1] = 0.0; m[5] = sc;  m[ 9] = 0.0; m[13] = 0.0;
 		m[2] = 0.0; m[6] = 0.0; m[10] = sc;  m[14] = 0.0;
 		m[3] = 0.0; m[7] = 0.0; m[11] = 0.0; m[15] = 1.0;
 	}
-	Matrix::Matrix(matrix_t sx, matrix_t sy, matrix_t sz)
+	mat4::mat4(matrix_t sx, matrix_t sy, matrix_t sz)
 	{
 		m[0] = sx;  m[4] = 0.0; m[ 8] = 0.0; m[12] = 0.0;
 		m[1] = 0.0; m[5] = sy;  m[ 9] = 0.0; m[13] = 0.0;
 		m[2] = 0.0; m[6] = 0.0; m[10] = sz;  m[14] = 0.0;
 		m[3] = 0.0; m[7] = 0.0; m[11] = 0.0; m[15] = 1.0;
 	}
+	// vector based matrix (right, up, forward)
+	mat4::mat4(const vec3& xa, const vec3& ya, const vec3& za)
+	{
+		m[0] = xa.x; m[4] = ya.x; m[ 8] = za.x; m[12] = 0.0;
+		m[1] = xa.y; m[5] = ya.y; m[ 9] = za.y; m[13] = 0.0;
+		m[2] = xa.z; m[6] = ya.z; m[10] = za.z; m[14] = 0.0;
+		m[3] = 0.0;  m[7] = 0.0;  m[11] = 0.0;  m[15] = 1.0;
+	}
+	// translation matrix constructor
+	mat4::mat4(const vec3& translation)
+	{
+		m[0] = 1.0; m[4] = 0.0; m[ 8] = 0.0; m[12] = translation.x;
+		m[1] = 0.0; m[5] = 1.0; m[ 9] = 0.0; m[13] = translation.y;
+		m[2] = 0.0; m[6] = 0.0; m[10] = 1.0; m[14] = translation.z;
+		m[3] = 0.0; m[7] = 0.0; m[11] = 0.0; m[15] = 1.0;
+	}
 	
-	Matrix::matrix_t* Matrix::data()
+	mat4::matrix_t* mat4::data()
 	{
 		return this->m;
 	}
 	
-	Matrix& Matrix::identity()
+	mat4& mat4::identity()
 	{
 		m[0] = 1.0; m[4] = 0.0; m[ 8] = 0.0; m[12] = 0.0;
 		m[1] = 0.0; m[5] = 1.0; m[ 9] = 0.0; m[13] = 0.0;
@@ -51,7 +67,7 @@ namespace library
 		return *this;
 	}
 	
-	Matrix& Matrix::bias()
+	mat4& mat4::bias()
 	{
 		m[0] = 0.5; m[4] = 0.0; m[8 ] = 0.0; m[12] = 0.5;
 		m[1] = 0.0; m[5] = 0.5; m[9 ] = 0.0; m[13] = 0.5;
@@ -60,25 +76,25 @@ namespace library
 		return *this;
 	}
 	
-	vec4 Matrix::vright() const
+	vec4 mat4::vright() const
 	{
 		return vec4(m[0], m[1], m[2], m[3]);
 	}
-	vec4 Matrix::vup() const
+	vec4 mat4::vup() const
 	{
 		return vec4(m[4], m[5], m[6], m[7]);
 	}
-	vec4 Matrix::vforward() const
+	vec4 mat4::vforward() const
 	{
 		return vec4(m[8], m[9], m[10], m[11]);
 	}
-	vec4 Matrix::vtranslate() const
+	vec4 mat4::vtranslate() const
 	{
 		return vec4(m[12], m[13], m[14], m[15]);
 	}
 	
 	// transform 3-vector (w = 1.0)
-	vec3 Matrix::operator* (const vec3& v) const
+	vec3 mat4::operator* (const vec3& v) const
 	{
 		return vec3(
 			v.x * m[0] + v.y * m[4] + v.z * m[ 8] + m[12],
@@ -87,7 +103,7 @@ namespace library
 		);
 	}
 	// transform 4-vector
-	vec4 Matrix::operator* (const vec4& v) const
+	vec4 mat4::operator* (const vec4& v) const
 	{
 		return vec4(
 			v.x * m[0] + v.y * m[4] + v.z * m[ 8] + v.w * m[12],
@@ -97,14 +113,14 @@ namespace library
 		);
 	}
 	
-	Matrix Matrix::operator * (const Matrix& matrix) const
+	mat4 mat4::operator * (const mat4& matrix) const
 	{
-		return Matrix(*this) *= matrix;
+		return mat4(*this) *= matrix;
 	}
 	
-	Matrix& Matrix::operator *= (const Matrix& matrix)
+	mat4& mat4::operator *= (const mat4& matrix)
 	{
-		Matrix temp(*this);
+		mat4 temp(*this);
 		
 		m[0] = temp.m[0 ] * matrix.m[0 ]
 			 + temp.m[4 ] * matrix.m[1 ]
@@ -189,59 +205,180 @@ namespace library
 		return *this;
 	}
 	
-	void Matrix::translate(matrix_t x, matrix_t y, matrix_t z)
-	{
-		// set translation vector (x, y, z, 1)
-		m[12] = x;
-		m[13] = y;
-		m[14] = z;
-		m[15] = 1.0;
-	}
-	
-	void Matrix::translated(matrix_t x, matrix_t y, matrix_t z)
+	mat4& mat4::translate(matrix_t x, matrix_t y, matrix_t z)
 	{
 		// translate with delta +(x, y, z)
 		m[12] +=  m[0 ] * x + m[4 ] * y + m[8 ] * z;
 		m[13] +=  m[1 ] * x + m[5 ] * y + m[9 ] * z;
 		m[14] +=  m[2 ] * x + m[6 ] * y + m[10] * z;
 		//m[15] +=  m[3 ] * x + m[7 ] * y + m[11] * z;
+		return *this;
 	}
 	
-	void Matrix::translate_xy(matrix_t x, matrix_t y)
+	mat4& mat4::translate_xy(matrix_t x, matrix_t y)
 	{
 		// translate with delta +(x, y)
 		m[12] +=  m[0 ] * x + m[4] * y;
 		m[13] +=  m[1 ] * x + m[5] * y;
 		m[14] +=  m[2 ] * x + m[6] * y;
 		//m[15] +=  m[3 ] * x + m[7] * y;
+		return *this;
 	}
 	
-	void Matrix::translate_xz(matrix_t x, matrix_t z)
+	mat4& mat4::translate_xz(matrix_t x, matrix_t z)
 	{
 		// translate with delta +(x, y)
 		m[12] +=  m[0 ] * x + m[ 8] * z;
 		m[13] +=  m[1 ] * x + m[ 9] * z;
 		m[14] +=  m[2 ] * x + m[10] * z;
 		//m[15] +=  m[3 ] * x + m[7 ] * y;
+		return *this;
 	}
 	
-	void Matrix::scale(matrix_t sc)
+	mat4& mat4::scale(matrix_t scale)
 	{
-		m[0] = sc;  m[4] = 0.0; m[ 8] = 0.0; m[12] = 0.0;
-		m[1] = 0.0; m[5] = sc;  m[ 9] = 0.0; m[13] = 0.0;
-		m[2] = 0.0; m[6] = 0.0; m[10] = sc;  m[14] = 0.0;
-		m[3] = 0.0; m[7] = 0.0; m[11] = 0.0; m[15] = 1.0;
+		return *this *= mat4(scale);
 	}
 	
-	void Matrix::scale(matrix_t sx, matrix_t sy, matrix_t sz)
+	mat4& mat4::scale(matrix_t sx, matrix_t sy, matrix_t sz)
 	{
-		m[0] = sx;  m[4] = 0.0; m[ 8] = 0.0; m[12] = 0.0;
-		m[1] = 0.0; m[5] = sy;  m[ 9] = 0.0; m[13] = 0.0;
-		m[2] = 0.0; m[6] = 0.0; m[10] = sz;  m[14] = 0.0;
-		m[3] = 0.0; m[7] = 0.0; m[11] = 0.0; m[15] = 1.0;
+		return *this *= mat4(sx, sy, sz);
 	}
 	
-	void Matrix::rotateZYX(matrix_t x, matrix_t y, matrix_t z)
+	mat4& mat4::rotateZYX(matrix_t ax, matrix_t ay, matrix_t az)
+	{
+		return *this *= rotationMatrix(ax, ay, az);
+	}
+	
+	// specialized 4x4 transpose
+	// returns this matrix transposed
+	mat4& mat4::transpose()
+	{
+		matrix_t temp;
+		
+		// swap y, x
+		temp = m[1]; m[1] = m[4]; m[4] = temp;
+		temp = m[2]; m[2] = m[8]; m[8] = temp;
+		temp = m[6]; m[6] = m[9]; m[9] = temp;
+		
+		// invert (tx, ty, tz)
+	  	m[12] *= -1.0;
+	  	m[13] *= -1.0;
+	  	m[14] *= -1.0;
+		
+		return *this;
+	}
+	// returns new transposed matrix
+	mat4 mat4::transposed() const
+	{
+		mat4 mat(*this);
+		return mat.transpose();
+	}
+	
+	// batch transform vertices from memory location
+	void mat4::batch(void* first, int stride, int count)
+	{
+		for (int i = 0; i < count; i++)
+		{
+			float* v = (float*) ((char*)first + i * stride);
+			v[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[ 8] + m[12];
+			v[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[ 9] + m[13];
+			v[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + m[14];
+		}
+	}
+	
+	// returns translation (tx, ty, tz) from a view matrix (rotation + translation)
+	vec3 mat4::transVector() const
+	{
+		return vec3(0); //m[12], m[13], m[14]);
+		/*
+		return vec3(
+			v.x * m[0] + v.y * m[4] + v.z * m[ 8] + m[12],
+			v.x * m[1] + v.y * m[5] + v.z * m[ 9] + m[13],
+			v.x * m[2] + v.y * m[6] + v.z * m[10] + m[14]
+		);*/
+	}
+	
+	// returns rotation (rx, ry, rz) from a view matrix (rotation + translation)
+	vec3 mat4::lookVector() const
+	{
+		return vec3(m[8], m[9], -m[10]);
+	}
+	
+	mat4 mat4::rotation() const
+	{
+		mat4 rot(*this);
+		rot.translate(0, 0, 0);
+		return rot;
+	}
+	
+	// orthographic projection matrix (center top-left)
+	mat4 ortho2dMatrix(mat4::matrix_t width, mat4::matrix_t height, mat4::matrix_t znear, mat4::matrix_t zfar)
+	{
+		mat4::matrix_t depth = zfar - znear;
+		/*
+			m[0] = 2/width;  m[4] = 0;         m[ 8] = 0;         m[12] = -1.0;
+			m[1] = 0;        m[5] = 2/height;  m[ 9] = 0;         m[13] = -1.0;
+			m[2] = 0;        m[6] = 0;         m[10] = -2/depth;  m[14] = -(zfar+znear) / depth;
+			m[3] = 0;        m[7] = 0;         m[11] = 0;         m[15] =  1.0;
+		*/
+		mat4::matrix_t a[] =
+		{	2/width, 0, 0, 0,
+			0, -2/height, 0, 0,
+			0, 0, -2/depth, 0,
+			-1.0, 1.0, -(zfar+znear) / depth, 1.0
+		};
+		return mat4(a);
+	}
+	
+	// orthographic projection matrix (center screen)
+	mat4 orthoMatrix(mat4::matrix_t width, mat4::matrix_t height, mat4::matrix_t znear, mat4::matrix_t zfar)
+	{
+		mat4::matrix_t ndcw =  width;  // 
+		mat4::matrix_t ndch = -height; // inverting Y-axis
+		mat4::matrix_t depth = zfar - znear;
+		/*
+			m[0] = 2/ndcw;  m[4] = 0;       m[ 8] = 0;         m[12] = -1.0;
+			m[1] = 0;       m[5] = 2/ndch;  m[ 9] = 0;         m[13] =  1.0;
+			m[2] = 0;       m[6] = 0;       m[10] = -2/depth;  m[14] = -(zfar+znear) / depth;
+			m[3] = 0;       m[7] = 0;       m[11] = 0;         m[15] =  1.0;
+		*/
+		mat4::matrix_t a[] =
+		{
+			2/ndcw, 0, 0, 0,
+			0, 2/ndch, 0, 0,
+			0, 0, -2/depth, 0,
+			-1.0, 1.0, -(zfar+znear) / depth, 1.0
+		};
+		return mat4(a);
+	}
+	
+	// FOV perspective matrix (frustum)
+	mat4 perspectiveMatrix(mat4::matrix_t fov, mat4::matrix_t aspect, mat4::matrix_t znear, mat4::matrix_t zfar)
+	{
+		const mat4::matrix_t pio360 = 4.0 * atan(1.0) / 360.0;
+		
+		mat4::matrix_t h = 1.0 / tan(fov * pio360);
+		mat4::matrix_t negd = znear - zfar;
+		
+		mat4::matrix_t m[mat4::ELEMENTS];
+		m[ 0] = h / aspect; m[ 1] = 0; m[ 2] = 0;                       m[ 3] =  0;
+		m[ 4] = 0;          m[ 5] = h; m[ 6] = 0;                       m[ 7] =  0;
+		m[ 8] = 0;          m[ 9] = 0; m[10] = (zfar + znear) / negd;   m[11] = -1;
+		m[12] = 0;          m[13] = 0; m[14] = 2 * znear * zfar / negd; m[15] =  0;
+		
+		return mat4(m);
+	}
+	
+	mat4 directionMatrix(const vec3& direction, const vec3& up)
+	{
+		vec3 xa = cross(up, direction).normalize();
+		vec3 ya = cross(direction, xa).normalize();
+		
+		return mat4(xa, ya, direction);
+	}
+	
+	mat4 rotationMatrix(mat4::matrix_t ax, mat4::matrix_t ay, mat4::matrix_t az)
 	{
 		//////////////////////////////////////////////////////////////////////////////
 		// convert Euler angles(x,y,z) to axes(left, up, forward)					//
@@ -257,18 +394,20 @@ namespace library
 		//////////////////////////////////////////////////////////////////////////////
 		
 		// rotation angle about X-axis (pitch)
-		matrix_t sx = sin(x);
-		matrix_t cx = cos(x);
+		mat4::matrix_t sx = sin(ax);
+		mat4::matrix_t cx = cos(ax);
 		
 		// rotation angle about Y-axis (yaw)
-		matrix_t sy = sin(y);
-		matrix_t cy = cos(y);
+		mat4::matrix_t sy = sin(ay);
+		mat4::matrix_t cy = cos(ay);
 		
-		if (z != 0.0)
+		mat4::matrix_t m[mat4::ELEMENTS];
+		
+		if (az != 0.0)
 		{
 			// rotation angle about Z-axis (roll)
-			matrix_t sz = sin(z);
-			matrix_t cz = cos(z);
+			mat4::matrix_t sz = sin(az);
+			mat4::matrix_t cz = cos(az);
 			
 			// left vector
 			m[0] =  cy * cz;
@@ -306,122 +445,13 @@ namespace library
 		m[10] =  cx * cy;
 		m[11] = 0.0; // w3
 		
+		// translation (tx, ty, tz, w)
 		m[12] = 0.0; // tx
 		m[13] = 0.0; // ty
 		m[14] = 0.0; // tz
 		m[15] = 1.0; // w4
-	}
-	
-	// specialized 4x4 transpose
-	// returns this matrix transposed
-	Matrix& Matrix::transpose()
-	{
-		matrix_t temp;
 		
-		// swap y, x
-		temp = m[1]; m[1] = m[4]; m[4] = temp;
-		temp = m[2]; m[2] = m[8]; m[8] = temp;
-		temp = m[6]; m[6] = m[9]; m[9] = temp;
-		
-		// invert (tx, ty, tz)
-	  	m[12] *= -1.0;
-	  	m[13] *= -1.0;
-	  	m[14] *= -1.0;
-		
-		return *this;
-	}
-	// returns new transposed matrix
-	Matrix Matrix::transposed() const
-	{
-		Matrix mat(*this);
-		return mat.transpose();
-	}
-	
-	// batch transform vertices from memory location
-	void Matrix::batch(void* first, int stride, int count)
-	{
-		for (int i = 0; i < count; i++)
-		{
-			float* v = (float*) ((char*)first + i * stride);
-			v[0] = v[0] * m[0] + v[1] * m[4] + v[2] * m[ 8] + m[12];
-			v[1] = v[0] * m[1] + v[1] * m[5] + v[2] * m[ 9] + m[13];
-			v[2] = v[0] * m[2] + v[1] * m[6] + v[2] * m[10] + m[14];
-		}
-	}
-	
-	// returns translation (tx, ty, tz) from a view matrix (rotation + translation)
-	vec3 Matrix::transVector() const
-	{
-		return vec3(0); //m[12], m[13], m[14]);
-		/*
-		return vec3(
-			v.x * m[0] + v.y * m[4] + v.z * m[ 8] + m[12],
-			v.x * m[1] + v.y * m[5] + v.z * m[ 9] + m[13],
-			v.x * m[2] + v.y * m[6] + v.z * m[10] + m[14]
-		);*/
-	}
-	
-	// returns rotation (rx, ry, rz) from a view matrix (rotation + translation)
-	vec3 Matrix::lookVector() const
-	{
-		return vec3(m[8], m[9], -m[10]);
-	}
-	
-	Matrix Matrix::rotation() const
-	{
-		Matrix rot(*this);
-		rot.translate(0, 0, 0);
-		return rot;
-	}
-	
-	// screen-coordinate-based orthographic projection matrix
-	void Matrix::orthoScreen(matrix_t width, matrix_t height, matrix_t znear, matrix_t zfar)
-	{
-		matrix_t depth = zfar - znear;
-		
-		m[0] = 2/width;  m[4] = 0;         m[ 8] = 0;         m[12] = -1.0;
-		m[1] = 0;        m[5] = 2/height;  m[ 9] = 0;         m[13] = -1.0;
-		m[2] = 0;        m[6] = 0;         m[10] = -2/depth;  m[14] = -(zfar+znear) / depth;
-		m[3] = 0;        m[7] = 0;         m[11] = 0;         m[15] =  1.0;
-	}
-	
-	// orthographic projection matrix
-	void Matrix::ortho(matrix_t width, matrix_t height, matrix_t znear, matrix_t zfar)
-	{
-		matrix_t ndcw =  width;  // 
-		matrix_t ndch = -height; // inverting Y-axis
-		matrix_t depth = zfar - znear;
-		
-		m[0] = 2/ndcw;  m[4] = 0;       m[ 8] = 0;         m[12] = -1.0;
-		m[1] = 0;       m[5] = 2/ndch;  m[ 9] = 0;         m[13] =  1.0;
-		m[2] = 0;       m[6] = 0;       m[10] = -2/depth;  m[14] = -(zfar+znear) / depth;
-		m[3] = 0;       m[7] = 0;       m[11] = 0;         m[15] =  1.0;
-	}
-	
-	// FOV perspective matrix (frustum)
-	void Matrix::perspective(matrix_t fov, matrix_t aspect, matrix_t znear, matrix_t zfar)
-	{
-		const matrix_t pio360 = 4.0 * atan(1.0) / 360.0;
-		
-		matrix_t h = 1.0 / tan(fov * pio360);
-		matrix_t negd = znear - zfar;
-		
-		m[ 0] = h / aspect; m[ 1] = 0; m[ 2] = 0;                       m[ 3] =  0;
-		m[ 4] = 0;          m[ 5] = h; m[ 6] = 0;                       m[ 7] =  0;
-		m[ 8] = 0;          m[ 9] = 0; m[10] = (zfar + znear) / negd;   m[11] = -1;
-		m[12] = 0;          m[13] = 0; m[14] = 2 * znear * zfar / negd; m[15] =  0;
-	}
-	
-	// additional operators
-	vec4 operator * (const vec4& v, const Matrix& m)
-	{
-		return m.transposed() * v;
-	}
-	
-	// additional functions
-	Matrix transpose(const Matrix& m)
-	{
-		return m.transposed();
+		return mat4(m);
 	}
 	
 }

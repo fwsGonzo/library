@@ -29,7 +29,8 @@ namespace library
 	class WindowClass
 	{
 	private:
-		bool init = false;
+		static bool init;
+		bool closing = false;
 		GLFWwindow* wndHandle;
 		
 	public:
@@ -44,6 +45,9 @@ namespace library
 		void open(WindowConfig& wndconf);
 		// closes an opened window (must be called, at some point)
 		void close();
+		// wait for window to close
+		void waitClose();
+		
 		// returns glfw window handle, wide usage with glfw calls
 		GLFWwindow* window();
 		// set window title to <string>

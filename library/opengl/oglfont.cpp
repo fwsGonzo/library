@@ -136,7 +136,7 @@ namespace library
 		return this->size;
 	}
 	
-	void OglFont::sendMatrix(Matrix& matrix)
+	void OglFont::sendMatrix(mat4& matrix)
 	{
 		shader.sendMatrix("mvp", matrix);
 	}
