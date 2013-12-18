@@ -68,13 +68,12 @@ namespace library
 	
 	vec3 Bone::getPosition()
 	{
-		vec4 vector;
-		composite.identity();
-		
-		// position
-		composite.translate(this->parent->getPosition());
-		
-		return composite * vector;
+		if (this->parent)
+		{
+			// cumulative position
+			return this->parent->getComposite() * this->position;
+		}
+		return this->position;
 	}
 	
 	void Bone::propagate()

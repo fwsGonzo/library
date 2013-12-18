@@ -290,13 +290,7 @@ namespace library
 	// returns translation (tx, ty, tz) from a view matrix (rotation + translation)
 	vec3 mat4::transVector() const
 	{
-		return vec3(0); //m[12], m[13], m[14]);
-		/*
-		return vec3(
-			v.x * m[0] + v.y * m[4] + v.z * m[ 8] + m[12],
-			v.x * m[1] + v.y * m[5] + v.z * m[ 9] + m[13],
-			v.x * m[2] + v.y * m[6] + v.z * m[10] + m[14]
-		);*/
+		return vec3(m[12], m[13], m[14]);
 	}
 	
 	// returns rotation (rx, ry, rz) from a view matrix (rotation + translation)

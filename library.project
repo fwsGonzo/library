@@ -146,6 +146,7 @@
     <File Name="src/socktest.cpp"/>
     <File Name="src/threadtest.cpp"/>
     <File Name="src/timetest.cpp"/>
+    <File Name="src/opengl_bonerig.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

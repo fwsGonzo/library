@@ -5,7 +5,8 @@
 #include <math/matrix.hpp>
 // bones
 #include <math/kine/bone.hpp>
-// wait mechanisms
+// stuff
+#include <log.hpp>
 #include <sleep.hpp>
 
 #include <GL/glfw3.h>
@@ -15,25 +16,38 @@
 using namespace library;
 
 Bone motherBone;
+const double PI = 4 * atan(1);
+
+void renderTail(vec3 pos, float rad)
+{
+	glBegin(GL_QUADS);
+		glColor3f(1.0, 0.0, 0.0);
+		glVertex3f(pos.x - rad, pos.y - rad, pos.z);
+		
+		glColor3f(0.0, 1.0, 0.0);
+		glVertex3f(pos.x + rad, pos.y - rad, pos.z);
+		
+		glColor3f(0.0, 0.0, 1.0);
+		glVertex3f(pos.x + rad, pos.y + rad, pos.z);
+		
+		glColor3f(0.0, 0.0, 0.0);
+		glVertex3f(pos.x - rad, pos.y + rad, pos.z);
+	glEnd();
+}
 
 void renderBone(Bone& bone)
 {
 	// render this bone
-	glBegin(GL_TRIANGLES);
-		glColor3f(0.1, 0.2, 0.3);
-		glVertex3f(999.0, 999.0, 1);
-		
-		glColor3f(0.4, 0.5, 0.6);
-		glVertex3f(0, 999.0, 0);
-		
-		glColor3f(0.5, 0.8, 1.0);
-		glVertex3f(999.0, 0, 2);
-		
-	glEnd();
+	vec3 pos = bone.getMatrix().transVector();
+	
+	renderTail(pos, 0.5);
 	
 	// render children
 	for (int i = 0; i < bone.childCount(); i++)
+	{
+		logger << Log::INFO << "Rendering child " << i << " at " << bone[i].getPosition() << Log::ENDL;
 		renderBone(bone[i]);
+	}
 }
 
 bool boneRenderer(WindowClass& wnd, double dtime, double timeElapsed)
@@ -46,12 +60,13 @@ bool boneRenderer(WindowClass& wnd, double dtime, double timeElapsed)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	// set up perspective projection matrix
-	mat4 matproj = perspectiveMatrix(wnd.SW, wnd.SH, 0, 2);
+	mat4 matproj = perspectiveMatrix(61.0, wnd.SA, 0.1, 16.0);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(matproj.data());
 	
-	mat4 matview;
+	mat4 matview = rotationMatrix(sin(timeElapsed * 4.0) * PI / 8, -0.2, 0.0);
+	matview.translate(0.0, 0.0, -2.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(matview.data());
@@ -61,7 +76,7 @@ bool boneRenderer(WindowClass& wnd, double dtime, double timeElapsed)
 	// swap frontbuffer with backbuffer (frame change)
 	glfwSwapBuffers(wnd.window());
 	// close window after N seconds
-	return (timeElapsed < 5);
+	return (timeElapsed < 2);
 }
 
 void test_opengl_bonerig()
@@ -94,5 +109,4 @@ void test_opengl_bonerig()
 	
 	renderer.startRenderingLoop(boneRenderer, timing_granularity);
 	renderer.waitClose();
-	
 }
