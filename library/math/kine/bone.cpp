@@ -56,8 +56,8 @@ namespace library
 			}
 			else this->composite.identity();
 			
-			mat4 orient = directionMatrix(this->orientation, vec3(0.0, 1.0, 0.0));
-			orient *= translationMatrix(this->position);
+			mat4 orient = translationMatrix(this->position);
+			orient *= directionMatrix(this->orientation, vec3(0.0, 1.0, 0.0));
 			
 			this->composite *= orient;
 			
@@ -68,12 +68,7 @@ namespace library
 	
 	vec3 Bone::getPosition()
 	{
-		if (this->parent)
-		{
-			// cumulative position
-			return this->parent->getComposite() * this->position;
-		}
-		return this->position;
+		return (getComposite() * vec4(0.0, 0.0, 0.0, 1.0)).xyz();
 	}
 	
 	void Bone::propagate()

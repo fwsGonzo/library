@@ -3,6 +3,7 @@
  *
  *
 **/
+extern void test_maths();
 extern void test_sockets();
 extern void test_opengl_window();
 extern void test_opengl_bonerig();
@@ -16,6 +17,9 @@ int main(void)
 	std::cout << "// Framework tests //" << std::endl;
 	std::cout << "//                 //" << std::endl;
 	/////////////////////////////////////////////////////////
+	
+	test_maths();
+	return 0;
 	
 	/////////////////////////////////////////////////////////
 	std::cout << "****" << std::endl;

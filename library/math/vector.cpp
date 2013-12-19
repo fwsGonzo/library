@@ -5,38 +5,30 @@
 
 namespace library
 {
-	// vec2 constructors
-	vec2::vec2()
-	{
-		x = y = 0.0;
-	}
-	vec2::vec2(vec2::vector_t v)
-	{
-		x = y = v;
-	}
-	vec2::vec2(vec2::vector_t X, vec2::vector_t Y)
-	{
-		x = X; y = Y;
-	}
-	vec2::vec2(const vec2& v)
-	{
-		x = v.x; y = v.y;
-	}
-	vec2::vec2(const vec3& v)
-	{
-		x = v.x; y = v.y;
-	}
-	vec2::vec2(const vec4& v)
-	{
-		x = v.x; y = v.y;
-	}
+	static const double MIN_V2 = 1e-7;
 	
 	// vec2 utility
+	
+	vec2& vec2::rotate(vector_t angle)
+	{
+		vector_t x = this->x;
+		this->x = cos(angle) * x - sin(angle) * this->y;
+		this->y = sin(angle) * x + cos(angle) * this->y;
+		return *this;
+	}
+	vec2 vec2::rotated(vector_t angle) const
+	{
+		return vec2(
+			cos(angle) * this->x - sin(angle) * this->y,
+			sin(angle) * this->x + cos(angle) * this->y);
+	}
+	
 	vec2::vector_t vec2::length() const
 	{
 		vector_t L = x * x + y * y;
 		return sqrtf(L);
 	}
+	
 	vec2 vec2::normalized() const
 	{
 		return vec2(*this).normalize();
@@ -51,6 +43,115 @@ namespace library
 		x *= L; y *= L;
 		return *this;
 	}
+	
+	// exponentiation
+	vec2& vec2::pow(double e)
+	{
+		this->x = powf(this->x, e);
+		this->y = powf(this->y, e);
+		return *this;
+	}
+	vec2& vec2::pow(const vec2& v)
+	{
+		this->x = powf(this->x, v.x);
+		this->y = powf(this->y, v.y);
+		return *this;
+	}
+	
+	
+	// unary - (negate)
+	vec2 vec2::operator - () const
+	{
+		return vec2(-this->x, -this->y);
+	}
+	
+	// arithmetic operators
+	vec2& vec2::operator += (const vec2& v)
+	{
+		this->x += v.x; this->y += v.y;
+		return *this;
+	}
+	vec2& vec2::operator -= (const vec2& v)
+	{
+		this->x -= v.x; this->y -= v.y;
+		return *this;
+	}
+	vec2& vec2::operator *= (const vec2& v)
+	{
+		this->x *= v.x; this->y *= v.y;
+		return *this;
+	}
+	vec2& vec2::operator /= (const vec2& v)
+	{
+		this->x /= v.x; this->y /= v.y;
+		return *this;
+	}
+	
+	vec2 vec2::operator + (const vec2& v) const
+	{
+		return vec2(this->x + v.x, this->y + v.y);
+	}
+	vec2 vec2::operator - (const vec2& v) const
+	{
+		return vec2(this->x - v.x, this->y - v.y);
+	}
+	vec2 vec2::operator * (const vec2& v) const
+	{
+		return vec2(this->x * v.x, this->y * v.y);
+	}
+	vec2 vec2::operator / (const vec2& v) const
+	{
+		return vec2(this->x / v.x, this->y / v.y);
+	}
+	
+	vec2& vec2::operator +=(const vector_t f)
+	{
+		this->x += f; this->y += f;
+		return *this;
+	}
+	vec2& vec2::operator -=(const vector_t f)
+	{
+		this->x -= f; this->y -= f;
+		return *this;
+	}
+	vec2& vec2::operator *=(const vector_t f)
+	{
+		this->x *= f; this->y *= f;
+		return *this;
+	}
+	vec2& vec2::operator /=(const vector_t f)
+	{
+		this->x /= f; this->y /= f;
+		return *this;
+	}
+	
+	vec2  vec2::operator + (const vector_t f) const
+	{
+		return vec2(this->x + f, this->y + f);
+	}
+	vec2  vec2::operator - (const vector_t f) const
+	{
+		return vec2(this->x - f, this->y - f);
+	}
+	vec2  vec2::operator * (const vector_t f) const
+	{
+		return vec2(this->x * f, this->y * f);
+	}
+	vec2  vec2::operator / (const vector_t f) const
+	{
+		return vec2(this->x / f, this->y / f);
+	}
+	
+	// boolean equality operators
+	bool vec2::operator == (const vec2& v) const
+	{
+		return fabs(x - v.x + y - v.y) < MIN_V2;
+	}
+	bool vec2::operator != (const vec2& v) const
+	{
+		return !(*this == v);
+	}
+	
 	
 	// simd batch transform mat4 * vec4(vec3, 1.0) --> vec4
 	void transform_vec3_simd_vec4(vec3* __restrict src, vec4* __restrict dst, unsigned int numVertices, float* __restrict matrix)

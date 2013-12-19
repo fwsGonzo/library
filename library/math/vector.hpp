@@ -18,17 +18,74 @@ namespace library
 		vector_t x, y;
 		
 		// constructors
-		vec2();
-		vec2(vector_t);
-		vec2(vector_t, vector_t);
-		vec2(const vec2&);
-		vec2(const vec3&);
-		vec2(const vec4&);
+		vec2()
+		{
+			x = y = 0.0;
+		}
+		vec2(vector_t v)
+		{
+			x = y = v;
+		}
+		vec2(vector_t X, vector_t Y)
+		{
+			x = X; y = Y;
+		}
+		vec2(const vec2& v)
+		{
+			x = v.x; y = v.y;
+		}
 		
 		vector_t length() const;
 		
+		vec2& rotate(vector_t angle);
+		vec2  rotated(vector_t angle) const;
+		
 		vec2& normalize();
 		vec2  normalized() const;
+		
+		// exponentiation
+		vec2& pow(double e);
+		vec2& pow(const vec2& v);
+		
+		// -= vec2 operators =- //
+		
+		// unary - (negate)
+		vec2 operator - () const;
+		
+		// arithmetic operators
+		vec2& operator += (const vec2&);
+		vec2& operator -= (const vec2&);
+		vec2& operator *= (const vec2&);
+		vec2& operator /= (const vec2&);
+		
+		vec2 operator + (const vec2&) const;
+		vec2 operator - (const vec2&) const;
+		vec2 operator * (const vec2&) const;
+		vec2 operator / (const vec2&) const;
+		
+		vec2& operator +=(const vector_t);
+		vec2& operator -=(const vector_t);
+		vec2& operator *=(const vector_t);
+		vec2& operator /=(const vector_t);
+		
+		vec2  operator + (const vector_t) const;
+		vec2  operator - (const vector_t) const;
+		vec2  operator * (const vector_t) const;
+		vec2  operator / (const vector_t) const;
+		
+		// boolean equality operators
+		bool operator == (const vec2&) const;
+		bool operator != (const vec2&) const;
+		
+		// inline friends
+		inline friend vec2 pow(const vec2& v1, double e)
+		{
+			return vec2(v1).pow(e);
+		}
+		inline friend vec2 pow(const vec2& v1, const vec2& v2)
+		{
+			return vec2(v1).pow(v2);
+		}
 		
 	};
 	
@@ -43,11 +100,23 @@ namespace library
 		
 		// -= vec3 constructors =- //
 		
-		vec3();
-		vec3(vector_t);
-		vec3(vector_t, vector_t, vector_t);
-		vec3(const vec3&);
-		vec3(const vec4&); // creates vec3 from .xyz part
+		
+		vec3()
+		{
+			x = y = z = 0.0;
+		}
+		vec3(vec3::vector_t v)
+		{
+			x = y = z = v;
+		}
+		vec3(vector_t X, vector_t Y, vector_t Z)
+		{
+			x = X; y = Y; z = Z;
+		}
+		vec3(const vec3& v)
+		{
+			x = v.x; y = v.y; z = v.z;
+		}
 		
 		// -= vec3 swizzles =- //
 		
@@ -72,11 +141,8 @@ namespace library
 		vec2  toPitchYaw() const;
 		
 		// returns the smallest/biggest values of this(x, y, z)
-		const vector_t min() const;
-		const vector_t max() const;
-		// returns the shortest/longest vectors between this and that
-		const vec3& min(const vec3& that) const;
-		const vec3& max(const vec3& that) const;
+		vector_t min() const;
+		vector_t max() const;
 		
 		// exponentiation
 		vec3& pow(double e);
@@ -85,7 +151,7 @@ namespace library
 		// -= vec3 operators =- //
 		
 		// unary - (negate)
-		const vec3 operator - () const;
+		vec3 operator - () const;
 		
 		// arithmetic operators
 		vec3& operator += (const vec3&);

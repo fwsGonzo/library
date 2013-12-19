@@ -6,28 +6,7 @@
 namespace library
 {
 	static const double PI = 4 * atan(1);
-	
-	// vec3 constructors
-	vec3::vec3()
-	{
-		x = y = z = 0.0;
-	}
-	vec3::vec3(vec3::vector_t v)
-	{
-		x = y = z = v;
-	}
-	vec3::vec3(vec3::vector_t X, vec3::vector_t Y, vec3::vector_t Z)
-	{
-		x = X; y = Y; z = Z;
-	}
-	vec3::vec3(const vec3& v)
-	{
-		x = v.x; y = v.y; z = v.z;
-	}
-	vec3::vec3(const vec4& v)
-	{
-		x = v.x; y = v.y; z = v.z;
-	}
+	static const double MIN_V3 = 1e-7;
 	
 	// vec3 swizzles
 	vec2 vec3::xx() const
@@ -141,30 +120,8 @@ namespace library
 		return vec2(pitch, yaw);
 	}
 	
-	const vec3::vector_t vec3::min() const
-	{
-		if (x < y && x < z) return x;
-		if (y < z) return y;
-		return z;
-	}
-	const vec3::vector_t vec3::max() const
-	{
-		if (x > y && x > z) return x;
-		if (y > z) return y;
-		return z;
-	}
-	
-	const vec3& vec3::min(const vec3& v) const
-	{
-		return (length() < v.length()) ? *this : v;
-	}
-	const vec3& vec3::max(const vec3& v) const
-	{
-		return (length() > v.length()) ? *this : v;
-	}
-	
 	// unary - (negate)
-	const vec3 vec3::operator - () const
+	vec3 vec3::operator - () const
 	{
 		return vec3(-x, -y, -z);
 	}
@@ -272,7 +229,7 @@ namespace library
 	// boolean equality operator
 	bool vec3::operator == (const vec3& v) const
 	{
-		return (x == v.x && y == v.y && z == v.z);
+		return fabs(x - v.x + y - v.y + z - v.z) < MIN_V3;
 	}
 	
 	// boolean inequality operator

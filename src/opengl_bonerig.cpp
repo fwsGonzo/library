@@ -38,7 +38,7 @@ void renderTail(vec3 pos, float rad)
 void renderBone(Bone& bone)
 {
 	// render this bone
-	vec3 pos = bone.getMatrix().transVector();
+	vec3 pos = bone.getPosition();
 	
 	renderTail(pos, 0.5);
 	
@@ -95,7 +95,8 @@ void test_opengl_bonerig()
 	renderer.open(wndconf);
 	
 	// create bone rig
-	motherBone.addChild(Bone(vec3(0.0, 0.0, 1.0), vec3(1.0, 0.0, 0.0).normalize()));
+	motherBone = Bone(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0).normalize());
+	motherBone.addChild(Bone(vec3(0.0, 0.0, 2.0), vec3(0.5, 0.5, 0.0).normalize()));
 	
 	//////////////////////////////////////////////////////////////////
 	std::cout << "Starting rendering loop: Bone rig" << std::endl;
