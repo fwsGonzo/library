@@ -37,8 +37,7 @@ namespace library
 	// vec3 utility
 	vec3::vector_t vec3::length() const
 	{
-		vector_t L = x * x + y * y + z * z;
-		return sqrtf(L);
+		return sqrtf(length_squared());
 	}
 	
 	vec3& vec3::normalize()

@@ -35,6 +35,10 @@ namespace library
 			x = v.x; y = v.y;
 		}
 		
+		inline vector_t length_squared() const
+		{
+			return x * x + y * y;
+		}
 		vector_t length() const;
 		
 		vec2& rotate(vector_t angle);
@@ -130,6 +134,10 @@ namespace library
 		
 		// -= vec3 utilities =- //
 		
+		vector_t length_squared() const
+		{
+			return x * x + y * y + z * z;
+		}
 		vector_t length() const;
 		vec3& normalize();
 		vec3  normalized() const;
@@ -145,10 +153,6 @@ namespace library
 		vec3 frac() const;
 		// linear interpolation
 		vec3 mix(const vec3&, float) const;
-		
-		// returns the smallest/biggest values of this(x, y, z)
-		vector_t min() const;
-		vector_t max() const;
 		
 		// exponentiation
 		vec3& pow(double e);

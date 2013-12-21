@@ -25,8 +25,7 @@ namespace library
 	
 	vec2::vector_t vec2::length() const
 	{
-		vector_t L = x * x + y * y;
-		return sqrtf(L);
+		return sqrtf(length_squared());
 	}
 	
 	vec2 vec2::normalized() const
