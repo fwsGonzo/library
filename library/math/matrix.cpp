@@ -287,6 +287,18 @@ namespace library
 		}
 	}
 	
+	// utility functions
+	
+	mat4::matrix_t mat4::determinant() const
+	{
+		return 
+		  m[ 0] * (m[5]*(m[10]*m[15]-m[14]*m[11]) + m[9]*(m[14]*m[ 7]-m[ 6]*m[15]) + m[13]*(m[ 6]*m[11]-m[10]*m[ 7]))
+		+ m[ 4] * (m[1]*(m[14]*m[11]-m[10]*m[15]) + m[9]*(m[ 2]*m[15]-m[14]*m[ 3]) + m[13]*(m[10]*m[ 3]-m[ 2]*m[11]))
+		+ m[ 8] * (m[1]*(m[ 6]*m[15]-m[14]*m[ 7]) + m[5]*(m[14]*m[ 3]-m[ 2]*m[15]) + m[13]*(m[ 2]*m[ 7]-m[ 6]*m[ 3]))
+		+ m[12] * (m[1]*(m[10]*m[ 7]-m[ 6]*m[11]) + m[5]*(m[ 2]*m[11]-m[10]*m[ 3]) + m[ 9]*(m[ 6]*m[ 3]-m[ 2]*m[ 7]));
+	}
+	
+	
 	// returns translation (tx, ty, tz) from a view matrix (rotation + translation)
 	vec3 mat4::transVector() const
 	{
@@ -305,6 +317,8 @@ namespace library
 		rot.translate(0, 0, 0);
 		return rot;
 	}
+	
+	// "global" constructors
 	
 	// orthographic projection matrix (center top-left)
 	mat4 ortho2dMatrix(mat4::matrix_t width, mat4::matrix_t height, mat4::matrix_t znear, mat4::matrix_t zfar)

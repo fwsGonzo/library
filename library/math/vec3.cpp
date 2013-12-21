@@ -71,7 +71,7 @@ namespace library
 	
 	vec3 vec3::frac() const
 	{
-		// NB. does not work for negative numbers
+		// FIXME: does not work for negative numbers
 		return vec3( x - (int)x, y - (int)y, z - (int)z );
 	}
 	
@@ -81,6 +81,12 @@ namespace library
 		return *this - vec3(normal) * 2.0f * dot(normal);
 	}
 	
+	vec3 vec3::axis(const vec3& v) const
+	{
+		return -(cross(v).cross(v)).normalize();
+	}
+	
+	// linear interpolation
 	vec3 vec3::mix(const vec3& v, float mixlevel) const
 	{
 		return vec3(
@@ -96,15 +102,6 @@ namespace library
 	{
 		// formula: vector * cos a + dot(vector, axis) * axis * (1 - cos a) + cross(axis, vector) * sin a
 		return *this * cosf(angle) + this->dot(axis) * axis * (1.0 - cosf(angle)) + axis.cross(*this) * sinf(angle);
-	}
-	
-	// transforms this vector into a rotation expressed by two angles (rotX, rotY)
-	vec3& vec3::lookVector(const vec2& rot)
-	{
-		x =  sinf(rot.y) * cosf(rot.x);
-		y = 			  -sinf(rot.x);
-		z = -cosf(rot.y) * cosf(rot.x);
-		return *this;
 	}
 	
 	vec2 vec3::toPitchYaw() const
@@ -229,7 +226,7 @@ namespace library
 	// boolean equality operator
 	bool vec3::operator == (const vec3& v) const
 	{
-		return fabs(x - v.x + y - v.y + z - v.z) < MIN_V3;
+		return fabs(x - v.x) < MIN_V3 && fabs(y - v.y) < MIN_V3 && fabs(z - v.z) < MIN_V3;
 	}
 	
 	// boolean inequality operator
@@ -289,6 +286,15 @@ namespace library
 		if (k < 0.0) return (vec3::vector_t)0.0;
 		
 		return eta * I - (eta * dotNI + sqrtf(k)) * N;
+	}
+	
+	// transforms this vector into a rotation expressed by two angles (rotX, rotY)
+	vec3 lookVector(const vec2& rot)
+	{
+		return vec3(
+		 sinf(rot.y) * cosf(rot.x),
+		              -sinf(rot.x),
+		-cosf(rot.y) * cosf(rot.x));
 	}
 	
 	// log output functions

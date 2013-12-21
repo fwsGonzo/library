@@ -43,6 +43,11 @@ namespace library
 		vec2& normalize();
 		vec2  normalized() const;
 		
+		vector_t dot(const vec2&) const;
+		vector_t determinant(const vec2&) const;
+		vec2 frac() const;
+		vec2 reflect(const vec2& normal) const;
+		
 		// exponentiation
 		vec2& pow(double e);
 		vec2& pow(const vec2& v);
@@ -129,16 +134,17 @@ namespace library
 		vec3& normalize();
 		vec3  normalized() const;
 		vector_t dot(const vec3&) const;
-		vec3 frac() const;
 		vec3 cross(const vec3&) const;
-		vec3 reflect(const vec3&) const;
-		vec3 mix(const vec3&, float) const;
+		vec3 reflect(const vec3& normal) const;
+		vec3 axis(const vec3&) const;
 		
 		// rotate this vector by (angle) on (axis)
 		vec3  rotateOnAxis(const vec3& axis, float angle) const;
-		// transform this vector from pitch and yaw
-		vec3& lookVector(const vec2& rot);
 		vec2  toPitchYaw() const;
+		
+		vec3 frac() const;
+		// linear interpolation
+		vec3 mix(const vec3&, float) const;
 		
 		// returns the smallest/biggest values of this(x, y, z)
 		vector_t min() const;
@@ -224,24 +230,47 @@ namespace library
 	vec3 cross(const vec3&, const vec3&);
 	vec3 reflect(const vec3& I, const vec3& N);
 	vec3 refract(const vec3& I, const vec3& N, const vec3::vector_t eta);
+	// transform this vector from pitch and yaw
+	vec3 lookVector(const vec2& rot);
 	
 	// additional arithmetic operators
+	template <typename T>
+	vec2 operator + (const T t, const vec2& v)
+	{
+		return vec2(v.x + t, v.y + t);
+	}
+	template <typename T>
+	vec2 operator - (const T t, const vec2& v)
+	{
+		return vec2(v.x - t, v.y - t);
+	}
+	template <typename T>
+	vec2 operator * (const T t, const vec2& v)
+	{
+		return vec2(v.x * t, v.y * t);
+	}
+	template <typename T>
+	vec2 operator / (const T t, const vec2& v)
+	{
+		return vec2(v.x / t, v.y / t);
+	}
+	
 	template <typename T>
 	vec3 operator + (const T t, const vec3& v)
 	{
 		return vec3(v.x + t, v.y + t, v.z + t);
 	}
-	template <class T>
+	template <typename T>
 	vec3 operator - (const T t, const vec3& v)
 	{
 		return vec3(v.x - t, v.y - t, v.z - t);
 	}
-	template <class T>
+	template <typename T>
 	vec3 operator * (const T t, const vec3& v)
 	{
 		return vec3(v.x * t, v.y * t, v.z * t);
 	}
-	template <class T>
+	template <typename T>
 	vec3 operator / (const T t, const vec3& v)
 	{
 		return vec3(v.x / t, v.y / t, v.z / t);

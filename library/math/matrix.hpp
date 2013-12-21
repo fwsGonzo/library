@@ -90,6 +90,9 @@ namespace library
 		
 		void batch(void* first, int stride, int count);
 		
+		// utility functions
+		matrix_t determinant() const;
+		
 		// returns the transformed vector from this_matrix * vec4(0, 0, 0, 1)
 		// essentially returning translation and hom.coord: (tx, ty, tz, w)
 		vec3 transVector() const;

@@ -44,6 +44,25 @@ namespace library
 		return *this;
 	}
 	
+	vec2::vector_t vec2::dot(const vec2& v) const
+	{
+		return x * v.x + y * v.y;
+	}
+	vec2::vector_t vec2::determinant(const vec2& v) const
+	{
+		return x * v.y - y * v.x;
+	}
+	vec2 vec2::frac() const
+	{
+		// FIXME: does not work for negative numbers
+		return vec2(x - (int)x, y - (int)y);
+	}
+	vec2 vec2::reflect(const vec2& normal) const
+	{
+		// http://stackoverflow.com/questions/5454661/reflection-how-do-i-do-it
+		return *this - 2 * dot(normal) * normal;
+	}
+	
 	// exponentiation
 	vec2& vec2::pow(double e)
 	{
@@ -145,7 +164,7 @@ namespace library
 	// boolean equality operators
 	bool vec2::operator == (const vec2& v) const
 	{
-		return fabs(x - v.x + y - v.y) < MIN_V2;
+		return fabs(x - v.x) < MIN_V2 && fabs(y - v.y) < MIN_V2;
 	}
 	bool vec2::operator != (const vec2& v) const
 	{
