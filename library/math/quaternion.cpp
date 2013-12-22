@@ -7,6 +7,8 @@
 
 namespace library
 {
+	static const float TOLERANCE = 0.0001;
+	
 	////////////////////////////////
 	////      CONSTRUCTORS      ////
 	////////////////////////////////
@@ -68,8 +70,6 @@ namespace library
 	
 	bool Quaternion::isNormalized() const
 	{
-		const float TOLERANCE = 0.001;
-		
 		return (fabsf(length_squared() - 1.0f) < TOLERANCE);
 	}
 	
@@ -85,8 +85,7 @@ namespace library
 	// invert this quaternion
 	Quaternion& Quaternion::invert()
 	{
-		conjugate();
-		return *this /= length_squared();
+		return this->conjugate() /= length_squared();
 	}
 	// invert a quaternion
 	Quaternion Quaternion::invert() const
@@ -95,13 +94,13 @@ namespace library
 	}
 	
 	// computes conjugate of this quaternion
-	void Quaternion::conjugate()
+	Quaternion& Quaternion::conjugate()
 	{
-		imag = -imag;
+		imag = -imag; return *this;
 	}
 	Quaternion Quaternion::conjugate() const
 	{
-		return Quaternion(real, -imag);
+		return Quaternion(*this).conjugate();
 	}
 	
 	// logarithm of quaternion (q = [cos a, axis sin a])
@@ -241,10 +240,6 @@ namespace library
 	}
 	
 	// to 4x4 matrix
-	Quaternion::operator mat4() const
-	{
-		return toMatrix();
-	}
 	mat4 Quaternion::toMatrix() const
 	{
 		mat4::matrix_t m[] =

@@ -65,8 +65,8 @@ bool boneRenderer(WindowClass& wnd, double dtime, double timeElapsed)
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(matproj.data());
 	
-	mat4 matview = rotationMatrix(sin(timeElapsed * 4.0) * PI / 8, -0.2, 0.0);
-	matview.translate(0.0, 0.0, -2.0);
+	mat4 matview = rotationMatrix(sin(timeElapsed * 2.0 - PI / 4) * PI / 8, -0.5, 0.0);
+	matview.translate(-8.0, -1.0, -4.0);
 	
 	glMatrixMode(GL_MODELVIEW);
 	glLoadMatrixf(matview.data());
@@ -95,8 +95,14 @@ void test_opengl_bonerig()
 	renderer.open(wndconf);
 	
 	// create bone rig
-	motherBone = Bone(vec3(0.0, 0.0, 0.0), vec3(0.0, 0.0, 1.0).normalize());
-	motherBone.addChild(Bone(vec3(0.0, 0.0, 2.0), vec3(0.5, 0.5, 0.0).normalize()));
+	motherBone = Bone(vec3(0.0, 0.0, 0.0), vec3(1.0, 0.0, 0.0));
+	
+	Bone* current = &motherBone;
+	for (int i = 0; i < 8; i++)
+	{
+		current->addChild(Bone(vec3(0.0, 0.1, 1.0), vec3(0.0, 0.0, 1.0)));
+		current = &current[0][0];
+	}
 	
 	//////////////////////////////////////////////////////////////////
 	std::cout << "Starting rendering loop: Bone rig" << std::endl;

@@ -18,32 +18,32 @@ namespace library
 	class Quaternion
 	{
 	public:
-		// default constructor q = { 1, (0, 0, 0) }
+		// default q = { 1, (0, 0, 0) }
 		Quaternion();
 		// copy constructors
 		Quaternion(const Quaternion& q);
 		Quaternion(const float real, const vec3& imaginary);
-		
+		// assignment operator
+		Quaternion& operator = (const Quaternion& q);
 		// from 3 euler angles
 		Quaternion(const vec3& angles);
-		
 		// from axis-angle
 		Quaternion(const vec3& norm, const float theta);
+		
+		// --- utility functions --- //
 		
 		float length_squared() const;
 		float length() const;
 		bool  isNormalized() const;
+		
 		Quaternion& normalize();
 		Quaternion  normalized() const;
 		
-		// invert this quaternion
 		Quaternion& invert();
-		// invert a quaternion
-		Quaternion invert() const;
+		Quaternion  invert() const;
 		
-		// computes conjugate of this quaternion
-		void conjugate();
-		Quaternion conjugate() const;
+		Quaternion& conjugate();
+		Quaternion  conjugate() const;
 		
 		// logarithm of quaternion (q = [cos a, axis sin a])
 		Quaternion log() const;
@@ -69,6 +69,8 @@ namespace library
 		// calculate control point for spline interpolation
 		static Quaternion spline(const Quaternion& qnm1, const Quaternion& qn, const Quaternion& qnp1);
 		
+		// --- output functions --- //
+		
 		// rotate vector using this quaternion
 		vec3 rotate(const vec3& vector) const;
 		
@@ -76,11 +78,9 @@ namespace library
 		void toAxisAngle(vec3& axis, float& angle) const;
 		
 		// 4x4 matrix representation using this quaternion
-		operator mat4() const;
 		mat4 toMatrix() const;
 		
-		// assignment operator
-		Quaternion& operator = (const Quaternion& q);
+		// --- operators --- //
 		
 		// index operator
 		float operator[] (int) const;

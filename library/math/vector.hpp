@@ -109,7 +109,6 @@ namespace library
 		
 		// -= vec3 constructors =- //
 		
-		
 		vec3()
 		{
 			x = y = z = 0.0;
@@ -134,7 +133,7 @@ namespace library
 		
 		// -= vec3 utilities =- //
 		
-		vector_t length_squared() const
+		inline vector_t length_squared() const
 		{
 			return x * x + y * y + z * z;
 		}
