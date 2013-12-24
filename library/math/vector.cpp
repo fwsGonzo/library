@@ -170,6 +170,22 @@ namespace library
 		return !(*this == v);
 	}
 	
+	// a and b should be unit vectors
+	// t is a value in the range [0, 1]
+	vec2 slerp(vec2 va, vec2 vb, float t)
+	{
+		float theta = acos(va.dot(vb));
+		return (va * sin((1 - t) * theta) + vb * sin(t * theta)) / sin(theta);
+	}
+	
+	// rotates <from> towards <to> by dTheta radians
+	vec2 rotateTowards(vec2 from, vec2 to, vec2::vector_t dTheta)
+	{
+		float theta = acos(from.dot(to));
+		
+		if (theta <= dTheta) return to;
+		return slerp(from, to, theta / dTheta);
+	}
 	
 	// simd batch transform mat4 * vec4(vec3, 1.0) --> vec4
 	void transform_vec3_simd_vec4(vec3* __restrict src, vec4* __restrict dst, unsigned int numVertices, float* __restrict matrix)

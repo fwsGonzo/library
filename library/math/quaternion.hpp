@@ -27,8 +27,8 @@ namespace library
 		Quaternion& operator = (const Quaternion& q);
 		// from 3 euler angles
 		Quaternion(const vec3& angles);
-		// from axis-angle
-		Quaternion(const vec3& norm, const float theta);
+		// from axis-angle (normal + angle)
+		Quaternion(const vec3& axis, const float theta);
 		
 		// --- utility functions --- //
 		
@@ -51,8 +51,8 @@ namespace library
 		Quaternion exp() const;
 		
 		// dot-product: q1 x q2
-		inline float dot(const Quaternion& q) const;
-		static inline float dot(const Quaternion& q1, const Quaternion& q2);
+		float dot(const Quaternion& q) const;
+		static float dot(const Quaternion& q1, const Quaternion& q2);
 		
 		// linear interpolation
 		static Quaternion lerp(const Quaternion& q1, const Quaternion& q2, const float t);

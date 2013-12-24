@@ -1,7 +1,5 @@
 #include "bone.hpp"
 
-#include "../quaternion.hpp"
-
 namespace library
 {
 	Bone::Bone(Bone& parent, const vec3& position, const vec3& orientation)
@@ -11,6 +9,12 @@ namespace library
 		this->parent->children.push_back(this);
 	}
 	Bone::Bone(const vec3& position, const vec3& orientation)
+	{
+		this->parent = nullptr;
+		this->position = position;
+		this->orientation = Quaternion(orientation);
+	}
+	Bone::Bone(const vec3& position, const Quaternion& orientation)
 	{
 		this->parent = nullptr;
 		this->position = position;
@@ -50,26 +54,32 @@ namespace library
 	{
 		if (dirty)
 		{
+			dirty = false;
+			
+			// recompute composite matrix
 			if (this->parent)
 			{
 				this->composite = mat4(this->parent->getComposite());
 			}
 			else this->composite.identity();
 			
-			mat4 orient = translationMatrix(this->position);
-			orient *= directionMatrix(this->orientation, vec3(0.0, 1.0, 0.0));
-			
-			this->composite *= orient;
-			
-			dirty = false;
+			this->composite *= translationMatrix(this->position);
+			this->composite *= this->orientation.normalize().toMatrix();
 		}
 		return this->composite;
 	}
 	
 	vec3 Bone::getPosition()
 	{
-		return (getComposite() * vec4(0.0, 0.0, 0.0, 1.0)).xyz();
+		return getComposite().transVector();
 	}
+	
+	void Bone::rotate(const Quaternion& rotation)
+	{
+		this->orientation *= rotation;
+		propagate();
+	}
+	
 	
 	void Bone::propagate()
 	{

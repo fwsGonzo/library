@@ -3,6 +3,7 @@
 
 #include "../vector.hpp"
 #include "../matrix.hpp"
+#include "../quaternion.hpp"
 #include <vector>
 
 namespace library
@@ -16,6 +17,7 @@ namespace library
 		
 		Bone(Bone& parent, const vec3& position, const vec3& orientation);
 		Bone(const vec3& position, const vec3& orientation);
+		Bone(const vec3& position, const Quaternion& orientation);
 		
 		void addChild(const Bone&);
 		int  childCount() const
@@ -24,9 +26,10 @@ namespace library
 		}
 		Bone& operator [] (int child) const;
 		
-		// returns the cumulative position & orientation
+		// returns the cumulative position
 		vec3 getPosition();
-		vec3 getOrientation();
+		
+		void rotate(const Quaternion& rotation);
 		
 		const mat4& getMatrix()
 		{
@@ -41,7 +44,7 @@ namespace library
 		std::vector<Bone*> children;
 		
 		vec3  position;
-		vec3  orientation;
+		Quaternion orientation;
 		
 		bool   dirty;
 		mat4 composite;

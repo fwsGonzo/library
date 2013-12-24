@@ -85,6 +85,11 @@ namespace library
 		return -(cross(v).cross(v)).normalize();
 	}
 	
+	vec3 vec3::project(const vec3& v)
+	{
+		return v * (*this * v) / (v * v);
+	}
+	
 	// linear interpolation
 	vec3 vec3::mix(const vec3& v, float mixlevel) const
 	{
@@ -290,10 +295,9 @@ namespace library
 	// transforms this vector into a rotation expressed by two angles (rotX, rotY)
 	vec3 lookVector(const vec2& rot)
 	{
-		return vec3(
-		 sinf(rot.y) * cosf(rot.x),
-		              -sinf(rot.x),
-		-cosf(rot.y) * cosf(rot.x));
+		return vec3( sinf(rot.y) *  cosf(rot.x),
+									  -sinf(rot.x),
+					  -cosf(rot.y) * cosf(rot.x));
 	}
 	
 	// log output functions

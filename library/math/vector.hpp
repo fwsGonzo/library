@@ -144,6 +144,8 @@ namespace library
 		vec3 cross(const vec3&) const;
 		vec3 reflect(const vec3& normal) const;
 		vec3 axis(const vec3&) const;
+		// returns this vector projected onto v
+		vec3 project(const vec3& v) const;
 		
 		// rotate this vector by (angle) on (axis)
 		vec3  rotateOnAxis(const vec3& axis, float angle) const;
@@ -225,11 +227,14 @@ namespace library
 		
 	};
 	
-	// vector language functions
+	// vec2 functions
+	vec2 slerp(vec2 va, vec2 vb, float t);
+	vec2 rotateTowards(vec2 from, vec2 to, vec2::vector_t dTheta);
+	
+	// vec3 language functions
 	vec3::vector_t dot(const vec3& va, const vec3& vb);
 	vec3 distance(const vec3& va, const vec3& vb);
 	vec3 normalize(const vec3&);
-	//void normalize(vec3&);
 	vec3 cross(const vec3&, const vec3&);
 	vec3 reflect(const vec3& I, const vec3& N);
 	vec3 refract(const vec3& I, const vec3& N, const vec3::vector_t eta);

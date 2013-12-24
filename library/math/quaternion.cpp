@@ -4,6 +4,7 @@
 #include "vector.hpp"
 #include "../log.hpp"
 #include <cmath>
+#include <cassert>
 
 namespace library
 {
@@ -242,9 +243,11 @@ namespace library
 	// to 4x4 matrix
 	mat4 Quaternion::toMatrix() const
 	{
+		assert(length() > 0.9999 && length() < 1.0001);
+		
 		mat4::matrix_t m[] =
 		{
-			// 1 - 2y^2 - 2z^2, 2xy - 2wz, 2xz + 2wy, 0
+			// 1 - 2(y^2 + z^2), 2(xy - wz), 2(xz + wy), 0
 			1 - 2 * imag.y * imag.y - 2 * imag.z * imag.z, 2 * imag.x * imag.y - 2 * real * imag.z, 2 * imag.x * imag.z + 2 * real * imag.y, 0,
 			// 2xy + 2wz, 1 - 2x^2 - 2z^2, 2yz + 2wx, 0
 			2 * imag.x * imag.y + 2 * real * imag.z, 1 - 2 * imag.x * imag.x - 2 * imag.z * imag.z, 2 * imag.y * imag.z + 2 * real * imag.x, 0,
