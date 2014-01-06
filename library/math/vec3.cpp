@@ -85,7 +85,7 @@ namespace library
 		return -(cross(v).cross(v)).normalize();
 	}
 	
-	vec3 vec3::project(const vec3& v)
+	vec3 vec3::project(const vec3& v) const
 	{
 		return v * (*this * v) / (v * v);
 	}

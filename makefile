@@ -29,9 +29,9 @@ CC = g++ $(BUILDOPT) -std=c++11
 CCFLAGS = -c -Wall -Wno-write-strings -Iinc -Ilibrary
 # linker flags
 ifeq ($(OS),Windows_NT)
-	LFLAGS  = -Llib/win -static -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
+	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
 else
-	LFLAGS  = -Llib/linux -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
+	LFLAGS  = -Llib/linux -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
 endif
 # resource builder
 RES = windres
