@@ -17,12 +17,9 @@ namespace library
 		storageformat = GL_UNSIGNED_BYTE;
 	}
 	
-	// initialize glfw, open OpenGL window, read function entry points
-	void OpenGL::init(WindowClass& window)
+	// set opengl defaults, read function entry points
+	void OpenGL::init()
 	{
-		// set default viewport
-		glViewport(0, 0, window.SW, window.SH);
-		
 		//-== openGL extensions ==-//
 		
 		//vertex buffer objects
@@ -107,32 +104,23 @@ namespace library
 												glfwGetProcAddress("glRenderbufferStorageMultisample");
 		glFramebufferRenderbuffer = (void(GLapi*) (GLenum, GLenum, GLenum, GLuint))glfwGetProcAddress("glFramebufferRenderbuffer");
 		
-		if (glGenBuffers == nullptr)
-		{
-			logger << Log::ERR << "Your video card does not support VBO's (OpenGL 1.2+). Exiting." << Log::ENDL;
-			throw std::string("Opengl::init(): Missing VBO support, check your drivers!");
-		}
-		if (glCreateProgram == nullptr)
-		{
-			logger << Log::ERR << "Your video card does not support Programmable Shader Pipeline. Exiting." << Log::ENDL;
-			throw std::string("Opengl::init(): Missing shader support, check your drivers!");
-		}
-		if (glGenVertexArrays == nullptr)
-		{
-			logger << Log::ERR << "Your video card does not support Vertex Array Objects. Exiting." << Log::ENDL;
-			throw std::string("Opengl::init(): Missing VAO support, check your drivers!");
-		}
-		if (glVertexAttribPointer == nullptr)
-		{
-			logger << Log::ERR << "Your video card does not support Vertex Attributes. Exiting." << Log::ENDL;
-			throw std::string("Opengl::init(): Missing vertexattrib support, check your drivers!");
-		}
+		// test for some basic driver support
+		this->supportsVBO = glGenBuffers != nullptr;
+		this->supportsVAO = glGenVertexArrays != nullptr;
 		
-		if (glGenerateMipmap == nullptr)
-		{
-			logger << Log::ERR << "Your video card does not support automatic mipmap generation. Exiting." << Log::ENDL;
-			throw std::string("Opengl::init(): Missing mipmap generation support, check your drivers!");
-		}
+		this->supportsFramebuffers = glGenFramebuffers != nullptr;
+		this->supportsShaders = glCreateProgram != nullptr;
+		this->supportsAttribs = glVertexAttribPointer != nullptr;
+		
+		this->supportsGenMipmap = glGenerateMipmap != nullptr;
+		
+		// slightly more complicated texture arrays test
+		GLuint test;
+		glGenTextures(1, &test);
+		glBindTexture(GL_TEXTURE_2D_ARRAY, test);
+		glDeleteTextures(1, &test);
+		
+		this->supportsTextureArrays = glGetError() == 0;
 		
 		// default states
 		// GL_COMPRESSED_RGBA setting

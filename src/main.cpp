@@ -5,6 +5,7 @@
 **/
 extern void test_maths();
 extern void test_sockets();
+extern void test_opengl_support();
 extern void test_opengl_window();
 extern void test_opengl_bonerig();
 
@@ -26,6 +27,8 @@ int main(void)
 	std::cout << "****" << std::endl;
 	std::cout << "" << std::endl;
 	/////////////////////////////////////////////////////////
+	
+	test_opengl_support();
 	
 	//test_opengl_window();
 	
@@ -65,7 +68,5 @@ int main(void)
 	std::cout << "//                 //" << std::endl;
 	/////////////////////////////////////////////////////////
 	
-	std::cout << "Press enter to exit" << std::endl;
-	std::getchar();
 	return 0;
 }

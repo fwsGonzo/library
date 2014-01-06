@@ -31,7 +31,7 @@ namespace library
 		this->multisample = 0;
 	}
 	
-	void WindowClass::open(WindowConfig& wndconf)
+	void WindowClass::open(const WindowConfig& wndconf)
 	{
 		if (this->init == false)
 		{
@@ -56,9 +56,10 @@ namespace library
 		glfwWindowHint(GLFW_RESIZABLE, 0);
 		
 		// clamp multisample to at least 0
-		if (wndconf.multisample < 0) wndconf.multisample = 0;
+		int multisample = wndconf.multisample;
+		if (multisample < 0) multisample = 0;
 		// set multisampling level for main framebuffer
-		glfwWindowHint(GLFW_SAMPLES, wndconf.multisample);
+		glfwWindowHint(GLFW_SAMPLES, multisample);
 		// common alpha, stencil & depth settings
 		glfwWindowHint(GLFW_ALPHA_BITS, 8);
 		glfwWindowHint(GLFW_DEPTH_BITS,  24);
@@ -79,6 +80,9 @@ namespace library
 		
 		// vertical sync
 		glfwSwapInterval((wndconf.vsync) ? 1 : 0);
+		
+		// set default viewport
+		glViewport(0, 0, this->SW, this->SH);
 	}
 	
 	void WindowClass::close()

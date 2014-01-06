@@ -1,8 +1,11 @@
 // opengl window
+#include <opengl/opengl.hpp>
 #include <opengl/window.hpp>
 // matrix and vector
 #include <math/vector.hpp>
 #include <math/matrix.hpp>
+// logging
+#include <log.hpp>
 // wait mechanisms
 #include <sleep.hpp>
 
@@ -11,6 +14,36 @@
 #include <cmath>
 
 using namespace library;
+
+void test_opengl_support()
+{
+	std::cout << "Opening OpenGL window" << std::endl;
+	
+	// our opengl window
+	WindowClass support;
+	try
+	{
+		// open up OpenGL window
+		// throws error if something bad happens...
+		support.open(WindowConfig());
+		
+		// initialize OpenGL entry points & default values
+		ogl.init();
+		
+		logger << "** Checking what our context supports **" << Log::ENDL;
+		logger << "VBO support: " << ogl.supportsVBO << Log::ENDL;
+		logger << "VAO support: " << ogl.supportsVAO << Log::ENDL;
+		logger << "Framebuffer support: " << ogl.supportsFramebuffers << Log::ENDL;
+		logger << "Texture arrays: " << ogl.supportsTextureArrays << Log::ENDL;
+		logger << "Shader support: " << ogl.supportsShaders << Log::ENDL;
+		
+	}
+	catch (std::string error)
+	{
+		logger << Log::ERR << "Something bad happened: " << error << Log::ENDL;
+	}
+}
+
 
 bool blueScreen(WindowClass& wnd, double dtime, double timeElapsed)
 {

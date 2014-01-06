@@ -20,7 +20,17 @@ namespace library
 		GLint imageformat;
 		GLint storageformat;
 		
-		void init(WindowClass& window);
+		bool supportsVBO;
+		bool supportsVAO;
+		
+		bool supportsFramebuffers;
+		bool supportsShaders;
+		bool supportsAttribs;
+		
+		bool supportsGenMipmap;
+		bool supportsTextureArrays;
+		
+		void init();
 		
 		static const bool checkError();
 		

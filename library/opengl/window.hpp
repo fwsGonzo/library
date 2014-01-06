@@ -42,7 +42,7 @@ namespace library
 		bool fullscreen;
 		
 		// opens an OpenGL context window
-		void open(WindowConfig& wndconf);
+		void open(const WindowConfig& wndconf);
 		// closes an opened window (must be called, at some point)
 		void close();
 		// wait for window to close
