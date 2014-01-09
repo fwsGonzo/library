@@ -1,8 +1,7 @@
-#include "camera.hpp"
+#include <library/opengl/camera.hpp>
 
-#include "../config.hpp"
-#include "../log.hpp"
-#include "window.hpp"
+#include <library/log.hpp>
+#include <library/opengl/window.hpp>
 
 namespace library
 {

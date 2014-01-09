@@ -1,4 +1,4 @@
-#include "colortools.hpp"
+#include <library/bitmap/colortools.hpp>
 
 namespace library
 {

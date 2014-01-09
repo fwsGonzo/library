@@ -22,7 +22,7 @@
 #ifndef MATRIX_HPP
 #define MATRIX_HPP
 
-#include "vector.hpp"
+#include <library/math/vector.hpp>
 
 namespace library
 {

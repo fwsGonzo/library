@@ -1,6 +1,6 @@
-#include "bitmap.hpp"
+#include <library/bitmap/bitmap.hpp>
 
-#include "../log.hpp"
+#include <library/log.hpp>
 #include "lodepng.h"
 #include <fstream>
 #include <string>

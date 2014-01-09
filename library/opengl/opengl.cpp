@@ -1,8 +1,8 @@
-#include "opengl.hpp"
+#include <library/opengl/opengl.hpp>
 
-#include "../log.hpp"
-#include "fbo.hpp"
-#include "window.hpp"
+#include <library/log.hpp>
+#include <library/opengl/fbo.hpp>
+#include <library/opengl/window.hpp>
 
 #include <string>
 

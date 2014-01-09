@@ -7,7 +7,7 @@
 
 #include <pthread.h>
 
-#include "TThreadPool.hpp"
+#include <library/threading/TThreadPool.hpp>
 
 namespace ThreadPool
 {

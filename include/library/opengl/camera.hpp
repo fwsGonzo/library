@@ -1,8 +1,8 @@
 #ifndef CAMERA_HPP
 #define CAMERA_HPP
 
-#include "../math/matrix.hpp"
-#include "../math/frustum.hpp"
+#include <library/math/matrix.hpp>
+#include <library/math/frustum.hpp>
 
 namespace library
 {

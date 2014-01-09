@@ -1,7 +1,7 @@
-#include "voronoi.hpp"
+#include <library/math/voronoi.hpp>
 
-#include "../noise/simplex1234.h"
-#include "../math/vector.hpp"
+#include <library/noise/simplex1234.h>
+#include <library/math/vector.hpp>
 #include <cmath>
 
 namespace library

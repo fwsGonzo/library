@@ -2,7 +2,7 @@
  * 4x4 Matrix implementation
  * 
 **/
-#include "matrix.hpp"
+#include <library/math/matrix.hpp>
 #include <cmath>
 
 namespace library

@@ -1,9 +1,9 @@
-#include "stream.hpp"
+#include <library/sound/stream.hpp>
 
-#include "../math/toolbox.hpp"
-#include "../log.hpp"
-#include "soundhandle.hpp"
-#include "soundsystem.hpp"
+#include <library/log.hpp>
+#include <library/math/toolbox.hpp>
+#include <library/sound/soundhandle.hpp>
+#include <library/sound/soundsystem.hpp>
 
 namespace library
 {

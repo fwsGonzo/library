@@ -1,6 +1,6 @@
 #include <math.h>
-#include "multifractal.h"
-#include "simplex1234.h"
+#include <library/noise/multifractal.h>
+#include <library/noise/simplex1234.h>
 
 float Multifractal2(double x, double y)
 {

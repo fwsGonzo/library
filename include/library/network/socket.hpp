@@ -2,7 +2,7 @@
 #define SOCKET_HPP
 
 #include <string>
-#include "hostaddr.hpp"
+#include <library/network/hostaddr.hpp>
 
 namespace library
 {

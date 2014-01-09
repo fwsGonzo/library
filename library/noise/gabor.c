@@ -1,4 +1,4 @@
-#include "gabor.h"
+#include <library/noise/gabor.h>
 #include <math.h>
 
 static int gaborPoissonCount[256]=

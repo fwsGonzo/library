@@ -14,7 +14,7 @@
 #include <iostream>
 #include <cmath>
 
-#include "TThread.hh"
+#include <library/threading/TThread.hh>
 
 namespace ThreadPool
 {

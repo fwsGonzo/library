@@ -1,4 +1,4 @@
-#include "cosnoise.hpp"
+#include <library/noise/cosnoise.hpp>
 #include <cmath>
 
 namespace library

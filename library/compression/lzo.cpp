@@ -1,6 +1,7 @@
-#include "lzo.hpp"
+#include <library/compression/lzo.hpp>
 #include <string>
 
+#include <lzo/lzo1x.h>
 #include <lzo/lzo2a.h>
 
 namespace library
@@ -50,11 +51,11 @@ namespace library
 		return compression_length;
 	}
 	
-	bool LZO::compress(lzo_bytep data, int datalen)
+	bool LZO::compress1x(lzo_bytep data, int datalen)
 	{
 		// compress n (to n + nlen) into compression_buffer
 		// lzobuffer.compression_length is the resulting compressed size
-		return lzo2a_999_compress(
+		return lzo1x_1_15_compress(
 			data, 
 			datalen, 
 			compression_buffer, 
@@ -62,22 +63,45 @@ namespace library
 			lzo_workmem
 		) == LZO_E_OK;
 	}
-	bool LZO::compressHard(lzo_bytep data, int datalen)
+	bool LZO::optimize1x(lzo_bytep data, int datalen)
 	{
-		// compress n (to n + nlen) into compression_buffer
-		// lzobuffer.compression_length is the resulting compressed size
-		return lzo2a_999_compress(
+		// optimizes a 1x compressed block
+		return lzo1x_optimize(
 			data, 
 			datalen, 
 			compression_buffer, 
 			&compression_length, 
 			lzo_workmem
+		) == LZO_E_OK;
+	}
+	bool LZO::decompress1x(lzo_bytep data, int datalen)
+	{
+		// decompresses lzo1x compressed data
+		// lzobuffer.compression_length is the resulting uncompressed size
+		return lzo1x_decompress(
+			data, 
+			datalen, 
+			compression_buffer, 
+			&compression_length, 
+			nullptr
 		) == LZO_E_OK;
 	}
 	
-	bool LZO::decompress(lzo_bytep data, int datalen)
+	bool LZO::compress2a(lzo_bytep data, int datalen)
 	{
-		// decompresses lzo1x compressed data
+		// compress n (to n + nlen) into compression_buffer
+		// lzobuffer.compression_length is the resulting compressed size
+		return lzo2a_999_compress(
+			data, 
+			datalen, 
+			compression_buffer, 
+			&compression_length, 
+			lzo_workmem
+		) == LZO_E_OK;
+	}
+	bool LZO::decompress2a(lzo_bytep data, int datalen)
+	{
+		// decompresses lzo2a compressed data
 		// lzobuffer.compression_length is the resulting uncompressed size
 		return lzo2a_decompress(
 			data, 

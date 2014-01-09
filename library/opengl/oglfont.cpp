@@ -1,8 +1,8 @@
-#include "oglfont.hpp"
+#include <library/opengl/oglfont.hpp>
 
-#include "../bitmap/bitmap.hpp"
-#include "../math/matrix.hpp"
-#include "opengl.hpp"
+#include <library/bitmap/bitmap.hpp>
+#include <library/math/matrix.hpp>
+#include <library/opengl/opengl.hpp>
 
 namespace library
 {

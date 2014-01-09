@@ -1,4 +1,4 @@
-#include "tcpsocket.hpp"
+#include <library/network/tcpsocket.hpp>
 
 #ifdef __linux__
     #include <sys/socket.h>
@@ -18,7 +18,7 @@
 	typedef int socklen_t;
 #endif
 
-#include "hostaddr.hpp"
+#include <library/network/hostaddr.hpp>
 #include <cstring>
 
 namespace library

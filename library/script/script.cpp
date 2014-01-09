@@ -1,4 +1,4 @@
-#include "script.hpp"
+#include <library/script/script.hpp>
 
 #include <libtcc.h>
 

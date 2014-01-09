@@ -5,7 +5,7 @@
  * 
 **/
 
-#include "opengl.hpp"
+#include <library/opengl/opengl.hpp>
 
 namespace library
 {

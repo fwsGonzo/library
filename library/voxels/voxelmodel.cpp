@@ -1,7 +1,7 @@
-#include "voxelmodel.hpp"
+#include <library/voxels/voxelmodel.hpp>
 
-#include "../opengl/opengl.hpp"
-#include "voxelizer.hpp"
+#include <library/opengl/opengl.hpp>
+#include <library/voxels/voxelizer.hpp>
 
 namespace library
 {

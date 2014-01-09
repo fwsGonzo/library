@@ -1,6 +1,6 @@
-#include "vector.hpp"
+#include <library/math/vector.hpp>
 
-#include "../log.hpp"
+#include <library/log.hpp>
 #include <cmath>
 
 namespace library

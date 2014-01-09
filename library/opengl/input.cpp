@@ -1,8 +1,8 @@
-#include "input.hpp"
+#include <library/opengl/input.hpp>
 
-#include "../log.hpp"
-#include "../math/toolbox.hpp"
-#include "window.hpp"
+#include <library/log.hpp>
+#include <library/math/toolbox.hpp>
+#include <library/opengl/window.hpp>
 #include <GL/glfw3.h>
 #include <cmath>
 

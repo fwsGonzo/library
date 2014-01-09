@@ -1,4 +1,4 @@
-#include "highperf.hpp"
+#include <library/timing/highperf.hpp>
 
 #ifdef __linux__
 	#include <chrono>

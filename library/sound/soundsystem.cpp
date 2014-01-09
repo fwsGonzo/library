@@ -1,4 +1,4 @@
-#include "soundsystem.hpp"
+#include <library/sound/soundsystem.hpp>
 
 #include <bass.h>
 #include <string>

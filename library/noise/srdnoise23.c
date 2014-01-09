@@ -46,8 +46,7 @@
  */
 
 #include <math.h>
-
-#include "srdnoise23.h" /* We strictly don't need this, but play nice. */
+#include <library/noise/srdnoise23.h>
 
 #define FASTFLOOR(x) ( ((x)>0) ? ((int)x) : (((int)x)-1) )
 

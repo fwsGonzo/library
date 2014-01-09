@@ -1,8 +1,8 @@
-#include "voxelizer.hpp"
+#include <library/voxels/voxelizer.hpp>
 
-#include "../bitmap/bitmap.hpp"
-#include "../bitmap/colortools.hpp"
-#include "../math/vector.hpp"
+#include <library/bitmap/bitmap.hpp>
+#include <library/bitmap/colortools.hpp>
+#include <library/math/vector.hpp>
 #include <cstring>
 
 namespace library

@@ -1,6 +1,6 @@
-#include "frustum.hpp"
+#include <library/math/frustum.hpp>
 
-#include "matrix.hpp"
+#include <library/math/matrix.hpp>
 #include <cmath>
 
 namespace library

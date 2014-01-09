@@ -1,8 +1,8 @@
-#include "fbo.hpp"
+#include <library/opengl/fbo.hpp>
 
-#include "../log.hpp"
-#include "opengl.hpp"
-#include "texture.hpp"
+#include <library/log.hpp>
+#include <library/opengl/opengl.hpp>
+#include <library/opengl/texture.hpp>
 
 namespace library
 {

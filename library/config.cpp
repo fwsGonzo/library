@@ -1,7 +1,7 @@
-#include "config.hpp"
+#include <library/config.hpp>
 
 #include <fstream>
-#include "log.hpp"
+#include <library/log.hpp>
 
 namespace library
 {	

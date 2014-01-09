@@ -1,7 +1,7 @@
 #ifndef INPUT_HPP
 #define INPUT_HPP
 
-#include "../math/vector.hpp"
+#include <library/math/vector.hpp>
 #include <string>
 
 struct GLFWwindow;

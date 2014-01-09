@@ -1,7 +1,7 @@
-#include "window.hpp"
+#include <library/opengl/window.hpp>
 
-#include "../log.hpp"
-#include "../sleep.hpp"
+#include <library/log.hpp>
+#include <library/sleep.hpp>
 #include <GL/glfw3.h>
 
 namespace library

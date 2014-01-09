@@ -1,8 +1,8 @@
-#include "quaternion.hpp"
+#include <library/math/quaternion.hpp>
 
-#include "matrix.hpp"
-#include "vector.hpp"
-#include "../log.hpp"
+#include <library/math/matrix.hpp>
+#include <library/math/vector.hpp>
+#include <library/log.hpp>
 #include <cmath>
 #include <cassert>
 

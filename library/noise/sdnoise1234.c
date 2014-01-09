@@ -34,7 +34,7 @@
 
 #include <math.h>
 
-#include "sdnoise1234.h" /* We strictly don't need this, but play nice. */
+#include <library/noise/sdnoise1234.h>
 
 #define FASTFLOOR(x) ( ((x)>0) ? ((int)x) : (((int)x)-1) )
 

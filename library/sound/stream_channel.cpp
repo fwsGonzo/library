@@ -1,6 +1,6 @@
-#include "stream_channel.hpp"
+#include <library/sound/stream_channel.hpp>
 
-#include "stream.hpp"
+#include <library/sound/stream.hpp>
 
 namespace library
 {

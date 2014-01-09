@@ -1,7 +1,7 @@
-#include "vao.hpp"
+#include <library/opengl/vao.hpp>
 
-#include "../log.hpp"
-#include "opengl.hpp"
+#include <library/log.hpp>
+#include <library/opengl/opengl.hpp>
 #include <cstdint>
 
 namespace library

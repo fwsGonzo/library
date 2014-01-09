@@ -1,4 +1,4 @@
-#include "bone.hpp"
+#include <library/math/kine/bone.hpp>
 
 namespace library
 {

@@ -1,8 +1,8 @@
-#include "texture.hpp"
+#include <library/opengl/texture.hpp>
 
-#include "../log.hpp"
-#include "../bitmap/bitmap.hpp"
-#include "opengl.hpp"
+#include <library/log.hpp>
+#include <library/bitmap/bitmap.hpp>
+#include <library/opengl/opengl.hpp>
 #include <cmath>
 #include <sstream>
 

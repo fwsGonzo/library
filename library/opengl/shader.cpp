@@ -1,7 +1,7 @@
-#include "shader.hpp"
+#include <library/opengl/shader.hpp>
 
-#include "../log.hpp"
-#include "opengl.hpp"
+#include <library/log.hpp>
+#include <library/opengl/opengl.hpp>
 #include <GL/glext.h>
 #include <fstream>
 
