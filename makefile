@@ -17,9 +17,9 @@ endif
 # build options
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
-BUILDOPT = -ggdb3
+BUILDOPT = -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # output file
-OUTPUT   = ./Debug/library
+OUTPUT   = ./Debug/library.a
 
 ##############################################################
 
@@ -68,7 +68,8 @@ CCRES   = $(RESOURCES:.rc=.o)
 
 # link all OBJS using CC and link with LFLAGS, then output to OUTPUT
 all: $(CXXOBJS) $(CCOBJS) $(CCRES)
-	$(CC) $(CXXOBJS) $(CCOBJS) $(CCRES) $(LFLAGS) -o $(OUTPUT)
+	ar cr $(OUTPUT) $(CXXOBJS) $(CCOBJS) $(CCRES)
+# $(CC) $(CXXOBJS) $(CCOBJS) $(CCRES) $(LFLAGS) -o $(OUTPUT)
 
 # remove each known .o file, and output
 clean:
