@@ -37,8 +37,6 @@ namespace library
 		{
 			// Retrieve host by name
 			hostPtr = gethostbyname(hostname.c_str());
-			
-			good = (hostPtr != nullptr);
 		}
 		else if (type == ADDRESS)
 		{	// Retrieve host by address
@@ -51,12 +49,8 @@ namespace library
 			}
 			// get pointer
 			hostPtr = gethostbyaddr( (char*) &netAddr, sizeof(netAddr), AF_INET);
-			if (hostPtr == nullptr)
-			{
-				good = false;
-				return;
-			}
 		}
+		good = (hostPtr != nullptr);
 	}
 	
 	char* HostInfo::getHostIPAddress()

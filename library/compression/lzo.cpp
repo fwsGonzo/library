@@ -1,6 +1,8 @@
 #include "lzo.hpp"
 #include <string>
 
+#include <lzo/lzo2a.h>
+
 namespace library
 {
 	bool LZO::initialized = false;
@@ -19,7 +21,7 @@ namespace library
 	bool LZO::init(int bufferlen)
 	{
 		// allocate compressor working memory
-		lzo_workmem = (lzo_bytep)malloc(LZO1X_1_15_MEM_COMPRESS);
+		lzo_workmem = (lzo_bytep)malloc(LZO2A_999_MEM_COMPRESS);
 		
 		// allocate compression buffer (in bytes)
 		compression_buffer = (lzo_bytep) malloc(bufferlen);
@@ -50,15 +52,9 @@ namespace library
 	
 	bool LZO::compress(lzo_bytep data, int datalen)
 	{
-		// allocate buffer, if not allocated
-		if (compression_buffer == nullptr)
-		{
-			compression_buffer = (lzo_bytep) malloc(datalen + 64);
-		}
-		
 		// compress n (to n + nlen) into compression_buffer
 		// lzobuffer.compression_length is the resulting compressed size
-		return lzo1x_1_15_compress(
+		return lzo2a_999_compress(
 			data, 
 			datalen, 
 			compression_buffer, 
@@ -68,15 +64,9 @@ namespace library
 	}
 	bool LZO::compressHard(lzo_bytep data, int datalen)
 	{
-		// allocate buffer, if not allocated
-		if (compression_buffer == nullptr)
-		{
-			compression_buffer = (lzo_bytep) malloc(datalen + 64);
-		}
-		
 		// compress n (to n + nlen) into compression_buffer
 		// lzobuffer.compression_length is the resulting compressed size
-		return lzo1x_999_compress(
+		return lzo2a_999_compress(
 			data, 
 			datalen, 
 			compression_buffer, 
@@ -89,12 +79,12 @@ namespace library
 	{
 		// decompresses lzo1x compressed data
 		// lzobuffer.compression_length is the resulting uncompressed size
-		return lzo1x_decompress(
+		return lzo2a_decompress(
 			data, 
 			datalen, 
 			compression_buffer, 
 			&compression_length, 
-			lzo_workmem
+			nullptr
 		) == LZO_E_OK;
 	}
 	

@@ -43,11 +43,13 @@ void renderPivot(const mat4& comp)
 		glVertex3f(Z.x, Z.y, Z.z);
 	glEnd();
 	
+	/*
 	vec4 tx = comp * X;
 	vec4 ty = comp * Y;
 	vec4 tz = comp * Z;
 	
-	//logger << Log::INFO << cross(tx.xyz(), ty.xyz()) << " --> " << tz.xyz() << Log::ENDL;
+	logger << Log::INFO << cross(tx.xyz(), ty.xyz()) << " --> " << tz.xyz() << Log::ENDL;
+	*/
 }
 
 void renderTail(float rad)
@@ -159,4 +161,6 @@ void test_opengl_bonerig()
 	
 	renderer.startRenderingLoop(boneRenderer, timing_granularity);
 	renderer.waitClose();
+	renderer.close();
+	
 }

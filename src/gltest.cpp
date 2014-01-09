@@ -37,6 +37,7 @@ void test_opengl_support()
 		logger << "Texture arrays: " << ogl.supportsTextureArrays << Log::ENDL;
 		logger << "Shader support: " << ogl.supportsShaders << Log::ENDL;
 		
+		support.close();
 	}
 	catch (std::string error)
 	{
@@ -140,8 +141,8 @@ bool triangleScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	
 	// swap frontbuffer with backbuffer (frame change)
 	glfwSwapBuffers(wnd.window());
-	// close window after 4 seconds (4000ms)
-	return (timeElapsed < 5);
+	// close window after 2 seconds
+	return (timeElapsed < 2);
 }
 
 void test_opengl_window()
@@ -181,10 +182,7 @@ void test_opengl_window()
 	triscr.open(wndconf);
 	// start rendering using triangleScreen function
 	triscr.startRenderingLoop(triangleScreen, timing_granularity);
-	
-	std::cout << "Closing all windows" << std::endl;
-	triscr.close();
-	bluescr.close();
+	triscr.waitClose();
 	
 	//////////////////////////////////////////////////////////////////
 	std::cout << "OpenGL tests completed, exiting module..." << std::endl;

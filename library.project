@@ -16,7 +16,6 @@
     </VirtualDirectory>
     <VirtualDirectory Name="compression">
       <File Name="library/compression/lzo.cpp"/>
-      <File Name="library/compression/lzo.hpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="math">
       <File Name="library/math/baseconv.cpp"/>
@@ -148,6 +147,8 @@
     <File Name="src/timetest.cpp"/>
     <File Name="src/opengl_bonerig.cpp"/>
     <File Name="src/mathtest.cpp"/>
+    <File Name="library/compression/lzo.hpp"/>
+    <File Name="src/lzotest.cpp"/>
   </VirtualDirectory>
   <Settings Type="Executable">
     <GlobalSettings>

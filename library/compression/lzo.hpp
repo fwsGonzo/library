@@ -1,7 +1,7 @@
 #ifndef LZO_HPP
 #define LZO_HPP
 
-#include <lzo/lzo1x.h>
+#include <lzo/lzoconf.h>
 
 namespace library
 {

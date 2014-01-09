@@ -217,7 +217,7 @@ namespace library
 	// exponentiate "operator"
 	vec3& vec3::pow(double e)
 	{
-		x = ::pow(x, e); y = ::pow(y, e); z = ::pow(z, e);
+		x = ::powf(x, e); y = ::powf(y, e); z = ::powf(z, e);
 		return *this;
 	}
 	
@@ -230,7 +230,7 @@ namespace library
 	// boolean equality operator
 	bool vec3::operator == (const vec3& v) const
 	{
-		return fabs(x - v.x) < MIN_V3 && fabs(y - v.y) < MIN_V3 && fabs(z - v.z) < MIN_V3;
+		return fabsf(x - v.x) < MIN_V3 && fabsf(y - v.y) < MIN_V3 && fabsf(z - v.z) < MIN_V3;
 	}
 	
 	// boolean inequality operator
@@ -308,10 +308,10 @@ namespace library
 		return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
 	}
 	
-	// write vector-3 to cout using format (x, y, z)
-	std::ostream& operator<< (std::ostream& out, const vec3& v)
-	{
-		return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
-	}
-	
+}
+
+// write vector-3 to cout using format (x, y, z)
+std::ostream& operator<< (std::ostream& out, const library::vec3& v)
+{
+	return out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
 }

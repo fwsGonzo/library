@@ -40,11 +40,6 @@ namespace library
 		}
 		this->closing = false;
 		
-		// renderer initialization settings
-		this->SW = wndconf.SW;
-		this->SH = wndconf.SH;
-		this->SA = (float)this->SW / (float)this->SH;
-		
 		// fullscreen enables setting refresh rate
 		this->fullscreen = wndconf.fullscreen;
 		
@@ -66,7 +61,7 @@ namespace library
 		glfwWindowHint(GLFW_STENCIL_BITS, 8);
 		
 		// create new glfw3 window
-		this->wndHandle = glfwCreateWindow(SW, SH, wndconf.title.c_str(), monitor, nullptr);
+		this->wndHandle = glfwCreateWindow(wndconf.SW, wndconf.SH, wndconf.title.c_str(), monitor, nullptr);
 		
 		if (this->wndHandle == nullptr)
 		{
@@ -74,6 +69,11 @@ namespace library
 			glfwTerminate();
 			throw "Window::init(): Could not open OpenGL context window, check your drivers!";
 		}
+		
+		// get actual size, since it may not be supported
+		glfwGetWindowSize(this->wndHandle, &this->SW, &this->SH);
+		// screen aspect
+		this->SA = (float)this->SW / (float)this->SH;
 		
 		// make this window the current OpenGL context
 		setCurrent();
@@ -87,8 +87,12 @@ namespace library
 	
 	void WindowClass::close()
 	{
-		glfwDestroyWindow(wndHandle);
-		wndHandle = nullptr;
+		if (wndHandle)
+		{
+			setCurrent();
+			glfwDestroyWindow(wndHandle);
+			wndHandle = nullptr;
+		}
 	}
 	
 	void WindowClass::waitClose()
@@ -121,10 +125,13 @@ namespace library
 	
 	void WindowClass::startRenderingLoop(renderFunc renderfunc, double granularity)
 	{
+		setCurrent();
 		double t0 = glfwGetTime();
 		
 		while (glfwWindowShouldClose(wndHandle) == 0)
 		{
+			setCurrent();
+			
 			double t1 = t0;
 			t0 = glfwGetTime();
 			// variable delta-frame timing

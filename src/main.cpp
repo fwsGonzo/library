@@ -1,9 +1,9 @@
 /**
- *
- *
- *
+ * Library tests
+ * 
 **/
 extern void test_maths();
+extern void test_compression();
 extern void test_sockets();
 extern void test_opengl_support();
 extern void test_opengl_window();
@@ -19,22 +19,26 @@ int main(void)
 	std::cout << "//                 //" << std::endl;
 	/////////////////////////////////////////////////////////
 	
-	//test_maths();
+	test_maths();
 	
 	/////////////////////////////////////////////////////////
 	std::cout << "****" << std::endl;
-	std::cout << "**** TEST: OpenGL window" << std::endl;
+	std::cout << "**** TEST: lzo2 compression" << std::endl;
+	std::cout << "****" << std::endl;
+	std::cout << "" << std::endl;
+	/////////////////////////////////////////////////////////
+	
+	test_compression();
+	
+	/////////////////////////////////////////////////////////
+	std::cout << "****" << std::endl;
+	std::cout << "**** TEST: glfw3 window & GL context" << std::endl;
 	std::cout << "****" << std::endl;
 	std::cout << "" << std::endl;
 	/////////////////////////////////////////////////////////
 	
 	test_opengl_support();
-	
-	//test_opengl_window();
-	
-	/////////////////////////////////////////////////////////
-	std::cout << "**** Test completed: OpenGL window" << std::endl;
-	/////////////////////////////////////////////////////////
+	test_opengl_window();
 	
 	/////////////////////////////////////////////////////////
 	std::cout << "****" << std::endl;
@@ -46,21 +50,13 @@ int main(void)
 	test_opengl_bonerig();
 	
 	/////////////////////////////////////////////////////////
-	std::cout << "**** Test completed: OpenGL window" << std::endl;
-	/////////////////////////////////////////////////////////
-	
-	/////////////////////////////////////////////////////////
 	std::cout << "****" << std::endl;
 	std::cout << "**** TEST: Sockets" << std::endl;
 	std::cout << "****" << std::endl;
 	std::cout << "" << std::endl;
 	/////////////////////////////////////////////////////////
 	
-	//test_sockets();
-	
-	/////////////////////////////////////////////////////////
-	std::cout << "**** Test completed: Sockets" << std::endl;
-	/////////////////////////////////////////////////////////
+	test_sockets();
 	
 	/////////////////////////////////////////////////////////
 	std::cout << "//                 //" << std::endl;
@@ -68,5 +64,6 @@ int main(void)
 	std::cout << "//                 //" << std::endl;
 	/////////////////////////////////////////////////////////
 	
+	getchar();
 	return 0;
 }

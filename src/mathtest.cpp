@@ -1,8 +1,8 @@
 #include <math/vector.hpp>
 #include <math/quaternion.hpp>
-#include <log.hpp>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 
 using namespace library;
 
@@ -29,6 +29,15 @@ void test_maths()
 	v2.rotate(PI / 2);
 	assert(v2 == vec2(0, 1));
 	
+	// v3 = (1, 1, 1)
+	vec3 v3(1, 1, 1);
+	// verify normalized length is (almost) 1
+	assert(v3.normalized().length() > 0.99999992);
+	
+	// validate cross product
+	vec3 v3c = vec3(1, 0, 0).cross(vec3(0, 1, 0));
+	assert(v3c == vec3(0, 0, 1));
+	
 	/// --- Quaternions --- ///
 	
 	Quaternion q(1.0, vec3(0, 0, 0));
@@ -43,4 +52,5 @@ void test_maths()
 	Quaternion Q = Quaternion(ax, angle);
 	assert(q == Q);
 	
+	std::cout << "Math tests: OK" << std::endl;
 }
