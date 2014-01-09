@@ -10,10 +10,6 @@ LIBRARY_DIRS = library library/bitmap library/compression library/math library/m
 				library/sound library/storage library/threading library/timing \
 				library/voxels
 
-ifeq ($(OS),Windows_NT)
-RESOURCES = res/library.rc
-endif
-
 # build options
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
@@ -33,10 +29,6 @@ ifeq ($(OS),Windows_NT)
 else
 	LFLAGS  = -Llib/linux -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
 endif
-# resource builder
-RES = windres
-# resource builder flags
-RFLAGS = -O coff
 
 ##############################################################
 
@@ -55,22 +47,16 @@ CXXMODS = $(wildcard $(CXXDIRS))
 .cpp.o:
 	$(CC) $(CCFLAGS) $< -o $@
 
-# recipe for building .o from .rc files
-%.o : %.rc
-	$(RES) $(RFLAGS) $< -o $@
-
 # convert .c to .o
 CCOBJS  = $(CCMODS:.c=.o)
 # convert .cpp to .o
 CXXOBJS = $(CXXMODS:.cpp=.o)
-# resource .rc to .o
-CCRES   = $(RESOURCES:.rc=.o)
 
 # link all OBJS using CC and link with LFLAGS, then output to OUTPUT
 all: $(CXXOBJS) $(CCOBJS) $(CCRES)
 	ar cr $(OUTPUT) $(CXXOBJS) $(CCOBJS) $(CCRES)
-# $(CC) $(CXXOBJS) $(CCOBJS) $(CCRES) $(LFLAGS) -o $(OUTPUT)
 
 # remove each known .o file, and output
 clean:
-	$(RM) $(CXXOBJS) $(CCOBJS) $(CCRES) *~ $(OUTPUT).*
+	$(RM) $(CXXOBJS) $(CCOBJS) $(OUTPUT)
+
