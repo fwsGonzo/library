@@ -3,7 +3,7 @@
 ######################
 
 # code folders
-SOURCE_DIRS  = src
+SOURCE_DIRS  = 
 
 LIBRARY_DIRS = library library/bitmap library/compression library/math library/math/kine \
 				library/network library/noise library/opengl library/script    \
@@ -19,7 +19,7 @@ endif
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
 BUILDOPT = -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # output file
-OUTPUT   = ./Debug/library.a
+OUTPUT   = ./Debug/liblibrary.a
 
 ##############################################################
 
