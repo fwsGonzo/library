@@ -19,7 +19,6 @@
 # Archives
 *.rar
 
-# CodeLite
-*.workspace.*
-*.tags
+# Edited files
+*~
 
