@@ -5,17 +5,18 @@
 # components
 USE_COMPRESSION = 0
 USE_NETWORK = 0
-USE_SOUND = 0
+USE_SCRIPT = 0
+USE_SOUND = 1
 
 # code folders
 SOURCE_DIRS  = 
 LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
-				library/noise library/opengl library/script \
-				library/storage library/threading library/timing \
-				library/voxels \
+				library/noise library/opengl library/storage \
+				library/threading library/timing library/voxels \
 				$(if USE_COMPRESSION, library/compression) \
 				$(if USE_NETWORK, library/network) \
-				$(if USE_SOUND, library/sound) \
+				$(if USE_SCRIPT, library/script) \
+				$(if USE_SOUND, library/sound)
 
 # build options
 # Superfast:

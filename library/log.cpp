@@ -79,7 +79,8 @@ namespace library
 				cout << out.log << endl;
 			}
 			// output to file
-			out.file << out.log << endl;
+			if (out.file.good())
+				out.file << out.log << endl;
 			// clear log string
 			out.log = "";
 			
@@ -120,7 +121,8 @@ namespace library
 		
 		ss << ": " << text << endl;
 		// to file
-		this->file << ss.str();
+		if (file.good())
+			file << ss.str();
 		// output to console
 		if (this->outputConsole)
 		{
