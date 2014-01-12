@@ -2,20 +2,31 @@
 #  library makefile  #
 ######################
 
+# components
+USE_COMPRESSION = 0
+USE_NETWORK = 0
+USE_SOUND = 0
+
 # code folders
 SOURCE_DIRS  = 
-
-LIBRARY_DIRS = library library/bitmap library/compression library/math library/math/kine \
-				library/network library/noise library/opengl library/script    \
-				library/sound library/storage library/threading library/timing \
-				library/voxels
+LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
+				library/noise library/opengl library/script \
+				library/storage library/threading library/timing \
+				library/voxels \
+				$(if USE_COMPRESSION, library/compression) \
+				$(if USE_NETWORK, library/network) \
+				$(if USE_SOUND, library/sound) \
 
 # build options
+# Superfast:
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
+# Fast:
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
-BUILDOPT = -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
+# Debug:
+# -ggdb3
+BUILDOPT = -ggdb3
 # output file
-OUTPUT   = ./Debug/liblibrary.a
+OUTPUT   = ./liblibrary.a
 
 ##############################################################
 
