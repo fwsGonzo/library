@@ -32,6 +32,11 @@ namespace library
 		this->multisample = 0;
 	}
 	
+	void closeWindowEvent(GLFWwindow* window)
+	{
+		glfwSetWindowShouldClose(window, GL_TRUE);
+	}
+	
 	void WindowClass::open(const WindowConfig& wndconf)
 	{
 		if (this->init == false)
@@ -74,6 +79,9 @@ namespace library
 		glfwGetWindowSize(this->wndHandle, &this->SW, &this->SH);
 		// screen aspect
 		this->SA = (float)this->SW / (float)this->SH;
+		
+		// set window closing callback so we can see when the user wants to close it
+		glfwSetWindowCloseCallback(wndHandle, closeWindowEvent);
 		
 		// make this window the current OpenGL context
 		setCurrent();
@@ -135,19 +143,20 @@ namespace library
 	{
 		setCurrent();
 		double t0 = glfwGetTime();
+		double t1 = t0;
 		
-		while (glfwWindowShouldClose(wndHandle) == 0)
+		glfwSetWindowShouldClose(wndHandle, 0);
+		while (!glfwWindowShouldClose(wndHandle))
 		{
 			setCurrent();
 			
-			double t1 = t0;
-			t0 = glfwGetTime();
+			double t2 = t1;
+			t1 = glfwGetTime();
 			// variable delta-frame timing
-			double dtime = (t1 - t0) / granularity;
+			double dtime = (t2 - t1) / granularity;
 			
 			// render function returns false if we should stop rendering
-			if (renderfunc(*this, dtime, t0) == false) break;
-			
+			if (renderfunc(*this, dtime, t1 - t0) == false) break;
 		}
 		
 		this->closing = true;
