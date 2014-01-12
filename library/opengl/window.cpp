@@ -32,11 +32,6 @@ namespace library
 		this->multisample = 0;
 	}
 	
-	void closeWindowEvent(GLFWwindow* window)
-	{
-		glfwSetWindowShouldClose(window, GL_TRUE);
-	}
-	
 	void WindowClass::open(const WindowConfig& wndconf)
 	{
 		if (this->init == false)
@@ -79,9 +74,6 @@ namespace library
 		glfwGetWindowSize(this->wndHandle, &this->SW, &this->SH);
 		// screen aspect
 		this->SA = (float)this->SW / (float)this->SH;
-		
-		// set window closing callback so we can see when the user wants to close it
-		glfwSetWindowCloseCallback(wndHandle, closeWindowEvent);
 		
 		// make this window the current OpenGL context
 		setCurrent();
@@ -157,6 +149,9 @@ namespace library
 			
 			// render function returns false if we should stop rendering
 			if (renderfunc(*this, dtime, t1 - t0) == false) break;
+			
+			// check for new events that might eg. set window to be flagged as closing
+			glfwPollEvents();
 		}
 		
 		this->closing = true;
