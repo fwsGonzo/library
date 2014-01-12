@@ -202,7 +202,7 @@ namespace library
 		for (int y = 0; y < height; y++)
 		{
 			rgba8_t* src = this->buffer + (y + srcY) * this->width + srcX;
-			rgba8_t* dst = dest.buffer  + (y + dstY) * dest.getwidth() + dstX;
+			rgba8_t* dst = dest.buffer  + (y + dstY) * dest.getWidth() + dstX;
 			
 			memcpy (dst, src, width * sizeof(rgba8_t));
 		}
@@ -292,14 +292,49 @@ namespace library
 		this->height = th;
 	}
 	
+	// replace a color on the bitmap with another
 	void Bitmap::replace(const unsigned int color, const unsigned int replacecolor)
-	{	//Replaces one color witg another one in the picture.
+	{
 		int n = width * height;
 		for( int i = 0; i < n; i++ )
 		{
 			if( buffer[ i ] == color )
 				buffer[ i ] = replacecolor;
 		}
+	}
+	
+	// rotate 90 degrees
+	Bitmap Bitmap::rotate90() const
+	{
+		Bitmap bmp(this->height, this->width, 32);
+		for (int y = 0; y < this->height; y++)
+		for (int x = 0; x < this->width; x++)
+		{
+			bmp.setPixel(y, x, getPixel(x, y));
+		}
+		return bmp;
+	}
+	// flip x around itself
+	Bitmap Bitmap::flipX() const
+	{
+		Bitmap bmp(this->width, this->height, 32);
+		for (int y = 0; y < this->height; y++)
+		for (int x = 0; x < this->width; x++)
+		{
+			bmp.setPixel(this->width-1 - x, y, getPixel(x, y));
+		}
+		return bmp;
+	}
+	// flip y around itself
+	Bitmap Bitmap::flipY() const
+	{
+		Bitmap bmp(this->width, this->height, 32);
+		for (int y = 0; y < this->height; y++)
+		for (int x = 0; x < this->width; x++)
+		{
+			bmp.setPixel(x, this->height-1 - y, getPixel(x, y));
+		}
+		return bmp;
 	}
 	
 	int Bitmap::getTilesX() const

@@ -45,8 +45,8 @@ namespace library
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
 		
 		// openGL is a C library, so const& is never going to work :)
-		this->width  = bmp.getwidth();
-		this->height = bmp.getheight();
+		this->width  = bmp.getWidth();
+		this->height = bmp.getHeight();
 		GLuint* pixel = bmp.data();
 		
 		this->isMipmapped = mipmap;
@@ -296,8 +296,8 @@ namespace library
 	
 	void Texture::uploadBGRA8(const Bitmap& bmp)
 	{
-		this->width  = bmp.getwidth();
-		this->height = bmp.getheight();
+		this->width  = bmp.getWidth();
+		this->height = bmp.getHeight();
 		
 		// explicitly set active texture unit
 		glActiveTexture(GL_TEXTURE0 + lastUnit);

@@ -65,8 +65,8 @@ namespace library
 	
 	short XModel::cull2D(Bitmap& img, int x, int y)
 	{
-		int w = img.getwidth();
-		int h = img.getheight();
+		int w = img.getWidth();
+		int h = img.getHeight();
 		
 		short facing = 1 + 2; // always add +z and -z
 		
@@ -125,8 +125,8 @@ namespace library
 	
 	void XModel::extrude(Bitmap& fromImage, vec3& offset, vec3& scale)
 	{
-		int w = fromImage.getwidth();
-		int h = fromImage.getheight();
+		int w = fromImage.getWidth();
+		int h = fromImage.getHeight();
 		
 		int numfaces = 0; // counter for faces
 		xcolor_t c;       // vertex color
