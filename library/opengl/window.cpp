@@ -3,6 +3,7 @@
 #include <library/log.hpp>
 #include <library/sleep.hpp>
 #include <GL/glfw3.h>
+#include <library/opengl/opengl.hpp>
 
 namespace library
 {
@@ -36,7 +37,6 @@ namespace library
 		if (this->init == false)
 		{
 			glfwInit();
-			this->init = true;
 		}
 		this->closing = false;
 		
@@ -83,6 +83,14 @@ namespace library
 		
 		// set default viewport
 		glViewport(0, 0, this->SW, this->SH);
+		
+		// initialize OpenGL automatically
+		if (this->init == false)
+		{
+			this->init = true;
+			// init OpenGL entries & defaults
+			ogl.init();
+		}
 	}
 	
 	void WindowClass::close()

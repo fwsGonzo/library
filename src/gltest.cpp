@@ -27,9 +27,6 @@ void test_opengl_support()
 		// throws error if something bad happens...
 		support.open(WindowConfig());
 		
-		// initialize OpenGL entry points & default values
-		ogl.init();
-		
 		logger << "** Checking what our context supports **" << Log::ENDL;
 		logger << "VBO support: " << ogl.supportsVBO << Log::ENDL;
 		logger << "VAO support: " << ogl.supportsVAO << Log::ENDL;
