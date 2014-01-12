@@ -21,7 +21,7 @@ namespace library
 		load(file, btype);
 	}
 	Bitmap::Bitmap(int w, int h, int b): 
-		width(w), height(h), bits(b), format(GL_BGRA)
+		width(w), height(h), bits(b), format(GL_BGRA), tilesX(1), tilesY(1)
 	{
 		buffer = new rgba8_t[width * height];
 		if (buffer == nullptr)
@@ -32,6 +32,24 @@ namespace library
 	Bitmap::~Bitmap()
 	{
 		delete[] buffer;
+	}
+	
+	// copy constructor
+	Bitmap::Bitmap(const Bitmap& bmp)
+	{
+		this->width  = bmp.width;
+		this->height = bmp.height;
+		this->bits   = bmp.bits;
+		this->format = bmp.format;
+		
+		// copy buffer
+		int n = width * height;
+		this->buffer = new rgba8_t[n];
+		memcpy (this->buffer, bmp.buffer, n * sizeof(rgba8_t));
+		
+		// extra info (in case the bitmap was linearized)
+		this->tilesX = bmp.tilesX;
+		this->tilesY = bmp.tilesY;
 	}
 	
 	bool Bitmap::load(const std::string file, Bitmap::bitmap_type btype)
@@ -292,15 +310,20 @@ namespace library
 		this->height = th;
 	}
 	
-	// replace a color on the bitmap with another
-	void Bitmap::replace(const unsigned int color, const unsigned int replacecolor)
+	// clear a bitmap with a given color
+	void Bitmap::clear(rgba8_t color)
 	{
 		int n = width * height;
-		for( int i = 0; i < n; i++ )
-		{
-			if( buffer[ i ] == color )
-				buffer[ i ] = replacecolor;
-		}
+		for (int i = 0; i < n; i++)
+			buffer[i] = color;
+	}
+	
+	// replace a color on the bitmap with another
+	void Bitmap::replace(rgba8_t color, rgba8_t replacecolor)
+	{
+		int n = width * height;
+		for (int i = 0; i < n; i++)
+			if (buffer[i] == color) buffer[i] = replacecolor;
 	}
 	
 	// rotate 90 degrees

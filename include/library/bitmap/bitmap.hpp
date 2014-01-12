@@ -10,7 +10,7 @@ namespace library
 	public:
 		typedef unsigned int rgba8_t;
 		
-		// formats
+		// supported file-formats
 		enum bitmap_type
 		{
 			BMP,
@@ -21,6 +21,7 @@ namespace library
 		Bitmap();
 		Bitmap(const std::string, bitmap_type);
 		Bitmap(int w, int h, int bits);
+		Bitmap(const Bitmap& bmp);
 		~Bitmap();
 		
 		bool load(const std::string file, bitmap_type);
@@ -64,7 +65,8 @@ namespace library
 		bool isValid() const;
 		
 		// operations
-		void replace(const rgba8_t color, const rgba8_t replacecolor);
+		void clear(rgba8_t color);
+		void replace(rgba8_t color, rgba8_t replacecolor);
 		void blit(Bitmap& dest, int srcX, int srcY, int width, int height, int dstX, int dstY) const;
 		void parse2D(int, int);
 		void parse2D_invY(int, int);
