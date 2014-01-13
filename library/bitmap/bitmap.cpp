@@ -12,7 +12,7 @@
 namespace library
 {
 	Bitmap::Bitmap():
-		buffer(nullptr), width(0), height(0), bits(0), format(0)
+		buffer(nullptr), width(0), height(0), format(0)
 	{ }
 	
 	Bitmap::Bitmap(const std::string file, Bitmap::bitmap_type btype)
@@ -20,14 +20,24 @@ namespace library
 		this->buffer = nullptr;
 		load(file, btype);
 	}
-	Bitmap::Bitmap(int w, int h, int b): 
-		width(w), height(h), bits(b), format(GL_BGRA), tilesX(1), tilesY(1)
+	Bitmap::Bitmap(int w, int h): 
+		width(w), height(h), format(GL_BGRA), tilesX(1), tilesY(1)
+	{
+		buffer = new rgba8_t[width * height];
+		if (buffer == nullptr)
+		{
+			throw std::string("Bitmap::Bitmap(int, int): Failed to allocate pixel buffer");
+		}
+	}
+	Bitmap::Bitmap(int w, int h, rgba8_t color): 
+		width(w), height(h), format(GL_BGRA), tilesX(1), tilesY(1)
 	{
 		buffer = new rgba8_t[width * height];
 		if (buffer == nullptr)
 		{
 			throw std::string("Bitmap::Bitmap(int, int, int): Failed to allocate pixel buffer");
 		}
+		clear(color);
 	}
 	Bitmap::~Bitmap()
 	{
@@ -39,7 +49,6 @@ namespace library
 	{
 		this->width  = bmp.width;
 		this->height = bmp.height;
-		this->bits   = bmp.bits;
 		this->format = bmp.format;
 		
 		// copy buffer
@@ -105,7 +114,6 @@ namespace library
 		
 		this->width  = bdata.w;
 		this->height = bdata.h;
-		this->bits   = bdata.bits;
 		this->format = GL_BGRA;
 		this->tilesX = 1;
 		this->tilesY = 1;
@@ -169,7 +177,7 @@ namespace library
 		}
 		else
 		{
-			logger << Log::ERR << "Bitmap::loadBMP(): Invalid bits value: " << bdata.bits << Log::ENDL;
+			logger << Log::ERR << "Bitmap::loadBMP(): Invalid bits per pixel: " << bdata.bits << Log::ENDL;
 			//throw std::string("Bitmap::loadBMP(): Invalid bits value (" + file + ")");
 		}
 		File.close();
@@ -196,7 +204,6 @@ namespace library
 			//throw std::string("Bitmap::loadPNG(): Failed to decode " + file);
 		}
 		this->format = GL_RGBA;
-		this->bits   = 32;
 		this->tilesX = 1;
 		this->tilesY = 1;
 		
@@ -380,13 +387,10 @@ namespace library
 	
 	Bitmap::rgba8_t Bitmap::makeColor(int r, int g, int b, int a)
 	{
-		rgba8_t tall;
-		unsigned char *c = (unsigned char*) &tall;
-		c[0] = b;
-		c[1] = g;
-		c[2] = r;
-		c[3] = a;
-
-		return tall;
+		rgba8_t color;
+		unsigned char* c = (unsigned char*) &color;
+		c[0] = b; c[1] = g; c[2] = r; c[3] = a;
+		
+		return color;
 	}
 }

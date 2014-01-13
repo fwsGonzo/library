@@ -20,7 +20,8 @@ namespace library
 		// constructors
 		Bitmap();
 		Bitmap(const std::string, bitmap_type);
-		Bitmap(int w, int h, int bits);
+		Bitmap(int w, int h);
+		Bitmap(int w, int h, rgba8_t color);
 		Bitmap(const Bitmap& bmp);
 		~Bitmap();
 		
@@ -38,10 +39,6 @@ namespace library
 		inline int getHeight() const
 		{
 			return this->height;
-		}
-		inline int getBits() const
-		{
-			return this->bits;
 		}
 		inline int getFormat() const
 		{
@@ -87,7 +84,7 @@ namespace library
 		bool loadPNG(const std::string& file);
 		
 		rgba8_t* buffer;
-		int width, height, bits;
+		int width, height;
 		int format, tilesX, tilesY;
 	};
 	
