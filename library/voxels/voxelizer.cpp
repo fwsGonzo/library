@@ -63,7 +63,7 @@ namespace library
 		return ((value >> 24) == 0);
 	}
 	
-	short XModel::cull2D(Bitmap& img, int x, int y)
+	short XModel::cull2D(const Bitmap& img, int x, int y)
 	{
 		int w = img.getWidth();
 		int h = img.getHeight();
@@ -107,7 +107,7 @@ namespace library
 		return facing;
 	}
 	
-	void XModel::putv2D(vec3& offset, vec3& scale, int x, int y, int fid, int vid, xcolor_t vcolor)
+	void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid, int vid, xcolor_t vcolor)
 	{
 		// position
 		this->vdata->x = offset.x + (x + xm_vertex[fid][vid * 3 + 0]) * scale.x;
@@ -123,7 +123,7 @@ namespace library
 		this->vdata += 1;
 	}
 	
-	void XModel::extrude(Bitmap& fromImage, vec3& offset, vec3& scale)
+	void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& scale)
 	{
 		int w = fromImage.getWidth();
 		int h = fromImage.getHeight();
