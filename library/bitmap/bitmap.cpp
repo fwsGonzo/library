@@ -336,7 +336,7 @@ namespace library
 	// rotate 90 degrees
 	Bitmap Bitmap::rotate90() const
 	{
-		Bitmap bmp(this->height, this->width, 32);
+		Bitmap bmp(this->height, this->width);
 		for (int y = 0; y < this->height; y++)
 		for (int x = 0; x < this->width; x++)
 		{
@@ -347,7 +347,7 @@ namespace library
 	// flip x around itself
 	Bitmap Bitmap::flipX() const
 	{
-		Bitmap bmp(this->width, this->height, 32);
+		Bitmap bmp(this->width, this->height);
 		for (int y = 0; y < this->height; y++)
 		for (int x = 0; x < this->width; x++)
 		{
@@ -358,7 +358,7 @@ namespace library
 	// flip y around itself
 	Bitmap Bitmap::flipY() const
 	{
-		Bitmap bmp(this->width, this->height, 32);
+		Bitmap bmp(this->width, this->height);
 		for (int y = 0; y < this->height; y++)
 		for (int x = 0; x < this->width; x++)
 		{
