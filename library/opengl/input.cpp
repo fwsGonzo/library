@@ -16,7 +16,7 @@ namespace library
 	void mouseButton(GLFWwindow* window, int button, int action, int mods);
 	void mouseWheel(GLFWwindow* window, double x, double y);
 	
-	void Input::init(WindowClass& gamescr)
+	void Input::init(WindowClass& gamescr, bool kbd, bool mouse)
 	{
 		// set owning window
 		this->gamescr  = &gamescr;
@@ -27,22 +27,27 @@ namespace library
 		// default rotation
 		this->rotation = vec2(0.0);
 		
-		// hook keyboard events
-		glfwSetKeyCallback (gamescr.window(), &keyboard);
-		glfwSetCharCallback(gamescr.window(), &keyboardType);
-		// disable sticky keys
-		glfwSetInputMode(gamescr.window(), GLFW_STICKY_KEYS, GL_TRUE);
-		
-		// hook mouse events
-		glfwSetCursorPosCallback(gamescr.window(), &mouseMove);
-		// disable cursor
-		glfwSetInputMode(gamescr.window(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-		// cursor moved event
-		glfwSetCursorPos(gamescr.window(), this->lastmx, this->lastmy);
-		// mouse button event
-		glfwSetMouseButtonCallback(gamescr.window(), &mouseButton);
-		// mouse wheel event
-		glfwSetScrollCallback(gamescr.window(), &mouseWheel);
+		if (kbd)
+		{
+			// hook keyboard events
+			glfwSetKeyCallback (gamescr.window(), &keyboard);
+			glfwSetCharCallback(gamescr.window(), &keyboardType);
+			// disable sticky keys
+			glfwSetInputMode(gamescr.window(), GLFW_STICKY_KEYS, GL_TRUE);
+		}
+		if (mouse)
+		{
+			// hook mouse events
+			glfwSetCursorPosCallback(gamescr.window(), &mouseMove);
+			// disable cursor
+			glfwSetInputMode(gamescr.window(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			// cursor moved event
+			glfwSetCursorPos(gamescr.window(), this->lastmx, this->lastmy);
+			// mouse button event
+			glfwSetMouseButtonCallback(gamescr.window(), &mouseButton);
+			// mouse wheel event
+			glfwSetScrollCallback(gamescr.window(), &mouseWheel);
+		}
 	}
 	
 	const Input::input_t& Input::getKeyEx(int key) const
