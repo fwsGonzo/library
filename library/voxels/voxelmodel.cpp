@@ -5,6 +5,11 @@
 
 namespace library
 {
+	VoxelModel::VoxelModel(const VoxelModel& vx)
+	{
+		this->vao = vx.vao;
+	}
+	
 	void VoxelModel::create(GLsizei vertices, GLvoid* data)
 	{
 		vao.begin(sizeof(XModel::xvertex_t), vertices, data);

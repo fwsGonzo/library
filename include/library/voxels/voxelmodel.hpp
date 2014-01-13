@@ -17,6 +17,9 @@ namespace library
 		VAO vao;
 		
 	public:
+		VoxelModel() {}
+		VoxelModel(const VoxelModel& vx);
+		
 		void create(GLsizei vertices, GLvoid* data);
 		
 		inline bool isGood() const

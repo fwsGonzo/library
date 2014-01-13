@@ -44,8 +44,8 @@ namespace library
 		delete[] buffer;
 	}
 	
-	// copy constructor
-	Bitmap::Bitmap(const Bitmap& bmp)
+	// assignment operator
+	Bitmap& Bitmap::operator= (const Bitmap& bmp)
 	{
 		this->width  = bmp.width;
 		this->height = bmp.height;
@@ -59,6 +59,7 @@ namespace library
 		// extra info (in case the bitmap was linearized)
 		this->tilesX = bmp.tilesX;
 		this->tilesY = bmp.tilesY;
+		return *this;
 	}
 	
 	bool Bitmap::load(const std::string file, Bitmap::bitmap_type btype)
@@ -340,7 +341,7 @@ namespace library
 		for (int y = 0; y < this->height; y++)
 		for (int x = 0; x < this->width; x++)
 		{
-			bmp.setPixel(y, x, getPixel(x, y));
+			bmp.setPixel(this->height-1 - y, x, getPixel(x, y));
 		}
 		return bmp;
 	}
@@ -380,17 +381,9 @@ namespace library
 	{
 		return (
 			this->buffer != nullptr && 
-			this->width > 0 && 
+			this->width  > 0 && 
 			this->height > 0
 		);
 	}
-	
-	Bitmap::rgba8_t Bitmap::makeColor(int r, int g, int b, int a)
-	{
-		rgba8_t color;
-		unsigned char* c = (unsigned char*) &color;
-		c[0] = b; c[1] = g; c[2] = r; c[3] = a;
-		
-		return color;
-	}
 }
+

@@ -22,8 +22,15 @@ namespace library
 		Bitmap(const std::string, bitmap_type);
 		Bitmap(int w, int h);
 		Bitmap(int w, int h, rgba8_t color);
-		Bitmap(const Bitmap& bmp);
 		~Bitmap();
+		
+		// assignment operator (creates new copy)
+		Bitmap& operator= (const Bitmap& bmp);
+		// copy constructor (creates new copy)
+		Bitmap(const Bitmap& bmp)
+		{
+			this->operator=(bmp);
+		}
 		
 		bool load(const std::string file, bitmap_type);
 		
@@ -71,13 +78,6 @@ namespace library
 		Bitmap rotate90() const;
 		Bitmap flipX() const;
 		Bitmap flipY() const;
-		
-		// static utilities
-		static rgba8_t makeColor(int r, int g, int b, int a);
-		static const rgba8_t NO_COLOR = 0x0;
-		static const rgba8_t BLACK   = 0xFF000000;
-		static const rgba8_t WHITE   = 0xFFFFFFFF;
-		static const rgba8_t MAGENTA = 0xFFFF00FF;
 		
 	private:
 		bool loadBMP(const std::string& file);
