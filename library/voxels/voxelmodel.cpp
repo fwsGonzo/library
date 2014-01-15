@@ -23,5 +23,9 @@ namespace library
 	{
 		vao.render(GL_QUADS);
 	}
+	void VoxelModel::render(GLint mode)
+	{
+		vao.render(mode);
+	}
 	
 }
