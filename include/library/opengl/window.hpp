@@ -30,11 +30,11 @@ namespace library
 	
 	class RenderClass
 	{
-	public:
+	protected:
 		// prototype for rendering function
-		typedef bool (RenderClass::*renderFunc)(WindowClass& wnd, double dtime, double timeElapsed);
-		// member function pointer
-		renderFunc render = 0;
+		virtual bool render(WindowClass& wnd, double dtime, double timeElapsed);
+		
+		friend class WindowClass;
 	};
 	
 	class WindowClass
@@ -45,7 +45,6 @@ namespace library
 		GLFWwindow* wndHandle;
 		
 	public:
-		
 		int SW, SH; // window size
 		float SA;   // window aspect
 		bool fullscreen;
@@ -67,7 +66,7 @@ namespace library
 		void setCurrent();
 		// starts a running rendering loop, that executes renderFunc
 		// each frame, until renderFunc returns false
-		void startRenderingLoop(RenderClass& rclass, RenderClass::renderFunc rfunc, double granularity);
+		void startRenderingLoop(RenderClass& rclass, double granularity);
 	};
 	
 }
