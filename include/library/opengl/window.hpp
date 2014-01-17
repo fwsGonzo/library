@@ -32,7 +32,7 @@ namespace library
 	{
 	protected:
 		// prototype for rendering function
-		virtual bool render(WindowClass& wnd, double dtime, double timeElapsed);
+		virtual bool render(WindowClass& wnd, double dtime, double timeElapsed) = 0;
 		
 		friend class WindowClass;
 	};
