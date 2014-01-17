@@ -131,7 +131,7 @@ namespace library
 		glfwMakeContextCurrent(this->wndHandle);
 	}
 	
-	void WindowClass::startRenderingLoop(renderFunc renderfunc, double granularity)
+	void WindowClass::startRenderingLoop(RenderClass& rclass, RenderClass::renderFunc render, double granularity)
 	{
 		setCurrent();
 		double t0 = glfwGetTime();
@@ -148,7 +148,7 @@ namespace library
 			double dtime = (t2 - t1) / granularity;
 			
 			// render function returns false if we should stop rendering
-			if (renderfunc(*this, dtime, t1 - t0) == false) break;
+			if ((rclass.*render)(*this, dtime, t1 - t0) == false) break;
 			
 			// check for new events that might eg. set window to be flagged as closing
 			glfwPollEvents();

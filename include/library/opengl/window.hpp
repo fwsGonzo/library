@@ -26,6 +26,17 @@ namespace library
 		int multisample;
 	};
 	
+	class WindowClass;
+	
+	class RenderClass
+	{
+	public:
+		// prototype for rendering function
+		typedef bool (RenderClass::*renderFunc)(WindowClass& wnd, double dtime, double timeElapsed);
+		// member function pointer
+		renderFunc render = 0;
+	};
+	
 	class WindowClass
 	{
 	private:
@@ -34,8 +45,6 @@ namespace library
 		GLFWwindow* wndHandle;
 		
 	public:
-		// prototype for rendering function
-		typedef bool (*renderFunc)(WindowClass& wnd, double dtime, double timeElapsed);
 		
 		int SW, SH; // window size
 		float SA;   // window aspect
@@ -58,7 +67,7 @@ namespace library
 		void setCurrent();
 		// starts a running rendering loop, that executes renderFunc
 		// each frame, until renderFunc returns false
-		void startRenderingLoop(renderFunc, double granularity);
+		void startRenderingLoop(RenderClass& rclass, RenderClass::renderFunc rfunc, double granularity);
 	};
 	
 }
