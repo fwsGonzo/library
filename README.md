@@ -10,12 +10,19 @@ Requirements
 - make
 
 
-Required libraries
+Required libraries and packages
 ---
 - GLFW3: http://www.glfw.org/
-- lzo2: http://www.oberhumer.com/opensource/lzo/
-- BASS: http://www.un4seen.com/bass.html
-- tcc: http://bellard.org/tcc/
+
+On linux you may need these additional packages:
+- libglu1-mesa-dev
+- xorg-dev
+
+Optional libraries for certain parts of the library:
+- BASS: http://www.un4seen.com/bass.html (for sound & music)
+- lzo2: http://www.oberhumer.com/opensource/lzo/ (for compression)
+- tcc: http://bellard.org/tcc/ (for C-scripting)
+
 
 Compile the library
 ---
