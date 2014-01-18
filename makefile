@@ -3,9 +3,9 @@
 ######################
 
 # components
-USE_COMPRESSION = 0
-USE_NETWORK = 0
-USE_SCRIPT = 0
+USE_COMPRESSION = 1
+#USE_NETWORK = 1
+#USE_SCRIPT = 1
 USE_SOUND = 1
 
 # code folders
