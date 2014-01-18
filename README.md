@@ -38,10 +38,10 @@ Setting up your project
 ---
 Create new project, add libglfw3.a, liblzo2.a (and so on) to linker libraries. The linker commandline might look like this in the end:
 - Windows: -static -llibrary -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
-- Linux: -llibrary -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
+- Linux: -Llib -llibrary -lbass -lGL -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -lpthread -Wl,-rpath,.
 
 Remember to read the documentation for each library. The 'library' project uses: BASS, TCC, GLFW3, sockets, threads.
-Finally, you can add DLL search paths using -Wl,-rpath,{PATH_HERE}. An example path might be './lib'.
+Finally, you can add DLL search paths using -Wl,-rpath,{PATH_HERE}. An example path might be '../lib', or simply '.'.
 
 Copy the contents of the 'inc' if you want to, however you can also get those include files from their respective origins. Copy the contents of the 'include' folder to your own include folder, so that you can access the library headers. If your project compiles, you are good to go.
 
