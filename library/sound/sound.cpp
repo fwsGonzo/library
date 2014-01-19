@@ -4,6 +4,7 @@
 #include <library/math/toolbox.hpp>
 #include <library/sound/soundhandle.hpp>
 #include <library/sound/soundsystem.hpp>
+#include <bass.h>
 
 namespace library
 {
