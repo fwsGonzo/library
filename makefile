@@ -34,7 +34,7 @@ OUTPUT   = ./liblibrary.a
 # compiler
 CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
-CCFLAGS = -c -Wall -Wno-write-strings -Iinc -Iinclude
+CCFLAGS = -c -Wall -Wextra -pedantic -Wno-write-strings -Iinc -Iinclude
 # linker flags
 ifeq ($(OS),Windows_NT)
 	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc

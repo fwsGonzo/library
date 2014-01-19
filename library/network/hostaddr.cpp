@@ -11,6 +11,7 @@
 
 namespace library
 {
+	static const int HOST_NAME_LENGTH = 64;
 	
 	HostInfo::HostInfo()
 	{

@@ -68,16 +68,18 @@ namespace library
 		if (prog)
 		{
 			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar infolog[logsize];
+			GLchar* infolog = new char[logsize];
 			glGetProgramInfoLog(shader, logsize, NULL, infolog);
-			logger << Log::INFO << "\n" << std::string(&infolog[0], logsize) << Log::ENDL;
+			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
+			delete[] infolog;
 		}
 		else
 		{
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar infolog[logsize];
+			GLchar* infolog = new char[logsize];
 			glGetShaderInfoLog(shader, logsize, NULL, infolog);
-			logger << Log::INFO << "\n" << std::string(&infolog[0], logsize) << Log::ENDL;
+			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
+			delete[] infolog;
 		}
 	}
 	
@@ -153,17 +155,17 @@ namespace library
 		std::string fragshader = shaderProcessor(filename, tokenizer, false);
 		
 		// use the separated vertex and fragment code to create the shader
-		createShader(vertshader, fragshader, filename, tokenizer, attributes);
+		createShader(vertshader, fragshader, filename, attributes);
 	}
 	
 	// shader from source code
 	Shader::Shader(const std::string& vertex, const std::string& frag, const std::string& title, std::vector<std::string>& attributes)
 	{
-		createShader(vertex, frag, title, nullptr, attributes);
+		createShader(vertex, frag, title, attributes);
 	}
 	
 	// internal function for uploading shader code, creating and compiling the shader program
-	void Shader::createShader(std::string vertshader, std::string fragshader, std::string source, processFunc tokenizer, std::vector<std::string>& attributes)
+	void Shader::createShader(std::string vertshader, std::string fragshader, std::string source, std::vector<std::string>& attributes)
 	{
 		// char arrays for GL call
 		char* source_v[1] = { const_cast<char*>(vertshader.c_str()) };

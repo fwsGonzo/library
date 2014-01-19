@@ -137,16 +137,16 @@ namespace library
 			// width of image in memory in bytes
 			int scanline = width * 3 + pad; // pitch
 			
-			char* scanbuffer = new char[scanline];
-			char* buf = (char*)buffer;
-			char* tmp;
+			unsigned char* scanbuffer = new unsigned char[scanline];
+			unsigned char* buf = (unsigned char*)buffer;
+			unsigned char* tmp;
 			
 			for (int y = 0; y < height; y++)
 			{
-				buf = (char*) buffer + (height-1 - y) * width * sizeof(rgba8_t);
+				buf = (unsigned char*) buffer + (height-1 - y) * width * sizeof(rgba8_t);
 				tmp = scanbuffer;
 				// read entire scanline
-				File.read(tmp, scanline);
+				File.read((char*)tmp, scanline);
 				
 				for (int x = 0; x < width; x++)
 				{

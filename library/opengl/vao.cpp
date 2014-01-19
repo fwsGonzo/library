@@ -43,7 +43,7 @@ namespace library
 		unsigned int totalBytes = vertices * vertexSize;
 		
 		// upload data
-		glBufferData(GL_ARRAY_BUFFER_ARB, totalBytes, data, GL_STATIC_DRAW_ARB);
+		glBufferData(GL_ARRAY_BUFFER_ARB, totalBytes, data, usage);
 		
 		if (ogl.checkError())
 		{

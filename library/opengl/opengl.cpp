@@ -153,7 +153,7 @@ namespace library
 		
 	}
 	
-	const bool OpenGL::checkError()
+	bool OpenGL::checkError()
 	{
 		GLenum error = glGetError();
 		if (error)
