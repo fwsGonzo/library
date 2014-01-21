@@ -314,7 +314,8 @@ namespace library
 	mat4 mat4::rotation() const
 	{
 		mat4 rot(*this);
-		rot.translate(0, 0, 0);
+		rot.m[12] = rot.m[13] = rot.m[14] = 0.0;
+		rot.m[15] = 1.0;
 		return rot;
 	}
 	

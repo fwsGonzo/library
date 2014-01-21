@@ -6,8 +6,8 @@
 USE_COMPRESSION = library/compression
 #USE_NETWORK = library/network
 #USE_SCRIPT  = library/script
-#USE_SOUND   = library/sound
-#USE_OPENGL  = library/opengl library/voxels
+USE_SOUND   = library/sound
+USE_OPENGL  = library/opengl library/voxels
 
 # (2) select build options
 # Superfast:
