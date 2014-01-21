@@ -2,23 +2,14 @@
 #  library makefile  #
 ######################
 
-# components
-USE_COMPRESSION = 1
-#USE_NETWORK = 1
-#USE_SCRIPT = 1
-USE_SOUND = 1
+# (1) select which components to use
+USE_COMPRESSION = library/compression
+#USE_NETWORK = library/network
+#USE_SCRIPT  = library/script
+#USE_SOUND   = library/sound
+#USE_OPENGL  = library/opengl library/voxels
 
-# code folders
-SOURCE_DIRS  = 
-LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
-				library/noise library/opengl library/storage \
-				library/threading library/timing library/voxels \
-				$(if USE_COMPRESSION, library/compression) \
-				$(if USE_NETWORK, library/network) \
-				$(if USE_SCRIPT, library/script) \
-				$(if USE_SOUND, library/sound)
-
-# build options
+# (2) select build options
 # Superfast:
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # Fast:
@@ -30,6 +21,13 @@ BUILDOPT = -ggdb3
 OUTPUT   = ./liblibrary.a
 
 ##############################################################
+
+# code folders
+SOURCE_DIRS  = 
+LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
+				library/noise library/storage \
+				library/threading library/timing \
+				$(USE_OPENGL) $(USE_COMPRESSION) $(USE_NETWORK) $(USE_SCRIPT) $(USE_SOUND)
 
 # compiler
 CC = g++ $(BUILDOPT) -std=c++11
