@@ -11,15 +11,6 @@
 
 namespace library
 {
-	Bitmap::Bitmap():
-		buffer(nullptr), width(0), height(0), format(0)
-	{ }
-	
-	Bitmap::Bitmap(const std::string file, Bitmap::bitmap_type btype)
-	{
-		this->buffer = nullptr;
-		load(file, btype);
-	}
 	Bitmap::Bitmap(int w, int h): 
 		width(w), height(h), format(GL_BGRA), tilesX(1), tilesY(1)
 	{
@@ -366,15 +357,6 @@ namespace library
 			bmp.setPixel(x, this->height-1 - y, getPixel(x, y));
 		}
 		return bmp;
-	}
-	
-	int Bitmap::getTilesX() const
-	{
-		return this->tilesX;
-	}
-	int Bitmap::getTilesY() const
-	{
-		return this->tilesY;
 	}
 	
 	bool Bitmap::isValid() const
