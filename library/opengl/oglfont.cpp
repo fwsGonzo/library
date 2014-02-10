@@ -19,12 +19,6 @@ namespace library
 	
 	bool OglFont::load(const std::string& filename, int size)
 	{
-		// create shader, if it doesn't exist
-		if (shader.getShader() == 0)
-		{
-			this->createShader();
-		}
-		
 		if (size <= 0) return false;
 		this->size = size;
 		
@@ -43,12 +37,12 @@ namespace library
 	void OglFont::bind(GLenum unit)
 	{
 		// bind font shader
-		shader.bind();
+		shader->bind();
 		if (this->lastUnit != unit)
 		{
 			this->lastUnit = unit;
 			// resend texture slot to shader
-			shader.sendInteger("texture", unit);
+			shader->sendInteger("fontimage", unit);
 		}
 		// bind texture
 		font.bind(unit);
@@ -130,24 +124,6 @@ namespace library
 	vec2 OglFont::measure(std::string text) const
 	{
 		return vec2(this->size * text.length(), this->size);
-	}
-	int OglFont::getSize() const
-	{
-		return this->size;
-	}
-	
-	void OglFont::sendMatrix(const mat4& matrix)
-	{
-		shader.sendMatrix("mvp", matrix);
-	}
-	
-	void OglFont::setBackColor(const vec4& color)
-	{
-		shader.sendVec4("bgcolor", color);
-	}
-	void OglFont::setColor(const vec4& color)
-	{
-		shader.sendVec4("fcolor", color);
 	}
 	
 }
