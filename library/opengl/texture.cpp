@@ -262,8 +262,14 @@ namespace library
 		glBindTexture(this->type, this->id);
 		this->boundUnit = unit;
 		
+		#ifdef DEBUG
 		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
 			throw std::string("Texture::bind(): OpenGL state error");
+		}
+		#endif
 	}
 	
 	void Texture::unbind()
@@ -292,6 +298,15 @@ namespace library
 		}
 		// copy screen
 		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
+		
+		#ifdef DEBUG
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::bind(): OpenGL state error");
+		}
+		#endif
 	}
 	
 	void Texture::uploadBGRA8(const Bitmap& bmp)
@@ -309,16 +324,15 @@ namespace library
 		{
 			glGenerateMipmap(this->type);
 		}
-	}
-	
-	GLuint Texture::getHandle()
-	{
-		return this->id;
-	}
-	
-	GLenum Texture::getBoundUnit() const
-	{
-		return this->boundUnit;
+		
+		#ifdef DEBUG
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::bind(): OpenGL state error");
+		}
+		#endif
 	}
 	
 	std::string Texture::toString() const

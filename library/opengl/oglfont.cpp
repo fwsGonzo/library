@@ -11,13 +11,13 @@ namespace library
 		this->size = 0;
 		this->lastUnit = -1;
 	}
-	OglFont::OglFont(std::string filename, int size) : OglFont()
+	OglFont::OglFont(const std::string& filename, int size) : OglFont()
 	{
 		if (load(filename, size) == false)
 			throw "Error: Could not load font image";
 	}
 	
-	bool OglFont::load(std::string filename, int size)
+	bool OglFont::load(const std::string& filename, int size)
 	{
 		// create shader, if it doesn't exist
 		if (shader.getShader() == 0)
@@ -136,7 +136,7 @@ namespace library
 		return this->size;
 	}
 	
-	void OglFont::sendMatrix(mat4& matrix)
+	void OglFont::sendMatrix(const mat4& matrix)
 	{
 		shader.sendMatrix("mvp", matrix);
 	}

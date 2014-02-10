@@ -235,79 +235,6 @@ namespace library
 		}
 	}
 	
-	void Shader::sendFloat(GLint uniform, float f)
-	{
-		glUniform1f(uniform, f);
-	}
-	void Shader::sendVec2(GLint uniform, const vec2& v)
-	{
-		glUniform2f(uniform, v.x, v.y);
-	}
-	void Shader::sendVec3(GLint uniform, const vec3& v)
-	{
-		glUniform3fv(uniform, 1, (GLfloat*) &v.x);
-	}
-	void Shader::sendVec4(GLint uniform, const vec4& v)
-	{
-		glUniform4fv(uniform, 1, (GLfloat*) &v.x);
-	}
-	void Shader::sendMatrix(GLint uniform, const mat4& m)
-	{
-		glUniformMatrix4fv(uniform, 1, false, const_cast<mat4&> (m).data());
-	}
-	
-	void Shader::sendFloat(std::string uniform, float v)
-	{
-		GLint location = getUniform(uniform);
-		if (location+1) sendFloat(location, v);
-	}
-	void Shader::sendVec2 (std::string uniform, const vec2& v)
-	{
-		GLint location = getUniform(uniform);
-		if (location+1) sendVec2(location, v);
-	}
-	void Shader::sendVec3 (std::string uniform, const vec3& v)
-	{
-		GLint location = getUniform(uniform);
-		if (location+1) sendVec3(location, v);
-	}
-	void Shader::sendVec4 (std::string uniform, const vec4& v)
-	{
-		GLint location = getUniform(uniform);
-		if (location+1) sendVec4(location, v);
-	}
-	void Shader::sendMatrix(std::string uniform, const mat4& m)
-	{
-		GLint location = getUniform(uniform);
-		if (location+1) sendMatrix(location, m);
-	}
-	
-	void Shader::sendInteger(std::string uniform, int id)
-	{
-		GLint location = glGetUniformLocation(this->shader, (GLchar*)uniform.c_str());
-		if (location+1) glUniform1i(location, id);
-	}
-	
-	void Shader::prepareUniform(std::string uniform)
-	{
-		GLint location = glGetUniformLocation(this->shader, (GLchar*)uniform.c_str());
-		uniforms[uniform] = location;
-	}
-	
-	GLint Shader::getUniform(std::string uniform)
-	{
-		// if the value doesn't exist yet, find it
-		if (uniforms.find(uniform) == uniforms.end())
-			prepareUniform(uniform);
-		// return uniform value
-		return uniforms[uniform];
-	}
-	
-	GLuint Shader::getShader()
-	{
-		return this->shader;
-	}
-	
 	void Shader::bind()
 	{	// avoid costly rebind
 		if (lastShader == shader) return;
@@ -315,20 +242,13 @@ namespace library
 		
 		glUseProgram(shader);
 		
+		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Shader::bind(): OpenGL error for shader ID = " << shader << Log::ENDL;
 			throw std::string("Shader::bind() OpenGL state error");
 		}
-	}
-	
-	void Shader::unbind()
-	{
-		if (lastShader)
-		{
-			lastShader = 0;
-			glUseProgram(0);
-		}
+		#endif
 	}
 	
 }

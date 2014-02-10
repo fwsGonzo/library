@@ -1,18 +1,12 @@
 #include <library/opengl/fbo.hpp>
 
 #include <library/log.hpp>
-#include <library/opengl/opengl.hpp>
+//#include <library/opengl/opengl.hpp>
 #include <library/opengl/texture.hpp>
 
 namespace library
 {
 	GLuint FBO::lastFBO = 0;
-	
-	FBO::FBO()
-	{
-		// initialize members
-		fbo = 0;
-	}
 	
 	void FBO::create()
 	{
@@ -23,20 +17,6 @@ namespace library
 		}
 		glGenFramebuffers(1, &fbo);
 		if (fbo == 0) throw std::string("FBO was not generated, as the returned value was 0");
-	}
-	
-	void FBO::bind()
-	{
-		if (fbo == 0) throw std::string("FBO was not yet created");
-		
-		glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-		lastFBO = fbo;
-	}
-	
-	void FBO::unbind()
-	{
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		lastFBO = 0;
 	}
 	
 	void FBO::attachColor(GLenum index, Texture& texture)
@@ -157,22 +137,26 @@ namespace library
 	{
 		glDrawBuffers(buffers.size(), (GLenum*) buffers.data());
 		
+		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "FBO::drawBuffers(vector): Error setting draw buffers" << Log::ENDL;
 			throw std::string("FBO::drawBuffers(vector): Error setting draw buffers");
 		}
+		#endif
 	}
 	void FBO::drawBuffers()
 	{
 		GLenum one = GL_COLOR_ATTACHMENT0;
 		glDrawBuffers(1, &one);
 		
+		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "FBO::drawBuffers(): Error setting draw buffer" << Log::ENDL;
 			throw std::string("FBO::drawBuffers(): Error setting draw buffer");
 		}
+		#endif
 	}
 	
 	void FBO::blitTo(FBO& dest_fbo, int w, int h, int mask, int filter)

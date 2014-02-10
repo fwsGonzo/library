@@ -341,7 +341,7 @@ namespace library
 	{
 		Bitmap bmp(this->width, this->height);
 		for (int y = 0; y < this->height; y++)
-		for (int x = 0; x < this->width; x++)
+		for (int x = 0; x < this->width;  x++)
 		{
 			bmp.setPixel(this->width-1 - x, y, getPixel(x, y));
 		}
@@ -352,7 +352,7 @@ namespace library
 	{
 		Bitmap bmp(this->width, this->height);
 		for (int y = 0; y < this->height; y++)
-		for (int x = 0; x < this->width; x++)
+		for (int x = 0; x < this->width;  x++)
 		{
 			bmp.setPixel(x, this->height-1 - y, getPixel(x, y));
 		}

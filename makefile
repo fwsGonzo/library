@@ -10,13 +10,11 @@ USE_SOUND   = library/sound
 USE_OPENGL  = library/opengl library/voxels
 
 # (2) select build options
-# Superfast:
-# -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native -flto -fwhole-program
 # Fast:
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
 # Debug:
 # -ggdb3
-BUILDOPT = -ggdb3
+BUILDOPT = -Ofast
 # output file
 OUTPUT   = ./liblibrary.a
 
