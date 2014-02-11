@@ -31,7 +31,7 @@ namespace library
 		
 		//textures & mipmapping
 		glGenerateMipmap	= (void(GLapi*)(GLenum))glfwGetProcAddress("glGenerateMipmap");
-		glActiveTexture		= (void(GLapi*)(GLenum))glfwGetProcAddress("glActiveTexture");
+		//glActiveTexture		= (void(GLapi*)(GLenum))glfwGetProcAddress("glActiveTexture");
 		glTexImage3D		= (void(GLapi*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, GLvoid*))glfwGetProcAddress("glTexImage3D");
 		glTexImage2DMultisample = (void(GLapi*)(GLenum, GLsizei, GLint, GLsizei, GLsizei, GLboolean))glfwGetProcAddress("glTexImage2DMultisample");
 		
