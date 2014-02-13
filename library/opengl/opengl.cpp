@@ -30,8 +30,10 @@ namespace library
 		glDeleteBuffers = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glDeleteBuffers");
 		
 		//textures & mipmapping
+#ifdef _WIN32
+		glActiveTexture		= (void(GLapi*)(GLenum))glfwGetProcAddress("glActiveTexture");
+#endif
 		glGenerateMipmap	= (void(GLapi*)(GLenum))glfwGetProcAddress("glGenerateMipmap");
-		//glActiveTexture		= (void(GLapi*)(GLenum))glfwGetProcAddress("glActiveTexture");
 		glTexImage3D		= (void(GLapi*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, GLvoid*))glfwGetProcAddress("glTexImage3D");
 		glTexImage2DMultisample = (void(GLapi*)(GLenum, GLsizei, GLint, GLsizei, GLsizei, GLboolean))glfwGetProcAddress("glTexImage2DMultisample");
 		

@@ -21,8 +21,10 @@ namespace library
 	opengl_ext void (*glDeleteBuffers)(GLsizei n, GLuint* ids);
 	
 	// texturing extensions
+#ifdef _WIN32
+	opengl_ext void (*glActiveTexture)(GLenum textureunit);
+#endif
 	opengl_ext void (*glGenerateMipmap)(GLenum target);
-	//opengl_ext void (*glActiveTexture)(GLenum textureunit);
 	opengl_ext void (*glTexImage3D)(GLenum target, GLint level, GLint internalFormat, GLsizei width, GLsizei height, GLsizei depth, GLint border, GLenum format, GLenum type, GLvoid* data);
 	opengl_ext void (*glTexImage2DMultisample)(GLenum target, GLsizei samples, GLint internalformat, GLsizei width, GLsizei height, GLboolean fixedSampleLocations);
 	
