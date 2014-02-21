@@ -122,11 +122,11 @@ namespace library
 		}
 	}
 	
-	void Texture::create(bool mipmap, int levels, int width, int height)
+	void Texture::create(int levels, int width, int height)
 	{
 		bind(0);
-		const GLint minfilter = (mipmap) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
-		const GLint maxfilter = (mipmap) ? GL_LINEAR : GL_NEAREST;
+		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
+		const GLint maxfilter = (levels) ? GL_LINEAR : GL_NEAREST;
 		
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -136,7 +136,7 @@ namespace library
 		this->width  = width;
 		this->height = height;
 		
-		this->isMipmapped = mipmap;
+		this->isMipmapped = (levels > 0);
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
@@ -155,6 +155,55 @@ namespace library
 			logger << Log::ERR << "Texture::create(): Unknown texture target (" << this->type << ")" << Log::ENDL;
 			logger << Log::ERR << toString();
 			throw std::string("Failed to create texture");
+		}
+		
+		if (this->isMipmapped)
+		{
+			glGenerateMipmap(this->type);
+		}
+		
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::create(): OpenGL state error");
+		}
+	}
+	
+	void Texture::create3d(int levels, int x, int y, int z)
+	{
+		bind(0);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		
+		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
+		const GLint maxfilter = (levels) ? GL_LINEAR : GL_NEAREST;
+		
+		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
+		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
+		
+		this->width  = x;
+		this->height = y;
+		this->isMipmapped = (levels > 0);
+		
+		if (this->isMipmapped)
+		{
+			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
+			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
+		}
+		
+		GLenum sformat = ogl.storageformat;
+		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB) sformat = GL_FLOAT;
+		
+		switch (this->type)
+		{
+		case GL_TEXTURE_3D:
+			glTexImage3D(this->type, 0, format, x, y, z, 0, GL_BGRA, sformat, nullptr);
+			break;
+		default:
+			logger << Log::ERR << "Texture::create3d(): Unknown texture target (" << this->type << ")" << Log::ENDL;
+			logger << Log::ERR << toString();
+			throw std::string("Failed to create 3d texture");
 		}
 		
 		if (this->isMipmapped)
@@ -314,10 +363,29 @@ namespace library
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
 		
-		// explicitly set active texture unit
-		glActiveTexture(GL_TEXTURE0 + lastUnit);
 		// upload pixel data
 		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bmp.data());
+		
+		// auto-generate new mipmap levels
+		if (this->isMipmapped)
+		{
+			glGenerateMipmap(this->type);
+		}
+		
+		#ifdef DEBUG
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::bind(): OpenGL state error");
+		}
+		#endif
+	}
+	
+	void Texture::upload3D(int x, int y, int z, void* data)
+	{
+		// upload pixel data
+		glTexImage3D(GL_TEXTURE_3D, 0, format, x, y, z, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 		
 		// auto-generate new mipmap levels
 		if (this->isMipmapped)
