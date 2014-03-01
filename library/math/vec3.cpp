@@ -240,7 +240,7 @@ namespace library
 	}
 	
 	// vector language functions
-	vec3 distance(const vec3& va, const vec3& vb)
+	vec3::vector_t distance(const vec3& va, const vec3& vb)
 	{
 		return (va - vb).length();
 	}
