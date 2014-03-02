@@ -80,6 +80,80 @@ namespace library
 		{
 			vertex->x = location.x + (0 + i) * size.x;
 			vertex->y = location.y + 0.0;
+			vertex->z = location.z;
+			vertex->s = 0;
+			vertex->t = 0;
+			vertex->p = converted[i];
+			vertex++;
+			
+			vertex->x = location.x + (1 + i) * size.x;
+			vertex->y = location.y + 0.0;
+			vertex->z = location.z;
+			vertex->s = 1;
+			vertex->t = 0;
+			vertex->p = converted[i];
+			vertex++;
+			
+			vertex->x = location.x + (1 + i) * size.x;
+			vertex->y = location.y + size.y;
+			vertex->z = location.z;
+			vertex->s = 1;
+			vertex->t = 1;
+			vertex->p = converted[i];
+			vertex++;
+			
+			vertex->x = location.x + (0 + i) * size.x;
+			vertex->y = location.y + size.y;
+			vertex->z = location.z;
+			vertex->s = 0;
+			vertex->t = 1;
+			vertex->p = converted[i];
+			vertex++;
+		}
+		
+		// upload data to vao
+		vao.begin(sizeof(font_vertex_t), vertices, vdata, GL_STREAM_DRAW);
+		vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
+		vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
+		vao.end();
+		
+		// render
+		glDrawArrays(GL_QUADS, 0, vertices);
+		
+		delete[] vdata;
+	}
+	void OglFont::print2d(const vec3& location, const vec2& size, std::string text)
+	{
+		if (text.length() == 0) return;
+		
+		// bind texture
+		font.bind(0);
+		
+		// convert text to font array index positions
+		char converted[text.length()];
+		for (unsigned int i = 0; i < text.length(); i++)
+		{
+			converted[i] = text[i] - 32;
+		}
+		
+		// create vertex data
+		struct font_vertex_t
+		{
+			GLfloat x, y, z;
+			GLshort s, t, p, q;
+			
+		};
+		// vertex count
+		int vertices = text.length() * 4;
+		// vertex data
+		font_vertex_t* vdata = new font_vertex_t[vertices];
+		font_vertex_t* vertex = vdata;
+		
+		// emit vertices as quads
+		for (size_t i = 0; i < text.length(); i++)
+		{
+			vertex->x = location.x + (0 + i) * size.x;
+			vertex->y = location.y + 0.0;
 			vertex->z = location.z + 0.0;
 			vertex->s = 0;
 			vertex->t = 1;
@@ -119,6 +193,8 @@ namespace library
 		
 		// render
 		glDrawArrays(GL_QUADS, 0, vertices);
+		
+		delete[] vdata;
 	}
 	
 	vec2 OglFont::measure(std::string text) const
