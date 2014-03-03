@@ -6,26 +6,23 @@
 
 namespace library
 {
-	OglFont::OglFont()
-	{
-		this->size = 0;
-		this->lastUnit = -1;
-	}
 	OglFont::OglFont(const std::string& filename, int size) : OglFont()
 	{
+		if (size <= 1)
+			throw std::string("OglFont::OglFont: Invalid font size");
 		if (load(filename, size) == false)
-			throw "Error: Could not load font image";
+			throw std::string("OglFont::OglFont: Could not load font image");
 	}
 	
 	bool OglFont::load(const std::string& filename, int size)
 	{
-		if (size <= 0) return false;
-		this->size = size;
+		if (size <= 1) return false;
+		this->tilesize = size;
 		
 		Bitmap fontImage(filename, Bitmap::PNG);
 		if (fontImage.data() == nullptr) return false;
 		
-		fontImage.parse2D(size, size);
+		fontImage.parse2D(tilesize, tilesize);
 		
 		// create texture, upload image data
 		font = Texture(GL_TEXTURE_2D_ARRAY);
@@ -52,38 +49,32 @@ namespace library
 	{
 		if (text.length() == 0) return;
 		
-		// bind texture
-		font.bind(0);
-		
-		// convert text to font array index positions
-		char converted[text.length()];
-		for (unsigned int i = 0; i < text.length(); i++)
-		{
-			converted[i] = text[i] - 32;
-		}
-		
-		// create vertex data
-		struct font_vertex_t
-		{
-			GLfloat x, y, z;
-			GLshort s, t, p, q;
-			
-		};
+		/// create vertex data ///
 		// vertex count
-		int vertices = text.length() * 4;
+		int current_vertices = text.length() * 4;
 		// vertex data
-		font_vertex_t* vdata = new font_vertex_t[vertices];
+		if (this->vertices < current_vertices)
+		{
+			// delete any old data
+			delete[] this->vdata;
+			// resize when too small
+			this->vertices = current_vertices;
+			this->vdata = new font_vertex_t[this->vertices];
+		}
 		font_vertex_t* vertex = vdata;
 		
-		// emit vertices as quads
 		for (size_t i = 0; i < text.length(); i++)
 		{
+			// convert text to font array index positions
+			text[i] -= 32;
+			
+			// emit characters as quads
 			vertex->x = location.x + (0 + i) * size.x;
 			vertex->y = location.y + 0.0;
 			vertex->z = location.z;
 			vertex->s = 0;
 			vertex->t = 0;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (1 + i) * size.x;
@@ -91,7 +82,7 @@ namespace library
 			vertex->z = location.z;
 			vertex->s = 1;
 			vertex->t = 0;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (1 + i) * size.x;
@@ -99,7 +90,7 @@ namespace library
 			vertex->z = location.z;
 			vertex->s = 1;
 			vertex->t = 1;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (0 + i) * size.x;
@@ -107,99 +98,89 @@ namespace library
 			vertex->z = location.z;
 			vertex->s = 0;
 			vertex->t = 1;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 		}
 		
-		// upload data to vao
-		vao.begin(sizeof(font_vertex_t), vertices, vdata, GL_STREAM_DRAW);
+		/// upload data to opengl context ///
+		vao.begin(sizeof(font_vertex_t), current_vertices, this->vdata, GL_STREAM_DRAW);
 		vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
 		vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
 		vao.end();
 		
-		// render
-		glDrawArrays(GL_QUADS, 0, vertices);
-		
-		delete[] vdata;
+		/// render immediately ///
+		glDrawArrays(GL_QUADS, 0, current_vertices);
 	}
 	void OglFont::print2d(const vec3& location, const vec2& size, std::string text)
 	{
 		if (text.length() == 0) return;
 		
-		// bind texture
-		font.bind(0);
-		
-		// convert text to font array index positions
-		char converted[text.length()];
-		for (unsigned int i = 0; i < text.length(); i++)
-		{
-			converted[i] = text[i] - 32;
-		}
-		
-		// create vertex data
-		struct font_vertex_t
-		{
-			GLfloat x, y, z;
-			GLshort s, t, p, q;
-			
-		};
+		/// create vertex data ///
 		// vertex count
-		int vertices = text.length() * 4;
+		int current_vertices = text.length() * 4;
 		// vertex data
-		font_vertex_t* vdata = new font_vertex_t[vertices];
-		font_vertex_t* vertex = vdata;
+		if (this->vertices < current_vertices)
+		{
+			// delete any old data
+			delete[] this->vdata;
+			// resize when too small
+			this->vertices = current_vertices;
+			this->vdata = new font_vertex_t[this->vertices];
+		}
+		font_vertex_t* vertex = this->vdata;
 		
-		// emit vertices as quads
 		for (size_t i = 0; i < text.length(); i++)
 		{
+			// convert text to font array index positions
+			text[i] -= 32;
+			
+			// emit characters as quads
 			vertex->x = location.x + (0 + i) * size.x;
 			vertex->y = location.y + 0.0;
-			vertex->z = location.z + 0.0;
+			vertex->z = location.z;
 			vertex->s = 0;
 			vertex->t = 1;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (1 + i) * size.x;
 			vertex->y = location.y + 0.0;
-			vertex->z = location.z + 0.0;
+			vertex->z = location.z;
 			vertex->s = 1;
 			vertex->t = 1;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (1 + i) * size.x;
 			vertex->y = location.y + size.y;
-			vertex->z = location.z + 0.0;
+			vertex->z = location.z;
 			vertex->s = 1;
 			vertex->t = 0;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 			
 			vertex->x = location.x + (0 + i) * size.x;
 			vertex->y = location.y + size.y;
-			vertex->z = location.z + 0.0;
+			vertex->z = location.z;
 			vertex->s = 0;
 			vertex->t = 0;
-			vertex->p = converted[i];
+			vertex->p = text[i];
 			vertex++;
 		}
 		
 		// upload data to vao
-		vao.begin(sizeof(font_vertex_t), vertices, vdata, GL_STREAM_DRAW);
+		vao.begin(sizeof(font_vertex_t), current_vertices, this->vdata, GL_STREAM_DRAW);
 		vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
 		vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
 		vao.end();
 		
 		// render
-		glDrawArrays(GL_QUADS, 0, vertices);
-		
-		delete[] vdata;
+		glDrawArrays(GL_QUADS, 0, current_vertices);
 	}
 	
 	vec2 OglFont::measure(std::string text) const
 	{
-		return vec2(this->size * text.length(), this->size);
+		return vec2(this->tilesize * text.length(), this->tilesize);
 	}
 	
 }
