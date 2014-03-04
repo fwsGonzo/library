@@ -101,15 +101,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 		}
-		
-		/// upload data to opengl context ///
-		vao.begin(sizeof(font_vertex_t), current_vertices, this->vdata, GL_STREAM_DRAW);
-		vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
-		vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
-		vao.end();
-		
-		/// render immediately ///
-		glDrawArrays(GL_QUADS, 0, current_vertices);
+		uploadAndRender(current_vertices);
 	}
 	void OglFont::print2d(const vec3& location, const vec2& size, std::string text)
 	{
@@ -167,15 +159,25 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 		}
-		
+		uploadAndRender(current_vertices);
+	}
+	
+	void OglFont::uploadAndRender(int verts)
+	{
 		// upload data to vao
-		vao.begin(sizeof(font_vertex_t), current_vertices, this->vdata, GL_STREAM_DRAW);
-		vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
-		vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
-		vao.end();
-		
+		if (vao.isGood() == false)
+		{
+			vao.begin(sizeof(font_vertex_t), verts, this->vdata, GL_STREAM_DRAW);
+			vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
+			vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
+			vao.end();
+		}
+		else
+		{
+			vao.upload(sizeof(font_vertex_t), verts, this->vdata, GL_STREAM_DRAW);
+		}
 		// render
-		glDrawArrays(GL_QUADS, 0, current_vertices);
+		glDrawArrays(GL_QUADS, 0, verts);
 	}
 	
 	vec2 OglFont::measure(std::string text) const

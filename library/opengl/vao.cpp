@@ -8,34 +8,22 @@ namespace library
 {
 	GLuint VAO::lastVAO = 0;
 	
-	VAO::VAO()
-	{
-		vao = vbo = ibo = 0;
-		isCreating = false;
-	}
-	
-	// static drawing
-	void VAO::begin(GLuint vertexSize, GLsizei vertices, GLvoid* data)
-	{
-		begin(vertexSize, vertices, data, GL_STATIC_DRAW);
-	}
-	
 	// custom drawing
 	void VAO::begin(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage)
 	{
 		this->isCreating = true;
 		
-		// create & bind VAO
+		// create VAO & VBO
 		if (vao == 0)
 		{
 			glGenVertexArrays(1, &vao);
-		}
-		bind();
-		// create & bind VBO
-		if (vbo == 0)
-		{
 			glGenBuffers(1, &vbo);
 		}
+		upload(vertexSize, vertices, data, usage);
+	}
+	void VAO::upload(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage)
+	{
+		bind();
 		glBindBuffer(GL_ARRAY_BUFFER_ARB, vbo);
 		
 		this->vertexSize = vertexSize;
@@ -45,11 +33,13 @@ namespace library
 		// upload data
 		glBufferData(GL_ARRAY_BUFFER_ARB, totalBytes, data, usage);
 		
+		#ifdef DEBUG
 		if (ogl.checkError())
 		{
 			logger << Log::ERR << "VAO::beginCreate(): OpenGL error for vao = " << vao << ", vbo = " << vbo << Log::ENDL;
 			throw std::string("VAO::beginCreate(): OpenGL error");
 		}
+		#endif
 	}
 	
 	void VAO::indexes(GLvoid* data, GLsizei count)
