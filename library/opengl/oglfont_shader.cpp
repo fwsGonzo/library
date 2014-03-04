@@ -5,7 +5,7 @@
 
 namespace library
 {
-	void OglFont::createDefaultShader()
+	Shader* SimpleFont::createShader()
 	{
 		const std::string font_vertex_shader = 
 		R"(
@@ -52,5 +52,7 @@ namespace library
 		shader = new Shader(font_vertex_shader, font_fragment_shader, "Internal font shader", attr);
 		shader->sendVec4("bgcolor", vec4(0.0, 1.0)); // black
 		shader->sendVec4("fcolor", vec4(1.0)); // white
+		
+		return shader;
 	}
 }
