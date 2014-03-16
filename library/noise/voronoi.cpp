@@ -1,4 +1,4 @@
-#include <library/math/voronoi.hpp>
+#include <library/noise/voronoi.hpp>
 
 #include <library/noise/simplex1234.h>
 #include <library/math/vector.hpp>
