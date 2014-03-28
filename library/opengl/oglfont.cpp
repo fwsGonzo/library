@@ -112,8 +112,10 @@ namespace library
 			// convert text to font array index positions
 			text[i] -= 32;
 			
+			#define clipInt(x) ((x > 0.5) ? 1 : 0)
+			
 			// emit characters as quads
-			vertex->x = location.x + (wind[0] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[0]) + i) * size.x;
 			vertex->y = location.y + 0.0;
 			vertex->z = location.z;
 			vertex->s = wind[0];
@@ -121,7 +123,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[2] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[2]) + i) * size.x;
 			vertex->y = location.y + 0.0;
 			vertex->z = location.z;
 			vertex->s = wind[2];
@@ -129,7 +131,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[4] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[4]) + i) * size.x;
 			vertex->y = location.y + size.y;
 			vertex->z = location.z;
 			vertex->s = wind[4];
@@ -137,7 +139,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[6] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[6]) + i) * size.x;
 			vertex->y = location.y + size.y;
 			vertex->z = location.z;
 			vertex->s = wind[6];
