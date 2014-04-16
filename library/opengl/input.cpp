@@ -87,11 +87,19 @@ namespace library
 		mouse[button].action = KEY_LOCKED;
 	}
 	
-	int  Input::getWheel()
+	int Input::getWheel()
 	{
 		int wheel = this->wheel;
 		this->wheel = 0;
 		return wheel;
+	}
+	
+	bool Input::textBackspace()
+	{
+		if (text.size() == 0) return false;
+		
+		text = text.substr(0, text.size() - 1);
+		return true;
 	}
 	
 	void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -104,7 +112,7 @@ namespace library
 	void keyboardType(GLFWwindow* window, unsigned int character)
 	{
 		// typing!
-		input.text += wchar_t(character);
+		input.text += char(character & 255);
 	}
 	
 	void mouseMove(GLFWwindow* window, double x, double y)

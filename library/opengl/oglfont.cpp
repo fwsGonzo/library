@@ -7,6 +7,11 @@
 
 namespace library
 {
+	SimpleFont::SimpleFont()
+		: tilesize(0), lastUnit(-1), max_vertices(0), vdata(nullptr)
+	{
+		setClip(vec2(0.0));
+	}
 	SimpleFont::~SimpleFont()
 	{
 		delete[] vdata;
@@ -26,16 +31,20 @@ namespace library
 		texture->bind(unit);
 	}
 	
-	// Y-axis goes positively upwards
-	static const int font_windings_up[8] = 
+	void SimpleFont::setClip(const vec2& clip)
 	{
-		0, 0,   1, 0,   1, 1,   0, 1
-	};
-	// Y-axis goes positively downwards
-	static const int font_windings_down[8] = 
-	{
-		0, 1,   1, 1,   1, 0,   0, 0
-	};
+		this->clip = clip;
+		// Y-axis goes positively upwards
+		font_windings_up = 
+		{
+			clip.x, clip.y,   1-clip.x, clip.y,   1-clip.x, 1-clip.y,   clip.x, 1-clip.y
+		};
+		// Y-axis goes positively downwards
+		font_windings_down = 
+		{
+			clip.x, 1-clip.y,   1-clip.x, 1-clip.y,   1-clip.x, clip.y,   clip.x, clip.y
+		};
+	}
 	
 	void SimpleFont::print(const vec3& location, const vec2& size, std::string text, bool YaxisUp)
 	{
@@ -48,7 +57,7 @@ namespace library
 		resizeVertexArray(current_vertices);
 		
 		font_vertex_t* vertex = this->vdata;
-		const int* windings = (YaxisUp) ? font_windings_up : font_windings_down;
+		std::vector<float>& windings = (YaxisUp) ? font_windings_up : font_windings_down;
 		
 		/// emit vertex data
 		emitTextBlock(vertex, location, size, text, windings);
@@ -71,7 +80,7 @@ namespace library
 		resizeVertexArray(current_vertices);
 		
 		font_vertex_t* vertex = this->vdata;
-		const int* windings = (YaxisUp) ? font_windings_up : font_windings_down;
+		std::vector<float>& windings = (YaxisUp) ? font_windings_up : font_windings_down;
 		
 		/// emit vertex data for each data structure
 		for (size_t i = 0; i < data.size(); i++)
@@ -96,15 +105,17 @@ namespace library
 		}
 	}
 	
-	void SimpleFont::emitTextBlock(font_vertex_t*& vertex, const vec3& location, const vec2& size, std::string& text, const int* wind)
+	void SimpleFont::emitTextBlock(font_vertex_t*& vertex, const vec3& location, const vec2& size, std::string& text, const std::vector<float>& wind)
 	{
 		for (size_t i = 0; i < text.length(); i++)
 		{
 			// convert text to font array index positions
 			text[i] -= 32;
 			
+			#define clipInt(x) ((x > 0.5) ? 1 : 0)
+			
 			// emit characters as quads
-			vertex->x = location.x + (wind[0] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[0]) + i) * size.x;
 			vertex->y = location.y + 0.0;
 			vertex->z = location.z;
 			vertex->s = wind[0];
@@ -112,7 +123,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[2] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[2]) + i) * size.x;
 			vertex->y = location.y + 0.0;
 			vertex->z = location.z;
 			vertex->s = wind[2];
@@ -120,7 +131,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[4] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[4]) + i) * size.x;
 			vertex->y = location.y + size.y;
 			vertex->z = location.z;
 			vertex->s = wind[4];
@@ -128,7 +139,7 @@ namespace library
 			vertex->p = text[i];
 			vertex++;
 			
-			vertex->x = location.x + (wind[6] + i) * size.x;
+			vertex->x = location.x + (clipInt(wind[6]) + i) * size.x;
 			vertex->y = location.y + size.y;
 			vertex->z = location.z;
 			vertex->s = wind[6];
@@ -145,7 +156,7 @@ namespace library
 		{
 			vao.begin(sizeof(font_vertex_t), verts, this->vdata, GL_STREAM_DRAW);
 			vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
-			vao.attrib(1, 4, GL_SHORT, GL_FALSE, offsetof(font_vertex_t, s));
+			vao.attrib(1, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, s));
 			vao.end();
 		}
 		else
