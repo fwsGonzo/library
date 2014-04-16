@@ -3,7 +3,7 @@
 ######################
 
 # (1) select which components to use
-USE_COMPRESSION = library/compression
+#USE_COMPRESSION = library/compression
 #USE_NETWORK = library/network
 #USE_SCRIPT  = library/script
 USE_SOUND   = library/sound
@@ -23,19 +23,19 @@ OUTPUT   = ./liblibrary.a
 # code folders
 SOURCE_DIRS  = 
 LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
-				library/noise library/storage \
-				library/threading library/timing \
+				library/noise library/storage library/timing \
 				$(USE_OPENGL) $(USE_COMPRESSION) $(USE_NETWORK) $(USE_SCRIPT) $(USE_SOUND)
 
 # compiler
 CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
-CCFLAGS = -c -Wall -Wextra -pedantic -Wno-write-strings -Iinc -Iinclude
+CCFLAGS = -c -Wall -Wextra -Wno-write-strings -Iinc -Iinclude
 # linker flags
 ifeq ($(OS),Windows_NT)
-	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
+#	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
+	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -lws2_32
 else
-	LFLAGS  = -Llib/linux -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ltcc -ldl
+	LFLAGS  = -Llib/linux -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ldl
 endif
 
 ##############################################################

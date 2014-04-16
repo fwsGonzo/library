@@ -21,90 +21,11 @@ namespace library
 	void OpenGL::init()
 	{
 		//-== openGL extensions ==-//
-		
-		//vertex buffer objects
-		glGenBuffers    = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glGenBuffers");
-		glBindBuffer    = (void(GLapi*)(GLenum, GLuint))glfwGetProcAddress("glBindBuffer");
-		glBufferData    = (void(GLapi*)(GLenum, GLint, GLvoid*, GLenum))glfwGetProcAddress("glBufferData");
-		glBufferSubData = (void(GLapi*)(GLenum, GLint, GLsizei, GLvoid*))glfwGetProcAddress("glBufferSubData");
-		glDeleteBuffers = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glDeleteBuffers");
-		
-		//textures & mipmapping
-#ifdef _WIN32
-		glActiveTexture		= (void(GLapi*)(GLenum))glfwGetProcAddress("glActiveTexture");
-#endif
-		glGenerateMipmap	= (void(GLapi*)(GLenum))glfwGetProcAddress("glGenerateMipmap");
-		glTexImage3D		= (void(GLapi*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLsizei, GLint, GLenum, GLenum, GLvoid*))glfwGetProcAddress("glTexImage3D");
-		glTexImage2DMultisample = (void(GLapi*)(GLenum, GLsizei, GLint, GLsizei, GLsizei, GLboolean))glfwGetProcAddress("glTexImage2DMultisample");
-		
-		// shader pipeline
-		glCreateProgram			= (GLuint(GLapi*)())glfwGetProcAddress("glCreateProgram");
-		glDeleteProgram	 		= (void(GLapi*)(GLuint))glfwGetProcAddress("glDeleteProgram");
-		glCreateShader			= (GLuint(GLapi*)(GLenum))glfwGetProcAddress("glCreateShader");
-		glDeleteShader			= (void(GLapi*)(GLuint))glfwGetProcAddress("glDeleteShader");
-		glCompileShader			= (void(GLapi*)(GLuint))glfwGetProcAddress("glCompileShader");
-		glShaderSource			= (void(GLapi*)(GLuint, GLsizei, GLchar**, GLint*))glfwGetProcAddress("glShaderSource");
-		glGetShaderInfoLog		= (void(GLapi*)(GLuint, GLsizei, GLsizei*, GLchar*))glfwGetProcAddress("glGetShaderInfoLog");
-		glGetShaderiv			= (void(GLapi*)(GLuint, GLenum, GLint*))glfwGetProcAddress("glGetShaderiv");
-		glAttachShader          = (void(GLapi*)(GLuint, GLuint))glfwGetProcAddress("glAttachShader");
-		glDetachShader          = (void(GLapi*)(GLuint, GLuint))glfwGetProcAddress("glDetachShader");
-		glGetProgramiv			= (void(GLapi*)(GLuint, GLenum, GLint*))glfwGetProcAddress("glGetProgramiv");
-		glGetProgramInfoLog		= (void(GLapi*)(GLuint, GLsizei, GLsizei*, GLchar*))glfwGetProcAddress("glGetProgramInfoLog");
-		glLinkProgram			= (void(GLapi*)(GLuint))glfwGetProcAddress("glLinkProgram");
-		glUseProgram			= (void(GLapi*)(GLuint))glfwGetProcAddress("glUseProgram");
-		// shader uniforms
-		glGetUniformLocation    = (GLint(GLapi*)(GLuint, GLchar*))glfwGetProcAddress("glGetUniformLocation");
-		glUniform1i				= (void(GLapi*)(GLint, GLint))glfwGetProcAddress("glUniform1i");
-		glUniform2i				= (void(GLapi*)(GLint, GLint, GLint))glfwGetProcAddress("glUniform2i");
-		glUniform3i				= (void(GLapi*)(GLint, GLint, GLint, GLint))glfwGetProcAddress("glUniform3i");
-		glUniform1f				= (void(GLapi*)(GLint, GLfloat))glfwGetProcAddress("glUniform1f");
-		glUniform2f				= (void(GLapi*)(GLint, GLfloat, GLfloat))glfwGetProcAddress("glUniform2f");
-		glUniform3f				= (void(GLapi*)(GLint, GLfloat, GLfloat, GLfloat))glfwGetProcAddress("glUniform3f");
-		glUniform3fv			= (void(GLapi*)(GLint, GLsizei, GLfloat*))glfwGetProcAddress("glUniform3fv");
-		glUniform4f				= (void(GLapi*)(GLint, GLfloat, GLfloat, GLfloat, GLfloat))glfwGetProcAddress("glUniform4f");
-		glUniform4fv			= (void(GLapi*)(GLint, GLsizei, GLfloat*))glfwGetProcAddress("glUniform4fv");
-		
-		glUniformMatrix4fv      = (void(GLapi*)(GLint, GLsizei, GLboolean, GLfloat*))glfwGetProcAddress("glUniformMatrix4fv");
-		
-		// vertex array objects (VAOs)
-		glGenVertexArrays           = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glGenVertexArrays");
-		glBindVertexArray           = (void(GLapi*)(GLuint))glfwGetProcAddress("glBindVertexArray");
-		glDeleteVertexArrays        = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glDeleteVertexArrays");
-		
-		glDisableVertexAttribArray	= (void(GLapi*)(GLuint))glfwGetProcAddress("glDisableVertexAttribArray");
-		glEnableVertexAttribArray	= (void(GLapi*)(GLuint))glfwGetProcAddress("glEnableVertexAttribArray");
-												//	index,  count,   type,  normalized, stride,  data
-		glVertexAttribPointer		= (void(GLapi*)(GLuint, GLsizei, GLenum, GLboolean, GLsizei, GLvoid*))glfwGetProcAddress("glVertexAttribPointer");
-		glBindAttribLocation        = (void(GLapi*)(GLuint, GLuint, GLchar*))glfwGetProcAddress("glBindAttribLocation");
-		
-		// occlusion queries
-		glGenQueries                = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glGenQueries");
-		glDeleteQueries             = (void(GLapi*)(GLsizei, GLuint*))glfwGetProcAddress("glDeleteQueries");
-		glGetQueryObjectuiv         = (void(GLapi*)(GLuint, GLenum, GLuint*))glfwGetProcAddress("glGetQueryObjectuiv");
-		glBeginQuery				= (void(GLapi*)(GLenum, GLuint))glfwGetProcAddress("glBeginQuery");
-		glEndQuery					= (void(GLapi*)(GLenum))glfwGetProcAddress("glEndQuery");
-		
-		// point sprites
-		//glPointParameterfARB        = (void(GLapi*)())glfwGetProcAddress("glPointParameterf")
-		//glPointParameterfvARB       = (void(GLapi*)())glfwGetProcAddress("glPointParameterfv")
-		
-		// framebuffers
-		glGenFramebuffers		= (void(GLapi*) (GLsizei count, GLuint* ids))glfwGetProcAddress("glGenFramebuffers");
-		glDeleteFramebuffers 	= (void(GLapi*) (GLsizei count, GLuint* ids))glfwGetProcAddress("glDeleteFramebuffers");
-		glBindFramebuffer 		= (void(GLapi*) (GLenum bufferType, GLuint fbo))glfwGetProcAddress("glBindFramebuffer");
-		glFramebufferTexture2D 	= (void(GLapi*) (GLenum, GLenum, GLenum, GLuint, GLint))glfwGetProcAddress("glFramebufferTexture2D");
-		glFramebufferTexture 	= (void(GLapi*) (GLenum, GLenum, GLuint, GLint))glfwGetProcAddress("glFramebufferTexture");
-		glBlitFramebuffer 		= (void(GLapi*) (GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLint, GLenum))
-												glfwGetProcAddress("glBlitFramebuffer");
-		glCheckFramebufferStatus = (GLenum(GLapi*) (GLenum bufferType))glfwGetProcAddress("glCheckFramebufferStatus");
-		glDrawBuffers           = (void(GLapi*) (GLsizei count, GLenum* buffers))glfwGetProcAddress("glDrawBuffers");
-		// renderbuffers
-		glGenRenderbuffers 		= (void(GLapi*) (GLsizei count, GLuint* rboIDs))glfwGetProcAddress("glGenRenderbuffers");
-		glBindRenderbuffer 		= (void(GLapi*) (GLenum bufferType, GLuint rbo))glfwGetProcAddress("glBindRenderbuffer");
-		glRenderbufferStorage 	= (void(GLapi*) (GLenum, GLenum, GLsizei, GLsizei))glfwGetProcAddress("glRenderbufferStorage");
-		glRenderbufferStorageMultisample = 	(void(GLapi*) (GLenum, GLsizei, GLenum, GLsizei, GLsizei))
-												glfwGetProcAddress("glRenderbufferStorageMultisample");
-		glFramebufferRenderbuffer = (void(GLapi*) (GLenum, GLenum, GLenum, GLuint))glfwGetProcAddress("glFramebufferRenderbuffer");
+		if (glewInit() != GLEW_OK)
+		{
+			logger << Log::ERR << "OpenGL::init(): Failed to initialize GLEW" << Log::ENDL;
+			throw std::string("OpenGL::init(): GLEW initialization error");
+		}		
 		
 		// test for some basic driver support
 		this->supportsVBO = glGenBuffers != nullptr;
@@ -122,7 +43,7 @@ namespace library
 		glBindTexture(GL_TEXTURE_2D_ARRAY, test);
 		glDeleteTextures(1, &test);
 		
-		this->supportsTextureArrays = glGetError() == 0;
+		this->supportsTextureArrays = (glGetError() == 0);
 		
 		// default states
 		// GL_COMPRESSED_RGBA setting
@@ -146,13 +67,10 @@ namespace library
 		// default blend function
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		
-		GLenum glerr = glGetError();
-		if (glerr)
+		if (checkError())
 		{
-			logger << Log::ERR << "OpenGL initialization error: " << glerr << Log::ENDL;
 			throw std::string("OpenGL::init(): Initialization error");
 		}
-		
 	}
 	
 	bool OpenGL::checkError()

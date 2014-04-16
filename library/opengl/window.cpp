@@ -2,7 +2,6 @@
 
 #include <library/log.hpp>
 #include <library/sleep.hpp>
-#include <GL/glfw3.h>
 #include <library/opengl/opengl.hpp>
 
 namespace library

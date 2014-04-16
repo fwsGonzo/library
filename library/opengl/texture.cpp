@@ -6,6 +6,10 @@
 #include <cmath>
 #include <sstream>
 
+#ifndef GL_TEXTURE_2D_MULTISAMPLE
+#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
+#endif
+
 namespace library
 {
 	GLuint Texture::lastid[TEXTURE_UNITS] = {0};

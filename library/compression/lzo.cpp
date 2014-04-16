@@ -1,8 +1,9 @@
 #include <library/compression/lzo.hpp>
-#include <string>
 
 #include <lzo/lzo1x.h>
 #include <lzo/lzo2a.h>
+#include <cstdlib>
+#include <string>
 
 namespace library
 {

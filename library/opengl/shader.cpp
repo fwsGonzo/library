@@ -68,7 +68,7 @@ namespace library
 		if (prog)
 		{
 			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar* infolog = new char[logsize];
+			GLchar* infolog = new char[logsize+1]();
 			glGetProgramInfoLog(shader, logsize, NULL, infolog);
 			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
 			delete[] infolog;
@@ -76,14 +76,14 @@ namespace library
 		else
 		{
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar* infolog = new char[logsize];
+			GLchar* infolog = new char[logsize+1]();
 			glGetShaderInfoLog(shader, logsize, NULL, infolog);
 			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
 			delete[] infolog;
 		}
 	}
 	
-	std::string Shader::shaderProcessor(std::string filename, Shader::processFunc tokenizer, bool isVertex)
+	std::string Shader::shaderProcessor(const std::string& filename, Shader::processFunc tokenizer, bool isVertex)
 	{
 		std::ifstream file(filename.c_str());
 		
@@ -144,11 +144,11 @@ namespace library
 		return shaderText;
 	}
 	
-	Shader::Shader(std::string filename, std::vector<std::string>& linkstage) :
+	Shader::Shader(const std::string& filename, const std::vector<std::string>& linkstage) :
 		Shader(filename, nullptr, linkstage) { }
 	
 	// shader from external file
-	Shader::Shader(std::string filename, processFunc tokenizer, std::vector<std::string>& attributes)
+	Shader::Shader(const std::string& filename, processFunc tokenizer, const std::vector<std::string>& attributes)
 	{
 		// recursively process text from files and #includes
 		std::string vertshader = shaderProcessor(filename, tokenizer, true );
@@ -165,19 +165,23 @@ namespace library
 	}
 	
 	// internal function for uploading shader code, creating and compiling the shader program
-	void Shader::createShader(std::string vertshader, std::string fragshader, std::string source, std::vector<std::string>& attributes)
+	void Shader::createShader(
+		const std::string& vertshader, 
+		const std::string& fragshader, 
+		const std::string& source, 
+		const std::vector<std::string>& attributes)
 	{
 		// char arrays for GL call
-		char* source_v[1] = { const_cast<char*>(vertshader.c_str()) };
-		char* source_f[1] = { const_cast<char*>(fragshader.c_str()) };
+		const GLchar* source_v[1] = { (GLchar*) vertshader.c_str() };
+		const GLchar* source_f[1] = { (GLchar*) fragshader.c_str() };
 		
 		// create shaders
 		GLuint shader_v = glCreateShader(GL_VERTEX_SHADER_ARB);
 		GLuint shader_f = glCreateShader(GL_FRAGMENT_SHADER_ARB);
 		
 		// upload source
-		glShaderSource(shader_v, 1, (GLchar**) source_v, NULL);
-		glShaderSource(shader_f, 1, (GLchar**) source_f, NULL);
+		glShaderSource(shader_v, 1, source_v, NULL);
+		glShaderSource(shader_f, 1, source_f, NULL);
 		
 		// compile shaders
 		glCompileShader(shader_v);
@@ -213,12 +217,7 @@ namespace library
 		}
 		
 		// link program
-		// we don't care about outlier errors for linking (ultra-rare)
 		glLinkProgram(this->shader);
-		
-		// start program
-		bind();
-		
 		glGetProgramiv(this->shader, GL_LINK_STATUS, &status);
 		if (!status)
 		{
@@ -233,6 +232,9 @@ namespace library
 			logger << Log::ERR << "Shader::load(): OpenGL error for: " << source << Log::ENDL;
 			throw std::string("Shader::load(): OpenGL error for: " + source);
 		}
+		
+		// use program
+		bind();
 	}
 	
 	void Shader::bind()
