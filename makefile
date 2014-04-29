@@ -3,7 +3,7 @@
 ######################
 
 # (1) select which components to use
-#USE_COMPRESSION = library/compression
+USE_COMPRESSION = library/compression
 #USE_NETWORK = library/network
 #USE_SCRIPT  = library/script
 USE_SOUND   = library/sound
@@ -23,7 +23,7 @@ OUTPUT   = ./liblibrary.a
 # code folders
 SOURCE_DIRS  = 
 LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
-				library/noise library/storage library/timing \
+				library/noise library/storage library/threading library/timing \
 				$(USE_OPENGL) $(USE_COMPRESSION) $(USE_NETWORK) $(USE_SCRIPT) $(USE_SOUND)
 
 # compiler

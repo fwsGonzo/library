@@ -43,6 +43,8 @@ namespace library
 		void release(int);
 		
 		// public mouse functions
+		// set mouse options
+		void mouseOptions(double speed, double sensitivity);
 		// enable FPS-like mouse grabbing
 		void grabMouse(bool grab);
 		// mouse position

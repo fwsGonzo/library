@@ -67,6 +67,11 @@ namespace library
 			keys[key].action = KEY_PRESSED;
 	}
 	
+	void Input::mouseOptions(double speed, double sensitivity)
+	{
+		this->speed    = speed;
+		this->sensitivity = sensitivity;
+	}
 	void Input::grabMouse(bool grab)
 	{
 		mousegrab = grab;
