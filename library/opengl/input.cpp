@@ -22,10 +22,9 @@ namespace library
 		this->gamescr  = &gamescr;
 		this->speed    = 0.15;
 		this->sensitivity = 8;
-		this->lastmx   = gamescr.SW / 2;
-		this->lastmy   = gamescr.SH / 2;
 		// default rotation
-		this->rotation = vec2(0.0);
+		this->rotation  = vec2(0.0);
+		this->mousegrab = false;
 		
 		if (kbd)
 		{
@@ -39,10 +38,6 @@ namespace library
 		{
 			// hook mouse events
 			glfwSetCursorPosCallback(gamescr.window(), &mouseMove);
-			// disable cursor
-			glfwSetInputMode(gamescr.window(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-			// cursor moved event
-			glfwSetCursorPos(gamescr.window(), this->lastmx, this->lastmy);
 			// mouse button event
 			glfwSetMouseButtonCallback(gamescr.window(), &mouseButton);
 			// mouse wheel event
@@ -57,7 +52,6 @@ namespace library
 		
 		return keys[key];
 	}
-	
 	Input::key_t Input::getKey(int key) const
 	{
 		return getKeyEx(key).action;
@@ -73,6 +67,25 @@ namespace library
 			keys[key].action = KEY_PRESSED;
 	}
 	
+	void Input::grabMouse(bool grab)
+	{
+		mousegrab = grab;
+		if (mousegrab)
+		{
+			// hide cursor
+			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			// move cursor to center of window
+			lastMousePos = vec2(gamescr->SW / 2, gamescr->SH / 2);
+			mousePos = lastMousePos;
+			glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
+		}
+		else
+		{
+			// IMPLEMENT ME   
+			// show cursor
+			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+		}
+	}
 	
 	const Input::input_t& Input::getMouseEx(int button) const
 	{
@@ -117,33 +130,43 @@ namespace library
 	
 	void mouseMove(GLFWwindow* window, double x, double y)
 	{
-		const double PI = 4 * atan(1);
-		const double degToRad = PI / 180;
-		const double maxX = 89 * degToRad;
-		const double maxY = PI * 2.0;
-		
-		// in-game
-		double dx = (x - input.lastmx) * input.speed;
-		double dy = (y - input.lastmy) * input.speed;
-		
-		if (fabs(dx) > input.sensitivity)
-			dx = toolbox::signum(dx) * input.sensitivity + dx / input.sensitivity;
-		if (fabs(dy) > input.sensitivity)
-			dy = toolbox::signum(dy) * input.sensitivity + dy / input.sensitivity;
-		
-		// rotation on axes
-		input.rotation.y += dx * degToRad;
-		input.rotation.x += dy * degToRad;
-		// clamping
-		if (input.rotation.x >  maxX) input.rotation.x =  maxX;
-		if (input.rotation.x < -maxX) input.rotation.x = -maxX;
-		if (input.rotation.y <     0) input.rotation.y += PI * 2;
-		if (input.rotation.y >= maxY) input.rotation.y -= PI * 2;
-		
-		// move mouse to center
-		input.lastmx = input.gamescr->SW / 2;
-		input.lastmy = input.gamescr->SH / 2;
-		glfwSetCursorPos(input.gamescr->window(), input.lastmx, input.lastmy);
+		if (input.mousegrab)
+		{
+			const double PI = 4 * atan(1);
+			const double degToRad = PI / 180;
+			const double maxX = 89 * degToRad;
+			const double maxY = PI * 2.0;
+			
+			// in-game
+			double dx = (x - input.lastMousePos.x) * input.speed;
+			double dy = (y - input.lastMousePos.y) * input.speed;
+			
+			if (fabs(dx) > input.sensitivity)
+				dx = toolbox::signum(dx) * input.sensitivity + dx / input.sensitivity;
+			if (fabs(dy) > input.sensitivity)
+				dy = toolbox::signum(dy) * input.sensitivity + dy / input.sensitivity;
+			
+			// rotation on axes
+			input.rotation.y += dx * degToRad;
+			input.rotation.x += dy * degToRad;
+			// clamping
+			if (input.rotation.x >  maxX) input.rotation.x =  maxX;
+			if (input.rotation.x < -maxX) input.rotation.x = -maxX;
+			if (input.rotation.y <     0) input.rotation.y += PI * 2;
+			if (input.rotation.y >= maxY) input.rotation.y -= PI * 2;
+			
+			// move mouse to center
+			input.lastMousePos.x = input.gamescr->SW / 2;
+			input.lastMousePos.y = input.gamescr->SH / 2;
+			glfwSetCursorPos(input.gamescr->window(), input.lastMousePos.x, input.lastMousePos.y);
+		}
+		else
+		{
+			input.lastMousePos.x = input.mousePos.x;
+			input.lastMousePos.y = input.mousePos.y;
+		}
+		input.mousePos.x = x;
+		input.mousePos.y = y;
 	}
 	
 	void mouseButton(GLFWwindow* window, int button, int action, int mods)

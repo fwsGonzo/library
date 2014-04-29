@@ -8,6 +8,12 @@ namespace library
 		this->currentTime = timer.getDeltaTime();
 	}
 	
+	void Integrator::restart()
+	{
+		timer.startNewRound();
+		this->currentTime = timer.getDeltaTime();
+	}
+	
 	void Integrator::integrate()
 	{
 		double timeElapsed = timer.getDeltaTime();
