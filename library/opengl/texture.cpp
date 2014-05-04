@@ -11,16 +11,8 @@ namespace library
 	GLuint Texture::lastid[TEXTURE_UNITS] = {0};
 	GLenum Texture::lastUnit = -1;
 	
-	Texture::Texture() : id(0), type(0), format(0), boundUnit(0), isMipmapped(false) {}
-	
 	Texture::Texture(GLenum target)
-	{
-		this->type   = target;
-		this->format = GL_RGBA8;
-		glGenTextures(1, &this->id);
-		this->boundUnit = 0;
-		this->isMipmapped = false;
-	}
+		: Texture(target, GL_RGBA8) {}
 	
 	Texture::Texture(GLenum target, GLint format)
 	{
@@ -29,11 +21,6 @@ namespace library
 		glGenTextures(1, &this->id);
 		this->boundUnit = 0;
 		this->isMipmapped = false;
-	}
-	
-	void Texture::setFormat(GLint newFormat)
-	{
-		this->format = newFormat;
 	}
 	
 	void Texture::create(const Bitmap& bmp, bool mipmap = true, GLint wrapmode = GL_CLAMP_TO_EDGE, GLint magfilter = GL_NEAREST, GLint minfilter = GL_LINEAR_MIPMAP_LINEAR)
@@ -144,8 +131,7 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = GL_UNSIGNED_BYTE;
-		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB) sformat = GL_FLOAT;
+		GLenum sformat = getStorageFormat();
 		
 		switch (this->type)
 		{
@@ -193,8 +179,7 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = GL_UNSIGNED_BYTE;
-		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB) sformat = GL_FLOAT;
+		GLenum sformat = getStorageFormat();
 		
 		switch (this->type)
 		{
@@ -402,6 +387,14 @@ namespace library
 			throw std::string("Texture::bind(): OpenGL state error");
 		}
 		#endif
+	}
+	
+	GLenum Texture::getStorageFormat()
+	{
+		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB)
+			return GL_FLOAT;
+		
+		return GL_UNSIGNED_BYTE;
 	}
 	
 	std::string Texture::toString() const
