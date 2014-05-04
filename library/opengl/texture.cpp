@@ -6,10 +6,6 @@
 #include <cmath>
 #include <sstream>
 
-#ifndef GL_TEXTURE_2D_MULTISAMPLE
-#define GL_TEXTURE_2D_MULTISAMPLE         0x9100
-#endif
-
 namespace library
 {
 	GLuint Texture::lastid[TEXTURE_UNITS] = {0};
@@ -51,7 +47,7 @@ namespace library
 		// openGL is a C library, so const& is never going to work :)
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
-		GLuint* pixel = bmp.data();
+		const GLuint* pixel = bmp.data();
 		
 		this->isMipmapped = mipmap;
 		if (this->isMipmapped)
@@ -62,7 +58,7 @@ namespace library
 		
 		if (this->type == GL_TEXTURE_2D)
 		{
-			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), ogl.storageformat, pixel);
+			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, pixel);
 		}
 		else if (this->type == GL_TEXTURE_CUBE_MAP)
 		{
@@ -98,7 +94,7 @@ namespace library
 					break;
 				}
 				// upload each side, from temporary bitmap
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, cmsize, cmsize, 0, bmp.getFormat(), ogl.storageformat, blitdump.data());
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, cmsize, cmsize, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, blitdump.data());
 			}
 			/* ====================================== */
 		}
@@ -106,11 +102,12 @@ namespace library
 		{
 			int numTiles = bmp.getTilesX() * bmp.getTilesY();
 			
-			glTexImage3D(this->type, 0, format, width, height, numTiles, 0, bmp.getFormat(), ogl.storageformat, pixel);
+			glTexImage3D(this->type, 0, format, width, height, numTiles, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, pixel);
 		}
 		else
 		{
 			logger << Log::ERR << "@Texture::create(): Unknown texture target (" << (int)this->type << ")" << Log::ENDL;
+			throw std::string("Texture::create(): Unknown texture target (" + std::to_string(this->type) + ")");
 		}
 		
 		if (this->isMipmapped)
@@ -147,7 +144,7 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = ogl.storageformat;
+		GLenum sformat = GL_UNSIGNED_BYTE;
 		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB) sformat = GL_FLOAT;
 		
 		switch (this->type)
@@ -196,7 +193,7 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = ogl.storageformat;
+		GLenum sformat = GL_UNSIGNED_BYTE;
 		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB) sformat = GL_FLOAT;
 		
 		switch (this->type)

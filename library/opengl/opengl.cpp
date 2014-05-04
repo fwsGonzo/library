@@ -10,13 +10,6 @@ namespace library
 {
 	OpenGL ogl;
 	
-	OpenGL::OpenGL()
-	{
-		// standard 32-bits formats
-		imageformat   = GL_RGBA8;
-		storageformat = GL_UNSIGNED_BYTE;
-	}
-	
 	// set opengl defaults, read function entry points
 	void OpenGL::init()
 	{
@@ -71,6 +64,7 @@ namespace library
 		{
 			throw std::string("OpenGL::init(): Initialization error");
 		}
+		this->initialized = true;
 	}
 	
 	bool OpenGL::checkError()
