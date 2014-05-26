@@ -252,7 +252,7 @@ namespace library
 		}
 	}
 	
-	void Texture::createDepth(bool stencil24d8s, int width, int height)
+	void Texture::createDepth(int width, int height, GLenum intformat)
 	{
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -262,17 +262,17 @@ namespace library
 		// create empty depth buffer texture
 		this->width  = width;
 		this->height = height;
+		this->format = intformat;
 		
-		if (stencil24d8s)
+		if (format == GL_DEPTH24_STENCIL8 ||
+			format == GL_DEPTH32F_STENCIL8)
 		{
-			this->format = GL_DEPTH24_STENCIL8;
+			// let opengl give the highest supported for this context
 			glTexImage2D(this->type, 0, format, width, height, 0, GL_DEPTH_STENCIL, GL_UNSIGNED_INT_24_8, nullptr);
 		}
 		else
 		{
-			// let opengl give the highest supported for this context
-			this->format = GL_DEPTH_COMPONENT;
-			glTexImage2D(this->type, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, nullptr);
+			glTexImage2D(this->type, 0, format, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
 		}
 		if (OpenGL::checkError())
 		{

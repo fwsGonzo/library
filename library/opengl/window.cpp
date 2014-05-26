@@ -29,6 +29,8 @@ namespace library
 		this->refreshrate = 60;
 		this->vsync = true;
 		this->multisample = 0;
+		this->depthbits = 24;
+		this->stencbits = 8;
 	}
 	
 	void WindowClass::open(const WindowConfig& wndconf)
@@ -56,8 +58,8 @@ namespace library
 		glfwWindowHint(GLFW_SAMPLES, multisample);
 		// common alpha, stencil & depth settings
 		glfwWindowHint(GLFW_ALPHA_BITS, 8);
-		glfwWindowHint(GLFW_DEPTH_BITS,  24);
-		glfwWindowHint(GLFW_STENCIL_BITS, 8);
+		glfwWindowHint(GLFW_DEPTH_BITS,  wndconf.depthbits);
+		glfwWindowHint(GLFW_STENCIL_BITS, wndconf.stencbits);
 		
 		// create new glfw3 window
 		this->wndHandle = glfwCreateWindow(wndconf.SW, wndconf.SH, wndconf.title.c_str(), monitor, nullptr);

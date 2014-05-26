@@ -365,9 +365,9 @@ namespace library
 	// FOV perspective matrix (frustum)
 	mat4 perspectiveMatrix(mat4::matrix_t fov, mat4::matrix_t aspect, mat4::matrix_t znear, mat4::matrix_t zfar)
 	{
-		const mat4::matrix_t pio360 = 4.0 * atan(1.0) / 360.0;
+		const mat4::matrix_t pio180 = M_PI / 180.0;
 		
-		mat4::matrix_t h = 1.0 / tan(fov * pio360);
+		mat4::matrix_t h = 1.0 / tan(fov * pio180 / 2.0);
 		mat4::matrix_t negd = znear - zfar;
 		
 		mat4::matrix_t m[mat4::ELEMENTS];
