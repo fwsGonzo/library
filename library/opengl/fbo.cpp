@@ -48,14 +48,14 @@ namespace library
 		if (fbo == 0) throw std::string("FBO was not yet created");
 		if (lastFBO != fbo) throw std::string("FBO was not currently bound, cannot attach color target");
 		
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, texture, 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, texture, 0);
 	}
 	void FBO::removeDepth()
 	{
 		if (fbo == 0) throw std::string("FBO was not yet created");
 		if (lastFBO != fbo) throw std::string("FBO was not currently bound, cannot attach color target");
 		
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, 0, 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, 0, 0);
 	}
 	
 	void FBO::createDepthRBO(int width, int height, GLenum internalFormat)
