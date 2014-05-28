@@ -65,22 +65,21 @@ namespace library
 	{
 		logger << Log::ERR << "*** Shader program compile error:" << Log::ENDL;
 		GLint logsize;
+		GLchar* infolog;
 		if (prog)
 		{
 			glGetProgramiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar* infolog = new char[logsize+1]();
+			infolog = new char[logsize+1];
 			glGetProgramInfoLog(shader, logsize, NULL, infolog);
-			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
-			delete[] infolog;
 		}
 		else
 		{
 			glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logsize);
-			GLchar* infolog = new char[logsize+1]();
+			infolog = new char[logsize+1];
 			glGetShaderInfoLog(shader, logsize, NULL, infolog);
-			logger << Log::INFO << "\n" << std::string(infolog, logsize) << Log::ENDL;
-			delete[] infolog;
 		}
+		logger << Log::INFO << "\n" << std::string(infolog) << Log::ENDL;
+		delete[] infolog;
 	}
 	
 	std::string Shader::shaderProcessor(const std::string& filename, Shader::processFunc tokenizer, bool isVertex)
