@@ -78,7 +78,7 @@ namespace library
 			infolog = new char[logsize+1];
 			glGetShaderInfoLog(shader, logsize, NULL, infolog);
 		}
-		logger << Log::INFO << "\n" << std::string(infolog) << Log::ENDL;
+		logger << Log::INFO << std::string(infolog) << Log::ENDL;
 		delete[] infolog;
 	}
 	
