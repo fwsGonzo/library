@@ -16,27 +16,27 @@ namespace library
 	
 	Texture::Texture(GLenum target, GLint format)
 	{
+		glGenTextures(1, &this->id);
 		this->type   = target;
 		this->format = format;
-		glGenTextures(1, &this->id);
-		this->boundUnit = 0;
+		this->boundUnit = -1;
 		this->isMipmapped = false;
 	}
 	
 	void Texture::create(const Bitmap& bmp, bool mipmap = true, GLint wrapmode = GL_CLAMP_TO_EDGE, GLint magfilter = GL_NEAREST, GLint minfilter = GL_LINEAR_MIPMAP_LINEAR)
 	{
+		// Implementation is a C library, so no const& :)
+		this->isMipmapped = mipmap;
+		this->width  = bmp.getWidth();
+		this->height = bmp.getHeight();
+		const GLuint* pixel = bmp.data();
+		
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, wrapmode);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, wrapmode);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
 		
-		// openGL is a C library, so const& is never going to work :)
-		this->width  = bmp.getWidth();
-		this->height = bmp.getHeight();
-		const GLuint* pixel = bmp.data();
-		
-		this->isMipmapped = mipmap;
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
@@ -112,26 +112,26 @@ namespace library
 	
 	void Texture::create(int levels, int width, int height)
 	{
+		this->isMipmapped = (levels > 0);
+		this->width  = width;
+		this->height = height;
+		
 		bind(0);
 		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
-		const GLint maxfilter = (levels) ? GL_LINEAR : GL_NEAREST;
+		const GLint maxfilter = GL_NEAREST;
 		
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
 		
-		this->width  = width;
-		this->height = height;
-		
-		this->isMipmapped = (levels > 0);
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = getStorageFormat();
+		const GLenum sformat = getStorageFormat();
 		
 		switch (this->type)
 		{
@@ -143,11 +143,8 @@ namespace library
 			logger << Log::ERR << toString();
 			throw std::string("Failed to create texture");
 		}
-		
 		if (this->isMipmapped)
-		{
 			glGenerateMipmap(this->type);
-		}
 		
 		if (OpenGL::checkError())
 		{
@@ -159,19 +156,19 @@ namespace library
 	
 	void Texture::create3d(int levels, int x, int y, int z)
 	{
+		this->isMipmapped = (levels > 0);
+		this->width  = x;
+		this->height = y;
+		
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		
 		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
-		const GLint maxfilter = (levels) ? GL_LINEAR : GL_NEAREST;
+		const GLint maxfilter = GL_NEAREST;
 		
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
-		
-		this->width  = x;
-		this->height = y;
-		this->isMipmapped = (levels > 0);
 		
 		if (this->isMipmapped)
 		{
@@ -179,7 +176,7 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
 		
-		GLenum sformat = getStorageFormat();
+		const GLenum sformat = getStorageFormat();
 		
 		switch (this->type)
 		{
@@ -191,11 +188,8 @@ namespace library
 			logger << Log::ERR << toString();
 			throw std::string("Failed to create 3d texture");
 		}
-		
 		if (this->isMipmapped)
-		{
 			glGenerateMipmap(this->type);
-		}
 		
 		if (OpenGL::checkError())
 		{
@@ -231,38 +225,17 @@ namespace library
 		glTexParameterf(this->type, GL_TEXTURE_MAX_ANISOTROPY_EXT, samples);
 	}
 	
-	void Texture::createMultisample(int numsamples, int width, int height)
+	void Texture::createDepth(int width, int height)
 	{
-		// set type before binding
-		this->type = GL_TEXTURE_2D_MULTISAMPLE;
-		
-		bind(0);
+		// create empty depth buffer texture
 		this->width  = width;
 		this->height = height;
-		this->format = GL_RGBA;
-		this->isMipmapped = false;
 		
-		glTexImage2DMultisample(this->type, numsamples, this->format, width, height, GL_TRUE);
-		
-		if (OpenGL::checkError())
-		{
-			logger << Log::ERR << "Texture::createMultisample(): OpenGL state error" << Log::ENDL;
-			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::createMultisample(): OpenGL state error");
-		}
-	}
-	
-	void Texture::createDepth(int width, int height, GLenum intformat)
-	{
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		// create empty depth buffer texture
-		this->width  = width;
-		this->height = height;
-		this->format = intformat;
 		
 		if (format == GL_DEPTH24_STENCIL8 ||
 			format == GL_DEPTH32F_STENCIL8)
@@ -279,6 +252,40 @@ namespace library
 			logger << Log::ERR << "Texture::createDepth(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
 			throw std::string("Texture::createDepth(): OpenGL state error");
+		}
+	}
+	
+	void Texture::createMultisample(int width, int height, int samples)
+	{
+		this->width  = width;
+		this->height = height;
+		this->isMipmapped = false;
+		
+		bind(0);
+		glTexImage2DMultisample(this->type, samples, this->format, width, height, true);
+		
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::createMultisample(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::createMultisample(): OpenGL state error");
+		}
+	}
+	void Texture::createDepthMultisampled(int width, int height, int samples)
+	{
+		// create empty multisampled depth buffer texture
+		this->width  = width;
+		this->height = height;
+		this->isMipmapped = false;
+		
+		bind(0);
+		glTexImage2DMultisample(this->type, samples, this->format, width, height, true);
+		
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::createDepthMultisampled(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::string("Texture::createDepthMultisampled(): OpenGL state error");
 		}
 	}
 	
@@ -410,6 +417,8 @@ namespace library
 			typeString = "GL_TEXTURE_2D"; break;
 		case GL_TEXTURE_2D_MULTISAMPLE:
 			typeString = "GL_TEXTURE_2D_MULTISAMPLE"; break;
+		case GL_TEXTURE_2D_MULTISAMPLE_ARRAY:
+			typeString = "GL_TEXTURE_2D_MULTISAMPLE_ARRAY"; break;
 		case GL_TEXTURE_2D_ARRAY:
 			typeString = "GL_TEXTURE_2D_ARRAY"; break;
 		case GL_TEXTURE_3D:
