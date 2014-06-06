@@ -2,24 +2,37 @@
 
 #include <library/log.hpp>
 #include <library/opengl/window.hpp>
+#include <cmath>
 
 namespace library
 {
 	Camera::Camera(float FOV, float aspect, float znear, float zfar)
 	{
-		if (znear > zfar) throw std::string("Camera::Camera(): Znear must be less than Zfar");
-		if (znear <= 0)   throw std::string("Camera::Camera(): Znear must be greater than zero");
-		
-		this->FOV = FOV;
-		this->znear = znear;
-		this->zfar  = zfar;
-		
-		// projection matrix
-		matproj = perspectiveMatrix(FOV, aspect, znear, zfar);
+		setProjection(FOV, aspect, znear, zfar);
 		
 		// initialize matrices
 		setRotation(0, 0, 0);
 		setTranslation(0, 0, 0);
+	}
+	
+	void Camera::setProjection(float FOV, float aspect, float znear, float zfar)
+	{
+		if (znear > zfar) throw std::string("Camera::Camera(): Znear must be less than Zfar");
+		if (znear <= 0.0) throw std::string("Camera::Camera(): Znear must be greater than zero");
+		
+		// unit blocks depth-range
+		this->FOV   = FOV;
+		this->znear = znear;
+		this->zfar  = zfar;
+		
+		// perspective projection matrix
+		matproj = perspectiveMatrix(this->FOV, aspect, this->znear, this->zfar);
+		
+		// calculate half near-plane size
+		constexpr double pio180 = 4.0 * atan(1.0) / 180.0;
+		
+		float halfTan = tan(this->FOV * pio180 / 2.0);
+		nearPlaneHalfSize = vec2(halfTan * aspect, halfTan);
 	}
 	
 	void Camera::calculateFrustum()
@@ -56,20 +69,4 @@ namespace library
 		matviewproj = matproj * matview;
 	}
 	
-	const mat4& Camera::getProjection() const
-	{
-		return matproj;
-	}
-	const mat4& Camera::getViewMatrix() const
-	{
-		return matview;
-	}
-	const mat4& Camera::getRotationMatrix() const
-	{
-		return matrot;
-	}
-	const mat4& Camera::getMVP() const
-	{
-		return matviewproj;
-	}
 }
