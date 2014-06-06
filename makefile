@@ -30,13 +30,6 @@ LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
 CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
 CCFLAGS = -c -Wall -Wextra -Wno-write-strings -Iinc -Iinclude
-# linker flags
-ifeq ($(OS),Windows_NT)
-#	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -llzo2 -lws2_32 -ltcc
-	LFLAGS  = -Llib/win -static -lpthread -lbassdll -lglfw3 -lgdi32 -lopengl32 -lws2_32
-else
-	LFLAGS  = -Llib/linux -lpthread -lbass -llzo2 -lGL -lGLU -lglfw3 -lX11 -lXxf86vm -lXrandr -lXi -ldl
-endif
 
 ##############################################################
 

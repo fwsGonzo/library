@@ -97,7 +97,7 @@ namespace library
 		if (grab)
 		{
 			// move cursor to center of window
-			lastMousePos = vec2(gamescr->SW, gamescr->SH) / 2.0;
+			lastMousePos = vec2(gamescr->getWidth(), gamescr->getHeight()) / 2.0;
 			mousePos = lastMousePos;
 			glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
 		}
@@ -186,8 +186,8 @@ namespace library
 				if (input->rotation.y >= maxY) input->rotation.y -= PI * 2;
 				
 				// move mouse to center
-				input->lastMousePos.x = input->gamescr->SW / 2;
-				input->lastMousePos.y = input->gamescr->SH / 2;
+				input->lastMousePos.x = input->gamescr->getWidth() / 2;
+				input->lastMousePos.y = input->gamescr->getHeight() / 2;
 				glfwSetCursorPos(
 					input->gamescr->window(), 
 					input->lastMousePos.x, 

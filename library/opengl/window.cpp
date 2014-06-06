@@ -12,25 +12,27 @@ namespace library
 	{
 		// set default window settings
 		this->title = "Untitled window";
+		this->fullscreen = false;
+		this->vsync = true;
+		this->refreshrate = 0;
 		this->SW = 640;
 		this->SH = 480;
-		this->fullscreen = false;
-		this->refreshrate = 60;
-		this->vsync = true;
 		this->multisample = 0;
+		this->depthbits = 24;
+		this->stencbits = 8;
+		
+		this->core_context = false;
+		this->ver_major = 3;
+		this->ver_minor = 3;
 	}
 	WindowConfig::WindowConfig(std::string title, int width, int height)
+		: WindowConfig()
 	{
 		// set default window settings
 		this->title = title;
 		this->SW = width;
 		this->SH = height;
 		this->fullscreen = false;
-		this->refreshrate = 60;
-		this->vsync = true;
-		this->multisample = 0;
-		this->depthbits = 24;
-		this->stencbits = 8;
 	}
 	
 	void WindowClass::open(const WindowConfig& wndconf)
@@ -44,11 +46,12 @@ namespace library
 		// fullscreen enables setting refresh rate
 		this->fullscreen = wndconf.fullscreen;
 		
-		GLFWmonitor* monitor = nullptr;
 		// set primary monitor if we are to run in fullscreen
-		if (fullscreen) monitor = glfwGetPrimaryMonitor();
-		
-		glfwWindowHint(GLFW_REFRESH_RATE, wndconf.refreshrate);
+		GLFWmonitor* monitor = (fullscreen) ? glfwGetPrimaryMonitor() : nullptr;
+		if (fullscreen)
+		{
+			glfwWindowHint(GLFW_REFRESH_RATE, wndconf.refreshrate);
+		}
 		glfwWindowHint(GLFW_RESIZABLE, 0);
 		
 		// clamp multisample to at least 0
@@ -56,19 +59,40 @@ namespace library
 		if (multisample < 0) multisample = 0;
 		// set multisampling level for main framebuffer
 		glfwWindowHint(GLFW_SAMPLES, multisample);
-		// common alpha, stencil & depth settings
-		glfwWindowHint(GLFW_ALPHA_BITS, 8);
+		// common stencil & depth settings
 		glfwWindowHint(GLFW_DEPTH_BITS,  wndconf.depthbits);
 		glfwWindowHint(GLFW_STENCIL_BITS, wndconf.stencbits);
 		
+		// OpenGL API version request
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, wndconf.ver_major);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, wndconf.ver_minor);
+		// profile type request
+		this->is_core_context = false;
+		if (wndconf.ver_major < 3 || (wndconf.ver_major == 3 && wndconf.ver_minor < 2))
+		{
+			// older API versions
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_ANY_PROFILE);
+		}
+		else if (wndconf.core_context)
+		{
+			// forward-only core profile
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+			this->is_core_context = true;
+		}
+		else
+		{
+			// compatibility mode
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+		}
+		
 		// create new glfw3 window
 		this->wndHandle = glfwCreateWindow(wndconf.SW, wndconf.SH, wndconf.title.c_str(), monitor, nullptr);
-		
 		if (this->wndHandle == nullptr)
 		{
 			logger << Log::ERR << "Could not open 32bit / 24d8s window of size: " << SW << ", " << SH << Log::ENDL;
 			glfwTerminate();
-			throw "Window::init(): Could not open OpenGL context window, check your drivers!";
+			throw std::string("Window::init(): Could not open OpenGL context window, check your drivers!");
 		}
 		
 		// get actual size, since it may not be supported
@@ -90,7 +114,7 @@ namespace library
 		{
 			this->init = true;
 			// init OpenGL entries & defaults
-			ogl.init();
+			ogl.init(this->is_core_context);
 		}
 	}
 	
@@ -116,7 +140,7 @@ namespace library
 		return this->wndHandle;
 	}
 	
-	void WindowClass::setTitle(std::string title)
+	void WindowClass::setTitle(std::string const& title)
 	{
 		glfwSetWindowTitle(wndHandle, title.c_str());
 	}
@@ -132,15 +156,8 @@ namespace library
 		glfwMakeContextCurrent(this->wndHandle);
 	}
 	
-	void WindowClass::startRenderingLoop(RenderClass* rclass)
+	void WindowClass::startRenderingLoop(RenderClass& rclass)
 	{
-		startRenderingLoop(rclass, 1.0);
-	}
-	void WindowClass::startRenderingLoop(RenderClass* rclass, double granularity)
-	{
-		if (granularity <= 0.0)
-			throw std::string("WindowClass::startRenderingLoop: Granularity must be a positive number, default 1.0");
-		
 		setCurrent();
 		double t0 = glfwGetTime();
 		double t1 = t0;
@@ -150,15 +167,13 @@ namespace library
 		{
 			setCurrent();
 			
-			double t2 = t1;
+			double t_last = t1;
 			t1 = glfwGetTime();
-			// variable delta-frame timing
-			double dtime = (t2 - t1) / granularity;
 			
 			// render function returns false if we should stop rendering
-			if (rclass->render(*this, dtime, t1 - t0) == false) break;
+			if (rclass.render(*this, t1 - t_last, t1 - t0) == false) break;
 			
-			// check for new events that might eg. set window to be flagged as closing
+			// check for events (which might set window to be flagged as closing)
 			glfwPollEvents();
 		}
 		this->closing = true;
