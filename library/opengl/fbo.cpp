@@ -145,7 +145,19 @@ namespace library
 		}
 		#endif
 	}
-	void FBO::drawBuffers()
+	void FBO::drawBuffer(GLenum buffer)
+	{
+		glDrawBuffers(1, &buffer);
+		
+		#ifdef DEBUG
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "FBO::drawBuffer(GLenum): Error setting draw buffers" << Log::ENDL;
+			throw std::string("FBO::drawBuffer(GLenum): Error setting draw buffers");
+		}
+		#endif
+	}
+	void FBO::drawBuffer()
 	{
 		GLenum one = GL_COLOR_ATTACHMENT0;
 		glDrawBuffers(1, &one);
@@ -153,8 +165,8 @@ namespace library
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "FBO::drawBuffers(): Error setting draw buffer" << Log::ENDL;
-			throw std::string("FBO::drawBuffers(): Error setting draw buffer");
+			logger << Log::ERR << "FBO::drawBuffer(): Error setting draw buffer" << Log::ENDL;
+			throw std::string("FBO::drawBuffer(): Error setting draw buffer");
 		}
 		#endif
 	}
@@ -177,8 +189,8 @@ namespace library
 		
 		glBlitFramebuffer(0, 0, w, h, 0, 0, w2, h2, mask, filter);
 		
-		glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
-		glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+		//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 	}
 	
 	bool FBO::isComplete()
