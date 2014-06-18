@@ -129,8 +129,6 @@ namespace library
 		int h = fromImage.getHeight();
 		
 		int numfaces = 0; // counter for faces
-		xcolor_t c;       // vertex color
-		unsigned char* cv = (unsigned char*) fromImage.data();
 		
 		// initialize static vertex dump, if null
 		if (xv_dump == nullptr) initVoxelizer();
@@ -142,18 +140,16 @@ namespace library
 		
 		for (int y = 0; y < h; y++)
 		{
-			cv = (unsigned char*) (fromImage.data() + (y * w));
+			xcolor_t* cv = fromImage.data() + (y * w);
 			lastpz = nullptr;
 			lastnz = nullptr;
 			
 			for (int x = 0; x < w; x++)
 			{
-				// get color in bitmap coordinate system (cv)
-				c = BGRA8(cv[0], cv[1], cv[2], cv[3]);
-				
 				// if this pixel has alpha
-				if (cv[3])
+				if (cv[0] >> 24)
 				{
+					xcolor_t c = cv[0];
 					// cull from bottoms up (different coordinate system)
 					facing = cull2D(fromImage, x, y);
 					
@@ -239,7 +235,7 @@ namespace library
 					lastnz = nullptr;
 				}
 				
-				cv += sizeof(xcolor_t);
+				cv += 1;
 			} // x
 		} // y
 		
