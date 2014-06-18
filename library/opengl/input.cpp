@@ -155,6 +155,21 @@ namespace library
 		}
 	}
 	
+	void Input::addRotation(const vec2& degrees)
+	{
+		static const double PI = 4 * atan(1);
+		static const double degToRad = PI / 180;
+		static const double maxX = 89 * degToRad;
+		static const double maxY = PI * 2.0;
+		
+		rotation += degrees * degToRad;
+		// clamping
+		if (rotation.x >  maxX) rotation.x =  maxX;
+		if (rotation.x < -maxX) rotation.x = -maxX;
+		while (rotation.y <     0) rotation.y += PI * 2;
+		while (rotation.y >= maxY) rotation.y -= PI * 2;
+	}
+	
 	void mouseMove(GLFWwindow* window, double x, double y)
 	{
 		Input* input = Input::inputFromWindow(window);
@@ -162,11 +177,6 @@ namespace library
 		{
 			if (input->mousegrab)
 			{
-				static const double PI = 4 * atan(1);
-				static const double degToRad = PI / 180;
-				static const double maxX = 89 * degToRad;
-				static const double maxY = PI * 2.0;
-				
 				// in-game
 				double dx = (x - input->lastMousePos.x) * input->speed;
 				double dy = (y - input->lastMousePos.y) * input->speed;
@@ -177,13 +187,7 @@ namespace library
 					dy = toolbox::signum(dy) * input->sensitivity + dy / input->sensitivity;
 				
 				// rotation on axes
-				input->rotation.y += dx * degToRad;
-				input->rotation.x += dy * degToRad;
-				// clamping
-				if (input->rotation.x >  maxX) input->rotation.x =  maxX;
-				if (input->rotation.x < -maxX) input->rotation.x = -maxX;
-				if (input->rotation.y <     0) input->rotation.y += PI * 2;
-				if (input->rotation.y >= maxY) input->rotation.y -= PI * 2;
+				input->addRotation(vec2(dy, dx));
 				
 				// move mouse to center
 				input->lastMousePos.x = input->gamescr->getWidth() / 2;
