@@ -12,20 +12,20 @@ namespace library
 	vec2& vec2::rotate(vector_t angle)
 	{
 		vector_t x = this->x;
-		this->x = cos(angle) * x - sin(angle) * this->y;
-		this->y = sin(angle) * x + cos(angle) * this->y;
+		this->x = std::cos(angle) * x - std::sin(angle) * this->y;
+		this->y = std::sin(angle) * x + std::cos(angle) * this->y;
 		return *this;
 	}
 	vec2 vec2::rotated(vector_t angle) const
 	{
 		return vec2(
-			cos(angle) * this->x - sin(angle) * this->y,
-			sin(angle) * this->x + cos(angle) * this->y);
+			std::cos(angle) * this->x - std::sin(angle) * this->y,
+			std::sin(angle) * this->x + std::cos(angle) * this->y);
 	}
 	
 	vec2::vector_t vec2::length() const
 	{
-		return sqrtf(length_squared());
+		return std::sqrt(length_squared());
 	}
 	
 	vec2 vec2::normalized() const
@@ -63,21 +63,21 @@ namespace library
 	}
 	
 	// exponentiation
-	vec2& vec2::pow(double e)
+	vec2& vec2::pow(vec2::vector_t e)
 	{
-		this->x = powf(this->x, e);
-		this->y = powf(this->y, e);
+		this->x = std::pow(this->x, e);
+		this->y = std::pow(this->y, e);
 		return *this;
 	}
 	vec2& vec2::pow(const vec2& v)
 	{
-		this->x = powf(this->x, v.x);
-		this->y = powf(this->y, v.y);
+		this->x = std::pow(this->x, v.x);
+		this->y = std::pow(this->y, v.y);
 		return *this;
 	}
 	
 	// linear interpolation
-	vec2 vec2::mix(const vec2& v, float mixlevel) const
+	vec2 vec2::mix(const vec2& v, vector_t mixlevel) const
 	{
 		return vec2(
 			this->x * (1.0 - mixlevel) + v.x * mixlevel,
@@ -171,7 +171,7 @@ namespace library
 	// boolean equality operators
 	bool vec2::operator == (const vec2& v) const
 	{
-		return fabs(x - v.x) < MIN_V2 && fabs(y - v.y) < MIN_V2;
+		return std::abs(x - v.x) < MIN_V2 && std::abs(y - v.y) < MIN_V2;
 	}
 	bool vec2::operator != (const vec2& v) const
 	{
@@ -180,16 +180,18 @@ namespace library
 	
 	// a and b should be unit vectors
 	// t is a value in the range [0, 1]
-	vec2 slerp(vec2 va, vec2 vb, float t)
+	vec2 slerp(const vec2& va, const vec2& vb, vec2::vector_t t)
 	{
-		float theta = acos(va.dot(vb));
-		return (va * sin((1 - t) * theta) + vb * sin(t * theta)) / sin(theta);
+		vec2::vector_t theta = std::acos(va.dot(vb));
+		
+		return (va * std::sin((1 - t) * theta) + 
+				vb * std::sin(t * theta)) / std::sin(theta);
 	}
 	
 	// rotates <from> towards <to> by dTheta radians
-	vec2 rotateTowards(vec2 from, vec2 to, vec2::vector_t dTheta)
+	vec2 rotateTowards(const vec2& from, const vec2& to, vec2::vector_t dTheta)
 	{
-		float theta = acos(from.dot(to));
+		vec2::vector_t theta = std::acos(from.dot(to));
 		
 		if (theta <= dTheta) return to;
 		return slerp(from, to, theta / dTheta);

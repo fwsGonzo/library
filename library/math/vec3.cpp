@@ -5,7 +5,7 @@
 
 namespace library
 {
-	static const double PI = 4 * atan(1);
+	static const double PI = 4 * std::atan(1);
 	static const double MIN_V3 = 1e-7;
 	
 	// vec3 swizzles
@@ -37,7 +37,7 @@ namespace library
 	// vec3 utility
 	vec3::vector_t vec3::length() const
 	{
-		return sqrtf(length_squared());
+		return std::sqrt(length_squared());
 	}
 	
 	vec3& vec3::normalize()
@@ -91,7 +91,7 @@ namespace library
 	}
 	
 	// linear interpolation
-	vec3 vec3::mix(const vec3& v, float mixlevel) const
+	vec3 vec3::mix(const vec3& v, vector_t mixlevel) const
 	{
 		return vec3(
 			this->x * (1.0 - mixlevel) + v.x * mixlevel,
@@ -102,17 +102,20 @@ namespace library
 	
 	// rotate vector around axis angle - axis vector, angle is theta (in radians),
 	// 'this' is the vector we are going to rotate
-	vec3 vec3::rotateOnAxis(const vec3& axis, float angle) const
+	vec3 vec3::rotateOnAxis(const vec3& axis, vector_t angle) const
 	{
 		// formula: vector * cos a + dot(vector, axis) * axis * (1 - cos a) + cross(axis, vector) * sin a
-		return *this * cosf(angle) + this->dot(axis) * axis * (1.0 - cosf(angle)) + axis.cross(*this) * sinf(angle);
+		return
+			*this * std::cos(angle) + 
+			this->dot(axis) * axis * (1.0 - std::cos(angle)) + 
+			axis.cross(*this) * std::sin(angle);
 	}
 	
 	vec2 vec3::toPitchYaw() const
 	{
-		float xzdist = xz().length();
+		vector_t xzdist = xz().length();
 		// pitch
-		float pitch = -atan2(y, xzdist);
+		vector_t pitch = -atan2(y, xzdist);
 		
 		// yaw
 		float yaw = atan2(x, -z);
@@ -215,22 +218,28 @@ namespace library
 	}
 	
 	// exponentiate "operator"
-	vec3& vec3::pow(double e)
+	vec3& vec3::pow(vector_t e)
 	{
-		x = ::powf(x, e); y = ::powf(y, e); z = ::powf(z, e);
+		x = std::pow(x, e);
+		y = std::pow(y, e);
+		z = std::pow(z, e);
 		return *this;
 	}
-	
 	vec3& vec3::pow(const vec3& v)
 	{
-		x = ::pow(x, v.x); y = ::pow(y, v.y); z = ::pow(z, v.z);
+		x = std::pow(x, v.x);
+		y = std::pow(y, v.y);
+		z = std::pow(z, v.z);
 		return *this;
 	}
 	
 	// boolean equality operator
 	bool vec3::operator == (const vec3& v) const
 	{
-		return fabsf(x - v.x) < MIN_V3 && fabsf(y - v.y) < MIN_V3 && fabsf(z - v.z) < MIN_V3;
+		return
+			std::abs(x - v.x) < MIN_V3 && 
+			std::abs(y - v.y) < MIN_V3 && 
+			std::abs(z - v.z) < MIN_V3;
 	}
 	
 	// boolean inequality operator
@@ -239,27 +248,7 @@ namespace library
 		return !(*this == v);
 	}
 	
-	// vector language functions
-	vec3::vector_t distance(const vec3& va, const vec3& vb)
-	{
-		return (va - vb).length();
-	}
-	
-	vec3::vector_t dot(const vec3& va, const vec3& vb)
-	{
-		return va.dot(vb);
-	}
-	
-	vec3 normalize(const vec3& v)
-	{
-		return vec3(v).normalize();
-	}
-	
-	vec3 cross(const vec3& va, const vec3& vb)
-	{
-		return va.cross(vb);
-	}
-	
+	//! vec3 language functions
 	/*
 		http://www.opengl.org/sdk/docs/manglsl/xhtml/reflect.xml
 		For a given incident vector I and surface normal N reflect returns the reflection direction calculated as
@@ -295,9 +284,9 @@ namespace library
 	// transforms this vector into a rotation expressed by two angles (rotX, rotY)
 	vec3 lookVector(const vec2& rot)
 	{
-		return vec3( sinf(rot.y) *  cosf(rot.x),
-									  -sinf(rot.x),
-					  -cosf(rot.y) * cosf(rot.x));
+		return vec3( std::sin(rot.y) * std::cos(rot.x),
+									  -std::sin(rot.x),
+					-std::cos(rot.y) * std::cos(rot.x));
 	}
 	
 	// log output functions

@@ -6,25 +6,9 @@
 namespace library
 {
 	// vec4 constructors
-	vec4::vec4() : vec3(0.0)
+	vec4::vec4(const vec2& a, const vec2& b)
 	{
-		w = 0.0;
-	}
-	vec4::vec4(vector_t v) : vec3(v)
-	{
-		w = v;
-	}
-	vec4::vec4(vector_t v, vector_t W) : vec3(v, v, v)
-	{
-		w = W;
-	}
-	vec4::vec4(vector_t X, vector_t Y, vector_t Z, vector_t W) : vec3(X, Y, Z)
-	{
-		w = W;
-	}
-	vec4::vec4(const vec3& v, vector_t W) : vec3(v)
-	{
-		w = W;
+		x = a.x; y = a.y; z = b.x; w = b.y;
 	}
 	
 	// 4-vector swizzle functions
