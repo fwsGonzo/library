@@ -193,7 +193,6 @@ namespace library
 		{
 			logger << Log::ERR << "Bitmap::loadPNG(): Error " << error << ": " << lodepng_error_text(error) << Log::ENDL;
 			return false;
-			//throw std::string("Bitmap::loadPNG(): Failed to decode " + file);
 		}
 		this->format = GL_RGBA;
 		this->tilesX = 1;
@@ -204,10 +203,6 @@ namespace library
 		
 		delete[] this->buffer;
 		this->buffer = new rgba8_t[w * h];
-		if (this->buffer == nullptr)
-		{
-			throw std::string("Bitmap::loadPNG(): Failed to allocate pixel buffer");
-		}
 		memcpy (this->buffer, image.data(), sizeof(rgba8_t) * w * h);
 		
 		return true;
@@ -223,6 +218,7 @@ namespace library
 			
 			memcpy (dst, src, width * sizeof(rgba8_t));
 		}
+		dest.format = this->format;
 	}
 	
 	// splits a bitmap in a 1d continous memory array
