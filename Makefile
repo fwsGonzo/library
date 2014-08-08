@@ -14,7 +14,7 @@ USE_OPENGL  = library/opengl library/voxels
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
 # Debug:
 # -ggdb3
-BUILDOPT = -Ofast -mfpmath=both -march=native
+BUILDOPT = -Ofast -m32
 # output file
 OUTPUT   = ./liblibrary.a
 

@@ -136,11 +136,15 @@ namespace library
 		Input* input = Input::inputFromWindow(window);
 		if (input)
 		{
-			// action: GLFW_PRESS, GLFW_REPEAT and GLFW_RELEASE
-			input->keys[key].action = 
-				(action == GLFW_PRESS || action == GLFW_REPEAT)
-				 ? Input::KEY_PRESSED
-				 : Input::KEY_RELEASED;
+			// action: GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
+			if (action == GLFW_PRESS || action == GLFW_REPEAT)
+			{
+				// as long as the key isnt force-held, set to pressed
+				if (input->keys[key].action != Input::KEY_LOCKED)
+					input->keys[key].action = Input::KEY_PRESSED;
+			}   // key is no longer pressed
+			else input->keys[key].action = Input::KEY_RELEASED;
+			// keypress modifiers: SHIFT, CTRL, ALT
 			input->keys[key].mods = mods;
 		}
 	}
