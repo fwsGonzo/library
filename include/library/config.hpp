@@ -9,28 +9,18 @@ namespace library
 {
 	class Config
 	{
-		std::map<std::string, std::string> kv;
-		
 	public:
-		Config();
-		Config(std::string);
-		bool load(std::string file);
+		Config() {}
+		Config(const std::string& file);
+		bool load(const std::string& file);
 		
-		inline const char* get(std::string var, const char* def)
-		{
-			// if variable is not found in hashmap, return default
-			if (kv.find(var) == kv.end()) return def;
-			// return C-string
-			return kv[var].c_str();
-		}
-		
-		template <typename ValueType>
-		inline ValueType get(std::string var, const ValueType def)
+		template <typename T>
+		T get(const std::string& var, const T def)
 		{
 			// if variable is not found in hashmap, return default
 			if (kv.find(var) == kv.end()) return def;
 			// initialize result to default value
-			ValueType result;
+			T result;
 			std::stringstream convert(kv[var]);
 			// if the conversion fails, return default
 			if (!(convert >> result)) return def;
@@ -38,28 +28,21 @@ namespace library
 			return result;
 		}
 		
-		// redirect for c-strings
 		template <typename T>
-		inline T get(const char* var, T def)
+		void set(const std::string& key, T val)
 		{
-			return get(std::string(var), def);
-		}
-		
-		template <typename T>
-		inline void set(std::string key, T value)
-		{
+			std::string value = std::to_string(val);
 			if (kv.find(key) == kv.end()) 
 			{
 				kv.insert(
-					std::pair<std::string,std::string>(key, value)
+					std::make_pair(key, value)
 				);
 			}
 			else kv[key] = value;
 		}
-		
+	private:
+		std::map<std::string, std::string> kv;
 	};
-	// default config-file object
-	extern Config config;
 }
 
 #endif

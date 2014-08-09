@@ -5,17 +5,13 @@
 
 namespace library
 {	
-	Config config; // main config file
-	
-	Config::Config() {}
-	
-	Config::Config(std::string file)
+	Config::Config(const std::string& file)
 	{
 		load(file);
 	}
 	
 	// load from file
-	bool Config::load(std::string file)
+	bool Config::load(const std::string& file)
 	{
 		std::fstream filestream;
 		filestream.open(file.c_str(), std::fstream::in);
@@ -60,6 +56,6 @@ namespace library
 		
 		logger << Log::INFO << "*** Loaded " << numkeys << " variables from config." << Log::ENDL;
 		return true;
-	}
-	
+		
+	} // Config::load()
 }

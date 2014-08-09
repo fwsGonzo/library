@@ -131,7 +131,8 @@ namespace library
 		return true;
 	}
 	
-	void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+	//void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
+	void keyboard(GLFWwindow* window, int key, int, int action, int mods)
 	{
 		Input* input = Input::inputFromWindow(window);
 		if (input)
@@ -236,7 +237,7 @@ namespace library
 		}
 	}
 	
-	void mouseWheel(GLFWwindow* window, double x, double y)
+	void mouseWheel(GLFWwindow* window, double, double y)
 	{
 		Input* input = Input::inputFromWindow(window);
 		if (input)
