@@ -1,5 +1,5 @@
-#ifndef CONFIG_HPP
-#define CONFIG_HPP
+#ifndef LIBRARY_CONFIG_HPP
+#define LIBRARY_CONFIG_HPP
 
 #include <map>
 #include <string>
@@ -14,6 +14,23 @@ namespace library
 		Config(const std::string& file);
 		bool load(const std::string& file);
 		
+		// std::string
+		std::string get(const std::string& var, const std::string& def)
+		{
+			// not found in hashmap -> return default
+			if (kv.find(var) == kv.end()) return def;
+			// return result
+			return kv[var];
+		}
+		// const char*
+		std::string get(const std::string& var, const char* def)
+		{
+			// not found in hashmap -> return default
+			if (kv.find(var) == kv.end()) return def;
+			// return result
+			return kv[var];
+		}
+		// algebraic
 		template <typename T>
 		T get(const std::string& var, const T def)
 		{
@@ -28,10 +45,8 @@ namespace library
 			return result;
 		}
 		
-		template <typename T>
-		void set(const std::string& key, T val)
+		void set(const std::string& key, const std::string& value)
 		{
-			std::string value = std::to_string(val);
 			if (kv.find(key) == kv.end()) 
 			{
 				kv.insert(
@@ -39,6 +54,12 @@ namespace library
 				);
 			}
 			else kv[key] = value;
+		}
+		
+		template <typename T>
+		void set(const std::string& key, T val)
+		{
+			set(key, std::to_string(val));
 		}
 	private:
 		std::map<std::string, std::string> kv;
