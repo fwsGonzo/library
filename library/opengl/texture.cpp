@@ -93,8 +93,8 @@ namespace library
 		}
 		else
 		{
-			logger << Log::ERR << "@Texture::create(): Unknown texture target (" << (int)this->type << ")" << Log::ENDL;
-			throw std::string("Texture::create(): Unknown texture target (" + std::to_string(this->type) + ")");
+			logger << Log::ERR << "@Texture::create(Bitmap&): Unknown texture target (" << (int)this->type << ")" << Log::ENDL;
+			throw std::string("Texture::create(Bitmap&): Unknown texture target (" + std::to_string(this->type) + ")");
 		}
 		
 		if (this->isMipmapped)
@@ -104,9 +104,9 @@ namespace library
 		
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << "Texture::create(Bitmap&): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::create(): OpenGL state error");
+			throw std::string("Texture::create(Bitmap&): OpenGL state error");
 		}
 	}
 	
@@ -330,6 +330,10 @@ namespace library
 		lastid[unit] = 0;
 	}
 	
+	void Texture::copyScreen()
+	{
+		copyScreen(this->width, this->height);
+	}
 	void Texture::copyScreen(int w, int h)
 	{
 		// explicitly select textures last texture unit
@@ -344,9 +348,9 @@ namespace library
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << "Texture::copyScreen(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::bind(): OpenGL state error");
+			throw std::string("Texture::copyScreen(): OpenGL state error");
 		}
 		#endif
 	}
@@ -368,9 +372,9 @@ namespace library
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << "Texture::uploadBGRA8(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::bind(): OpenGL state error");
+			throw std::string("Texture::uploadBGRA8(): OpenGL state error");
 		}
 		#endif
 	}
@@ -389,9 +393,9 @@ namespace library
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << "Texture::upload3D(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::bind(): OpenGL state error");
+			throw std::string("Texture::upload3D(): OpenGL state error");
 		}
 		#endif
 	}
