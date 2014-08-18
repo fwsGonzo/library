@@ -11,7 +11,7 @@ namespace library
 	}
 	
 	// returns time elapsed in high-precision seconds
-	Timer::time_t Timer::getDeltaTime()
+	Timer::time_t Timer::getTime()
 	{
 		HighResClock::time_point t1 = HighResClock::now();
 		microseconds micros = duration_cast<microseconds>(t1 - t0);
@@ -22,7 +22,7 @@ namespace library
 	
 	// defines an interval change, and returns the time between last call
 	// in high-precision seconds
-	Timer::time_t Timer::startNewRound()
+	Timer::time_t Timer::restart()
 	{
 		HighResClock::time_point t1 = HighResClock::now();
 		microseconds micros = duration_cast<microseconds>(t1 - t0);

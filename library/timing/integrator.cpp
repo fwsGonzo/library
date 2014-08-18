@@ -5,22 +5,23 @@ namespace library
 	Integrator::Integrator(double timestep)
 	{
 		this->timestep = timestep;
-		this->currentTime = timer.getDeltaTime();
+		this->currentTime = timer.getTime();
 	}
 	
 	void Integrator::restart()
 	{
-		timer.startNewRound();
-		this->currentTime = timer.getDeltaTime();
+		timer.restart();
+		this->currentTime = 0.0;
 	}
 	
 	void Integrator::integrate()
 	{
-		double timeElapsed = timer.getDeltaTime();
+		double timeElapsed = timer.getTime();
 		
 		while (timeElapsed >= currentTime + timestep)
 		{
-			timeStep(this->timestep, timeElapsed);
+			if (timeStep(this->timestep, timeElapsed))
+				break;
 			
 			this->currentTime += this->timestep;
 		}
