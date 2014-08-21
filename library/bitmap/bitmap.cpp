@@ -30,6 +30,16 @@ namespace library
 		}
 		clear(color);
 	}
+	Bitmap::Bitmap(int w, int h, rgba8_t* data, int glformat): 
+		width(w), height(h), format(glformat), tilesX(1), tilesY(1)
+	{
+		buffer = new rgba8_t[width * height];
+		if (buffer == nullptr)
+		{
+			throw std::string("Bitmap::Bitmap(int, int, int): Failed to allocate pixel buffer");
+		}
+		memcpy(buffer, data, width * height * sizeof(rgba8_t));
+	}
 	Bitmap::~Bitmap()
 	{
 		delete[] buffer;

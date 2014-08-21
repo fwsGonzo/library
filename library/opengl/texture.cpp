@@ -43,9 +43,15 @@ namespace library
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, (int)(log(width) / log(2.0)));
 		}
 		
-		if (this->type == GL_TEXTURE_2D)
+		GLenum byteFormat = getByteFormat();
+		
+		if (this->type == GL_TEXTURE_1D)
 		{
-			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, pixel);
+			glTexImage1D(this->type, 0, format, width, 0, bmp.getFormat(), byteFormat, pixel);
+		}
+		else if (this->type == GL_TEXTURE_2D)
+		{
+			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), byteFormat, pixel);
 		}
 		else if (this->type == GL_TEXTURE_CUBE_MAP)
 		{
@@ -81,7 +87,7 @@ namespace library
 					break;
 				}
 				// upload each side, from temporary bitmap
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, cmsize, cmsize, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, blitdump.data());
+				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, format, cmsize, cmsize, 0, bmp.getFormat(), byteFormat, blitdump.data());
 			}
 			/* ====================================== */
 		}
@@ -89,7 +95,7 @@ namespace library
 		{
 			int numTiles = bmp.getTilesX() * bmp.getTilesY();
 			
-			glTexImage3D(this->type, 0, format, width, height, numTiles, 0, bmp.getFormat(), GL_UNSIGNED_BYTE, pixel);
+			glTexImage3D(this->type, 0, format, width, height, numTiles, 0, bmp.getFormat(), byteFormat, pixel);
 		}
 		else
 		{
@@ -135,6 +141,9 @@ namespace library
 		
 		switch (this->type)
 		{
+		case GL_TEXTURE_1D:
+			glTexImage1D(this->type, 0, format, width, 0, GL_BGRA, sformat, nullptr);
+			break;
 		case GL_TEXTURE_2D:
 			glTexImage2D(this->type, 0, format, width, height, 0, GL_BGRA, sformat, nullptr);
 			break;
@@ -355,13 +364,20 @@ namespace library
 		#endif
 	}
 	
-	void Texture::uploadBGRA8(const Bitmap& bmp)
+	void Texture::upload(const Bitmap& bmp)
 	{
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
 		
 		// upload pixel data
-		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bmp.data());
+		if (this->type == GL_TEXTURE_1D)
+		{
+			glTexImage1D(this->type, 0, format, width, 0, bmp.getFormat(), getByteFormat(), bmp.data());
+		}
+		else if (this->type == GL_TEXTURE_2D)
+		{
+			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), getByteFormat(), bmp.data());
+		}
 		
 		// auto-generate new mipmap levels
 		if (this->isMipmapped)
@@ -402,10 +418,37 @@ namespace library
 	
 	GLenum Texture::getStorageFormat()
 	{
-		if (format == GL_RGBA16F_ARB || format == GL_RGBA32F_ARB)
+		if (format == GL_RGBA16F || format == GL_R16F || format == GL_RGBA32F || format == GL_R32F)
 			return GL_FLOAT;
-		
-		return GL_UNSIGNED_BYTE;
+		else if (format == GL_RGBA32UI || format == GL_RGBA32I)
+			return GL_RGBA_INTEGER;
+		else if (format == GL_RGB32UI || format == GL_RGB32I)
+			return GL_RGBA_INTEGER;
+		else if (format == GL_RG32UI || format == GL_RG32I)
+			return GL_RGBA_INTEGER;
+		else if (format == GL_R32UI || format == GL_R32I)
+			return GL_RGBA_INTEGER;
+		else if (format == GL_RGBA16UI || format == GL_RGB16UI || format == GL_RG16UI || format == GL_R16UI)
+			return GL_RG_INTEGER;
+		else if (format == GL_RGBA16I || format == GL_RGB16I || format == GL_RG16I || format == GL_R16I)
+			return GL_INT;
+		else
+			return GL_UNSIGNED_BYTE;
+	}
+	GLenum Texture::getByteFormat()
+	{
+		if (format == GL_RGBA16F || format == GL_R16F || format == GL_RGBA32F || format == GL_R32F)
+			return GL_FLOAT;
+		else if (format == GL_RGBA32UI || format == GL_RGB32UI || format == GL_RG32UI || format == GL_R32UI)
+			return GL_UNSIGNED_INT;
+		else if (format == GL_RGBA32I || format == GL_RGB32I || format == GL_RG32I || format == GL_R32I)
+			return GL_INT;
+		else if (format == GL_RGBA16UI || format == GL_RGB16UI || format == GL_RG16UI || format == GL_R16UI)
+			return GL_UNSIGNED_SHORT;
+		else if (format == GL_RGBA16I || format == GL_RGB16I || format == GL_RG16I || format == GL_R16I)
+			return GL_SHORT;
+		else
+			return GL_UNSIGNED_BYTE;
 	}
 	
 	std::string Texture::toString() const
