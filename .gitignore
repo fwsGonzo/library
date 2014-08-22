@@ -3,6 +3,9 @@
 *.lo
 *.o
 
+# Depends
+*.d
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
@@ -14,6 +17,7 @@
 
 # Executable & logs
 *.exe
+*.dll
 *.log
 
 # Archives
@@ -21,4 +25,5 @@
 
 # Edited files
 *~
+.codelite/
 
