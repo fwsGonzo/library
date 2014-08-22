@@ -1,5 +1,5 @@
-#include <math/vector.hpp>
-#include <math/quaternion.hpp>
+#include <library/math/vector.hpp>
+#include <library/math/quaternion.hpp>
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -45,12 +45,14 @@ void test_maths()
 	
 	q = Quaternion(vec3(0, 1, 0));
 	
-	vec3  ax;
+	vec3  axis;
 	float angle;
-	q.toAxisAngle(ax, angle);
+	q.toAxisAngle(axis, angle);
 	
-	Quaternion Q = Quaternion(ax, angle);
+	Quaternion Q(axis, angle);
 	assert(q == Q);
 	
 	std::cout << "Math tests: OK" << std::endl;
+	
+	
 }

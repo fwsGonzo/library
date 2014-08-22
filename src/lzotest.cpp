@@ -1,5 +1,5 @@
-
-#include <compression/lzo.hpp>
+#ifdef LZO_TEST
+#include <library/compression/lzo.hpp>
 #include <iostream>
 #include <string>
 #include <cassert>
@@ -50,3 +50,4 @@ void test_compression()
 	delete[] cfrom;
 	delete[] decomp;
 }
+#endif

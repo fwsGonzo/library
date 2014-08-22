@@ -1,6 +1,7 @@
-#include <log.hpp>
-#include <network/tcpsocket.hpp>
-#include <sleep.hpp>
+#ifdef TEST_SOCKETS
+#include <library/log.hpp>
+#include <library/network/tcpsocket.hpp>
+#include <library/sleep.hpp>
 
 #include <iostream>
 #include <vector>
@@ -264,3 +265,4 @@ void test_sockets()
 	serverRetirement = true;
 	server.join();
 }
+#endif

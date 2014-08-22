@@ -1,13 +1,14 @@
+#ifdef TEST_OPENGL
 // opengl window
-#include <opengl/opengl.hpp>
-#include <opengl/window.hpp>
+#include <library/opengl/opengl.hpp>
+#include <library/opengl/window.hpp>
 // matrix and vector
-#include <math/vector.hpp>
-#include <math/matrix.hpp>
+#include <library/math/vector.hpp>
+#include <library/math/matrix.hpp>
 // logging
-#include <log.hpp>
+#include <library/log.hpp>
 // wait mechanisms
-#include <sleep.hpp>
+#include <library/sleep.hpp>
 
 #include <GL/glfw3.h>
 #include <iostream>
@@ -75,7 +76,7 @@ bool triangleScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	// set up orthographic matrix
-	mat4 matproj = ortho2dMatrix(wnd.SW, wnd.SH, 0, 2);
+	mat4 matproj = ortho2dMatrix(wnd.getWidth(), wnd.getHeight(), 0, 2);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(matproj.data());
@@ -86,13 +87,13 @@ bool triangleScreen(WindowClass& wnd, double dtime, double timeElapsed)
 	// modelview matrix
 	mat4 matview(1.0);
 	// translation to center
-	matview.translate(wnd.SW / 2, wnd.SH / 2, 0.0);
+	matview.translate(wnd.getWidth() / 2, wnd.getHeight() / 2, 0.0);
 	// rotate (around itself)
 	matview *= matrot;
 	// modulated scaling
 	matview.scale(0.75 + 0.25 * sin(timeElapsed * 5.0));
 	// translate back
-	matview.translate(-wnd.SW / 2, -wnd.SH / 2, 0.0);
+	matview.translate(-wnd.getWidth() / 2, -wnd.getHeight() / 2, 0.0);
 	
 	// translate camera back, allowing stuff located at Z < z to appear in front
 	matview.translate(0.0, 0.0, -2.0);
@@ -185,3 +186,4 @@ void test_opengl_window()
 	std::cout << "OpenGL tests completed, exiting module..." << std::endl;
 	sleepMillis(500);
 }
+#endif

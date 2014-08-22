@@ -1,5 +1,5 @@
-#include <timing/highperf.hpp>
-#include <sleep.hpp>
+#include <library/timing/highperf.hpp>
+#include <library/sleep.hpp>
 
 #include <iostream>
 

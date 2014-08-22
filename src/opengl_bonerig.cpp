@@ -1,13 +1,14 @@
+#ifdef TEST_BONERIG
 // opengl window
-#include <opengl/window.hpp>
+#include <library/opengl/window.hpp>
 // matrix and vector
-#include <math/vector.hpp>
-#include <math/matrix.hpp>
+#include <library/math/vector.hpp>
+#include <library/math/matrix.hpp>
 // bones
-#include <math/kine/bone.hpp>
+#include <library/math/kine/bone.hpp>
 // stuff
-#include <log.hpp>
-#include <sleep.hpp>
+#include <library/log.hpp>
+#include <library/sleep.hpp>
 
 #include <GL/glfw3.h>
 #include <iostream>
@@ -104,7 +105,7 @@ bool boneRenderer(WindowClass& wnd, double dtime, double timeElapsed)
 	glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 	
 	// set up perspective projection matrix
-	mat4 matproj = perspectiveMatrix(61.0, wnd.SA, 0.1, 40.0);
+	mat4 matproj = perspectiveMatrix(61.0, wnd.getAspect(), 0.1, 40.0);
 	
 	glMatrixMode(GL_PROJECTION);
 	glLoadMatrixf(matproj.data());
@@ -164,3 +165,4 @@ void test_opengl_bonerig()
 	renderer.close();
 	
 }
+#endif
