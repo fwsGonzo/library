@@ -23,16 +23,6 @@ namespace library
 			std::sin(angle) * this->x + std::cos(angle) * this->y);
 	}
 	
-	vec2::vector_t vec2::length() const
-	{
-		return std::sqrt(length_squared());
-	}
-	
-	vec2 vec2::normalized() const
-	{
-		return vec2(*this).normalize();
-	}
-	
 	vec2& vec2::normalize()
 	{
 		vector_t L = length();
@@ -205,10 +195,10 @@ namespace library
 		return out << "(" << v.x << ", " << v.y << ")";
 	}
 	
-	// write vector-2 to cout using format (x, y)
-	std::ostream& operator<< (std::ostream& out, const vec2& v)
-	{
-		return out << "(" << v.x << ", " << v.y << ")";
-	}
-	
+}
+
+// write vector-2 to cout using format (x, y)
+std::ostream& operator<< (std::ostream& out, const library::vec2& v)
+{
+	return out << "(" << v.x << ", " << v.y << ")";
 }

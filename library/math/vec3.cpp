@@ -1,7 +1,6 @@
 #include <library/math/vector.hpp>
 
 #include <library/log.hpp>
-#include <cmath>
 
 namespace library
 {
@@ -35,11 +34,6 @@ namespace library
 	}
 	
 	// vec3 utility
-	vec3::vector_t vec3::length() const
-	{
-		return std::sqrt(length_squared());
-	}
-	
 	vec3& vec3::normalize()
 	{
 		vector_t L = length();
@@ -47,10 +41,6 @@ namespace library
 		// normalize to unit length vector
 		L = 1.0 / L;
 		return *this *= L;
-	}
-	vec3 vec3::normalized() const
-	{
-		return vec3(*this).normalize();
 	}
 	
 	vec3::vector_t vec3::dot(const vec3& v) const

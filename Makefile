@@ -14,7 +14,7 @@ USE_OPENGL  = library/opengl library/voxels
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
 # Debug:
 # -ggdb3
-BUILDOPT = -Ofast -msse2 -m32
+BUILDOPT = -Ofast -msse2
 # output file
 OUTPUT   = ./liblibrary.a
 OUTTEST  = ./test
@@ -32,7 +32,10 @@ CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
 CCFLAGS = -c -MMD -Wall -Wextra -Wno-write-strings -Iinc -Iinclude
 # linker flags
-LDFLAGS = -m32 -Llib/win32 -static -lbassdll -lglfw3 -lgdi32 -lglew32s -lopengl32
+LDFLAGS = -Llib/linux -L. -llibrary -lbass -lGLEW -DGLEW_STATIC `pkg-config --static --libs glfw3` -Wl,-rpath,lib/linux
+ifeq ($(OS),Windows_NT)
+LDFLAGS = -m32 -Llib/win32 -L. -static -lbassdll -lglfw3 -lgdi32 -lglew32s -lopengl32
+endif
 
 ##############################################################
 
