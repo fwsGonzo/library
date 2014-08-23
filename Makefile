@@ -40,11 +40,13 @@ endif
 ##############################################################
 
 # make pipeline
-DIRECTORIES = $(LIBRARY_DIRS) $(SOURCE_DIRS)
-CCDIRS  = $(foreach dir, $(DIRECTORIES), $(dir)/*.c)
+CCDIRS  = $(foreach dir, $(LIBRARY_DIRS), $(dir)/*.c)
 CCMODS  = $(wildcard $(CCDIRS))
-CXXDIRS = $(foreach dir, $(DIRECTORIES), $(dir)/*.cpp)
+CXXDIRS = $(foreach dir, $(LIBRARY_DIRS), $(dir)/*.cpp)
 CXXMODS = $(wildcard $(CXXDIRS))
+
+TESTDIRS = $(foreach dir, $(SOURCE_DIRS), $(dir)/*.cpp)
+TESTMODS = $(wildcard $(TESTDIRS))
 
 # compile each .c to .o
 .c.o:
@@ -59,15 +61,22 @@ CCOBJS  = $(CCMODS:.c=.o)
 # convert .cpp to .o
 CXXOBJS = $(CXXMODS:.cpp=.o)
 # convert .o to .d
-DEPENDS = $(CXXOBJS:.o=.d)
+DEPENDS = $(CXXOBJS:.o=.d) $(CCOBJS:.o=.d)
+# test modules
+TESTOBJS = $(TESTMODS:.cpp=.o)
+TESTDEPS = $(TESTOBJS:.o=.d)
+
+.PHONY: all testmods tests clean
 
 # link all OBJS using CC and link with LFLAGS, then output to OUTPUT
 all: $(CXXOBJS) $(CCOBJS)
-	ar cr $(OUTPUT) $(CXXOBJS) $(CCOBJS)
-	$(CC) $(CXXOBJS) $(CCOBJS) $(LDFLAGS) -o $(OUTTEST)
+	$(AR) cr $(OUTPUT) $(CXXOBJS) $(CCOBJS)
+
+tests: all $(TESTOBJS)
+	$(CC) $(TESTOBJS) $(LDFLAGS) -o $(OUTTEST)
 
 # remove each known .o file, and output
 clean:
-	$(RM) $(CXXOBJS) $(CCOBJS) $(OUTPUT) $(OUTTEST)
+	$(RM) $(CXXOBJS) $(CCOBJS) $(TESTOBJS) $(DEPENDS) $(TESTDEPS) $(OUTPUT) $(OUTTEST)
 
--include $(DEPENDS)
+-include $(DEPENDS) $(TESTDEPS)

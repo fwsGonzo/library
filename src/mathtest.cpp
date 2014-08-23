@@ -1,3 +1,4 @@
+#include <library/math/matrix.hpp>
 #include <library/math/vector.hpp>
 #include <library/math/quaternion.hpp>
 #include <cassert>
@@ -84,4 +85,9 @@ void test_maths()
 	
 	ssev = vec4((float*) &tX);
 	std::cout << ssev << std::endl;
+	
+	mat4 m(1.0);
+	m.rotateZYX(0.0, PI, 0.0);
+	
+	std::cout << m << std::endl;
 }

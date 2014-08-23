@@ -2,13 +2,12 @@
  * 4x4 Matrix implementation
  * 
 **/
+#include <library/log.hpp>
 #include <library/math/matrix.hpp>
 #include <cmath>
 
 namespace library
 {
-	mat4::mat4() {}
-	
 	mat4::mat4(const mat4& matrix)
 	{
 		for (int i = 0; i < ELEMENTS; i++)
@@ -235,21 +234,6 @@ namespace library
 		return *this;
 	}
 	
-	mat4& mat4::scale(matrix_t scale)
-	{
-		return *this *= mat4(scale);
-	}
-	
-	mat4& mat4::scale(matrix_t sx, matrix_t sy, matrix_t sz)
-	{
-		return *this *= mat4(sx, sy, sz);
-	}
-	
-	mat4& mat4::rotateZYX(matrix_t ax, matrix_t ay, matrix_t az)
-	{
-		return *this *= rotationMatrix(ax, ay, az);
-	}
-	
 	// specialized 4x4 transpose
 	// returns this matrix transposed
 	mat4& mat4::transpose()
@@ -463,4 +447,22 @@ namespace library
 		return mat4(m);
 	}
 	
+	Log& operator<< (Log& out, const mat4& m)
+	{
+		return out <<
+			"[" << vec4(m[ 0], m[ 1], m[ 2], m[ 3]) << "\n" <<
+			" " << vec4(m[ 4], m[ 5], m[ 6], m[ 7]) << "\n" <<
+			" " << vec4(m[ 8], m[ 9], m[10], m[11]) << "\n" <<
+			" " << vec4(m[12], m[13], m[14], m[15]) << "]";
+	}
+	
+}
+
+std::ostream& operator<< (std::ostream& out, const library::mat4& m)
+{
+	return out <<
+		"[" << library::vec4(m[ 0], m[ 1], m[ 2], m[ 3]) << "\n" <<
+		" " << library::vec4(m[ 4], m[ 5], m[ 6], m[ 7]) << "\n" <<
+		" " << library::vec4(m[ 8], m[ 9], m[10], m[11]) << "\n" <<
+		" " << library::vec4(m[12], m[13], m[14], m[15]) << "]";
 }
