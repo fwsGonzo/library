@@ -3,7 +3,7 @@
 ######################
 
 # (1) select which components to use
-#USE_COMPRESSION = library/compression
+USE_COMPRESSION = library/compression
 #USE_NETWORK = library/network
 #USE_SCRIPT  = library/script
 USE_SOUND   = library/sound
@@ -14,7 +14,7 @@ USE_OPENGL  = library/opengl library/voxels
 # -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
 # Debug:
 # -ggdb3
-BUILDOPT = -Ofast -msse2
+BUILDOPT = -ggdb3 -march=native
 # output file
 OUTPUT   = ./liblibrary.a
 OUTTEST  = ./test
@@ -45,9 +45,6 @@ CCMODS  = $(wildcard $(CCDIRS))
 CXXDIRS = $(foreach dir, $(LIBRARY_DIRS), $(dir)/*.cpp)
 CXXMODS = $(wildcard $(CXXDIRS))
 
-TESTDIRS = $(foreach dir, $(SOURCE_DIRS), $(dir)/*.cpp)
-TESTMODS = $(wildcard $(TESTDIRS))
-
 # compile each .c to .o
 .c.o:
 	$(CC) $(CCFLAGS) $< -o $@
@@ -63,6 +60,8 @@ CXXOBJS = $(CXXMODS:.cpp=.o)
 # convert .o to .d
 DEPENDS = $(CXXOBJS:.o=.d) $(CCOBJS:.o=.d)
 # test modules
+TESTDIRS = $(foreach dir, $(SOURCE_DIRS), $(dir)/*.cpp)
+TESTMODS = $(wildcard $(TESTDIRS))
 TESTOBJS = $(TESTMODS:.cpp=.o)
 TESTDEPS = $(TESTOBJS:.o=.d)
 
