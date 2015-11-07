@@ -40,8 +40,8 @@ namespace library
 	// cuts -- -1.0 to 1.0, and is otherwise undefined
 	// fatness increases or decreases bulginess
 	
-	double cosnoise(vec3& v, double density, double scale_xz, double scale_y, 
-							 double curve,   double fatness,  double cuts)
+	double cosnoise(glm::vec3& v, double density, double scale_xz, double scale_y, 
+						          double curve,   double fatness,  double cuts)
 	{
 		#define size_x  scale_xz
 		#define size_z  scale_xz

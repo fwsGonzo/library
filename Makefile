@@ -9,12 +9,8 @@ USE_COMPRESSION = library/compression
 USE_SOUND   = library/sound
 USE_OPENGL  = library/opengl library/voxels
 
-# (2) select build options
-# Fast:
-# -Ofast -msse4.1 -ffast-math -mfpmath=both -march=native
-# Debug:
-# -ggdb3
-BUILDOPT = -ggdb3 -march=native
+BUILDOPT = -Ofast -march=native
+#BUILDOPT = -ggdb3 -march=native
 # output file
 OUTPUT   = ./liblibrary.a
 OUTTEST  = ./test

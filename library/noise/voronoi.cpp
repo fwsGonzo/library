@@ -74,7 +74,7 @@ namespace library
 		//vor_t fx = px - x;
 		//vor_t fy = py - y;
 		
-		vec3 res;
+		glm::vec3 res;
 		
 		for (int dx = x-1; dx <= x+1; dx++)
 		for (int dy = y-1; dy <= y+1; dy++)

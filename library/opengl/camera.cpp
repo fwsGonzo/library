@@ -3,6 +3,7 @@
 #include <library/log.hpp>
 #include <library/opengl/window.hpp>
 #include <cmath>
+#include <glm/gtx/transform.hpp>
 
 namespace library
 {
@@ -32,7 +33,7 @@ namespace library
 		constexpr double pio180 = 4.0 * atan(1.0) / 180.0;
 		
 		float halfTan = tan(this->FOV * pio180 / 2.0);
-		nearPlaneHalfSize = vec2(halfTan * aspect, halfTan);
+		nearPlaneHalfSize = glm::vec2(halfTan * aspect, halfTan);
 	}
 	
 	void Camera::calculateFrustum()
@@ -53,17 +54,17 @@ namespace library
 	{
 		// view matrix = rotation & translation
 		matview = matrot;
-		matview.translate(tx, ty, tz);
+		matview *= glm::translate(glm::vec3(tx, ty, tz));
 		
 		// modelview projection matrix
 		matviewproj = matproj * matview;
 	}
 	
-	void Camera::setRotationMatrix(const mat4& rot)
+	void Camera::setRotationMatrix(const glm::mat4& rot)
 	{
 		matrot = rot;
 	}
-	void Camera::setViewMatrix(const mat4& view)
+	void Camera::setViewMatrix(const glm::mat4& view)
 	{
 		matview = view;
 		matviewproj = matproj * matview;

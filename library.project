@@ -19,16 +19,9 @@
   </Plugins>
   <VirtualDirectory Name="library">
     <VirtualDirectory Name="math">
-      <VirtualDirectory Name="kine">
-        <File Name="library/math/kine/bone.cpp"/>
-      </VirtualDirectory>
       <File Name="library/math/baseconv.cpp"/>
       <File Name="library/math/frustum.cpp"/>
       <File Name="library/math/matrix.cpp"/>
-      <File Name="library/math/quaternion.cpp"/>
-      <File Name="library/math/vec3.cpp"/>
-      <File Name="library/math/vec4.cpp"/>
-      <File Name="library/math/vector.cpp"/>
     </VirtualDirectory>
     <VirtualDirectory Name="bitmap">
       <File Name="library/bitmap/bitmap.cpp"/>
@@ -101,13 +94,9 @@
   <VirtualDirectory Name="include">
     <VirtualDirectory Name="library">
       <VirtualDirectory Name="math">
-        <VirtualDirectory Name="kine">
-          <File Name="include/library/math/kine/bone.hpp"/>
-        </VirtualDirectory>
         <File Name="include/library/math/baseconv.hpp"/>
         <File Name="include/library/math/frustum.hpp"/>
         <File Name="include/library/math/matrix.hpp"/>
-        <File Name="include/library/math/quaternion.hpp"/>
         <File Name="include/library/math/toolbox.hpp"/>
         <File Name="include/library/math/vector.hpp"/>
       </VirtualDirectory>

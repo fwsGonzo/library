@@ -12,8 +12,7 @@ extern void test_opengl_bonerig();
 #include <iostream>
 #include <cassert>
 
-#include <library/sound/sound.hpp>
-using namespace library;
+//using namespace library;
 
 int main(void)
 {

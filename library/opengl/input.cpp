@@ -26,7 +26,7 @@ namespace library
 		this->speed   = 0.12;
 		this->sensitivity = 8;
 		// default rotation
-		this->rotation  = vec2(0.0);
+		this->rotation  = glm::vec2(0.0f);
 		this->mousegrab = false;
 		
 		if (kbd)
@@ -97,7 +97,7 @@ namespace library
 		if (grab)
 		{
 			// move cursor to center of window
-			lastMousePos = vec2(gamescr->getWidth(), gamescr->getHeight()) / 2.0;
+			lastMousePos = glm::vec2(gamescr->getWidth(), gamescr->getHeight()) * 0.5f;
 			mousePos = lastMousePos;
 			glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
 		}
@@ -160,12 +160,12 @@ namespace library
 		}
 	}
 	
-	void Input::addRotation(const vec2& degrees)
+	void Input::addRotation(const glm::vec2& degrees)
 	{
-		static const double PI = 4 * atan(1);
-		static const double degToRad = PI / 180;
-		static const double maxX = 89 * degToRad;
-		static const double maxY = PI * 2.0;
+		static const float PI = 4 * atan(1);
+		static const float degToRad = PI / 180;
+		static const float maxX = 89 * degToRad;
+		static const float maxY = PI * 2.0;
 		
 		rotation += degrees * degToRad;
 		// clamping
@@ -187,12 +187,12 @@ namespace library
 				double dy = (y - input->lastMousePos.y) * input->speed;
 				
 				if (fabs(dx) > input->sensitivity)
-					dx = toolbox::signum(dx) * input->sensitivity + dx / input->sensitivity;
+					dx = signum(dx) * input->sensitivity + dx / input->sensitivity;
 				if (fabs(dy) > input->sensitivity)
-					dy = toolbox::signum(dy) * input->sensitivity + dy / input->sensitivity;
+					dy = signum(dy) * input->sensitivity + dy / input->sensitivity;
 				
 				// rotation on axes
-				input->addRotation(vec2(dy, dx));
+				input->addRotation(glm::vec2(dy, dx));
 				
 				// move mouse to center
 				input->lastMousePos.x = input->gamescr->getWidth() / 2;

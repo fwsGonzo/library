@@ -10,7 +10,7 @@ namespace library
 	SimpleFont::SimpleFont()
 		: tilesize(0), lastUnit(-1), max_vertices(0), vdata(nullptr)
 	{
-		setClip(vec2(0.0));
+		setClip(glm::vec2(0.0));
 	}
 	SimpleFont::~SimpleFont()
 	{
@@ -31,7 +31,7 @@ namespace library
 		texture->bind(unit);
 	}
 	
-	void SimpleFont::setClip(const vec2& clip)
+	void SimpleFont::setClip(const glm::vec2& clip)
 	{
 		this->clip = clip;
 		// Y-axis goes positively upwards
@@ -46,7 +46,7 @@ namespace library
 		};
 	}
 	
-	void SimpleFont::print(const vec3& location, const vec2& size, std::string text, bool YaxisUp)
+	void SimpleFont::print(const glm::vec3& location, const glm::vec2& size, std::string text, bool YaxisUp)
 	{
 		// vertex count
 		int current_vertices = text.length();
@@ -105,7 +105,7 @@ namespace library
 		}
 	}
 	
-	void SimpleFont::emitTextBlock(font_vertex_t*& vertex, const vec3& location, const vec2& size, std::string& text, const std::vector<float>& wind)
+	void SimpleFont::emitTextBlock(font_vertex_t*& vertex, const glm::vec3& location, const glm::vec2& size, std::string& text, const std::vector<float>& wind)
 	{
 		for (size_t i = 0; i < text.length(); i++)
 		{

@@ -50,8 +50,8 @@ namespace library
 		attr.emplace_back("in_texture");
 		
 		shader = new Shader(font_vertex_shader, font_fragment_shader, "Internal font shader", attr);
-		shader->sendVec4("bgcolor", vec4(0.0, 1.0)); // black
-		shader->sendVec4("fcolor", vec4(1.0)); // white
+		shader->sendVec4("bgcolor", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // black
+		shader->sendVec4("fcolor", glm::vec4(1.0f)); // white
 		
 		return shader;
 	}

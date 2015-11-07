@@ -1,5 +1,7 @@
 #include <library/bitmap/colortools.hpp>
 
+using namespace glm;
+
 namespace library
 {
 	Color::Color(int red, int grn, int blu)
@@ -57,23 +59,23 @@ namespace library
 		if (vfrac < 0.5) vfrac = (0.5 - vfrac) / 0.5;
 		else vfrac = (vfrac - 0.5) / 0.5;
 		// S-curve the interpolator
-		vfrac = toolbox::quintic(vfrac);
+		vfrac = quintic(vfrac);
 		
 		return mixColor( cl1, cl2, vfrac * 0.5 );
 	}
 	
-	vec4 colorToVector(rgba8_t color)
+	glm::vec4 colorToVector(rgba8_t color)
 	{
-		return vec4
+		return glm::vec4
 		(
-			 (color & 255) / 255.0,
-			((color >>  8) & 255) / 255.0,
-			((color >> 16) & 255) / 255.0,
-			 (color >> 24) / 255.0
+			 (color & 255) / 255.0f,
+			((color >>  8) & 255) / 255.0f,
+			((color >> 16) & 255) / 255.0f,
+			 (color >> 24) / 255.0f
 		);
 	}
 	
-	rgba8_t vectorToColor(const vec4& vector)
+	rgba8_t vectorToColor(const glm::vec4& vector)
 	{
 		int r = int(vector.x * 255);
 		int g = int(vector.y * 255) << 8;

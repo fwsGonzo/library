@@ -2,8 +2,9 @@
 
 #include <library/bitmap/bitmap.hpp>
 #include <library/bitmap/colortools.hpp>
-#include <library/math/vector.hpp>
 #include <cstring>
+
+using namespace glm;
 
 namespace library
 {
