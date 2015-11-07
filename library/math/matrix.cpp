@@ -92,7 +92,7 @@ namespace library
 		
 		return mat;
 	}
-
+	
 	// orthographic projection matrix (center top-left)
 	mat4 ortho2dMatrix(float width, float height, float znear, float zfar)
 	{
