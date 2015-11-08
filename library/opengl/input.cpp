@@ -6,7 +6,7 @@
 #include <GL/glfw3.h>
 #include <cmath>
 
-#include <iostream>
+#include <stdio.h>
 
 namespace library
 {
@@ -96,10 +96,11 @@ namespace library
 		this->mousegrab = grab;
 		if (grab)
 		{
+			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			// move cursor to center of window
-			lastMousePos = glm::vec2(gamescr->getWidth(), gamescr->getHeight()) * 0.5f;
-			mousePos = lastMousePos;
-			glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
+			//lastMousePos = glm::vec2(gamescr->getWidth(), gamescr->getHeight()) * 0.5f;
+			//mousePos = lastMousePos;
+			//glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
 		}
 	}
 	
@@ -194,13 +195,9 @@ namespace library
 				// rotation on axes
 				input->addRotation(glm::vec2(dy, dx));
 				
-				// move mouse to center
-				input->lastMousePos.x = input->gamescr->getWidth() / 2;
-				input->lastMousePos.y = input->gamescr->getHeight() / 2;
-				glfwSetCursorPos(
-					input->gamescr->window(), 
-					input->lastMousePos.x, 
-					input->lastMousePos.y);
+				// remember the last pos >:|
+				input->lastMousePos.x = x;
+				input->lastMousePos.y = y;
 			}
 			else
 			{

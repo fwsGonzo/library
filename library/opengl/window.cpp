@@ -96,7 +96,7 @@ namespace library
 		}
 		
 		// get actual size, since it may not be supported
-		glfwGetWindowSize(this->wndHandle, &this->SW, &this->SH);
+		glfwGetFramebufferSize(this->wndHandle, &this->SW, &this->SH);
 		// screen aspect
 		this->SA = (float)this->SW / (float)this->SH;
 		
