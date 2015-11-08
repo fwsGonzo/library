@@ -1,7 +1,9 @@
 #include <library/noise/voronoi.hpp>
 
-#include <library/noise/simplex1234.h>
-#include <library/math/vector.hpp>
+#include <glm/vec2.hpp>
+#include <glm/vec3.hpp>
+#include <glm/gtc/noise.hpp>
+#include <stdint.h>
 #include <cmath>
 
 namespace library
@@ -9,7 +11,7 @@ namespace library
 	Voronoi::vor_t Voronoi::vor_euclidian(vor_t x1, vor_t y1, vor_t x2, vor_t y2)
 	{
 		vor_t dx = x2-x1, dy = y2-y1;
-		return sqrt(dx*dx + dy*dy);
+		return sqrtf(dx*dx + dy*dy);
 	}
 	
 	Voronoi::vor_t Voronoi::vor_quadratic(vor_t x1, vor_t y1, vor_t x2, vor_t y2)
@@ -47,18 +49,41 @@ namespace library
 		return y1;
 	}
 	
-	Voronoi::vor_t Voronoi::voronoi(vor_t px, vor_t py, distance_func distFunc)
+	inline unsigned int hash(unsigned int x)
+	{
+		x += ( x << 10u );
+		x ^= ( x >>  6u );
+		x += ( x <<  3u );
+		x ^= ( x >> 11u );
+		x += ( x << 15u );
+		return x;
+	}
+	inline int ihash(int x)
+	{
+		return hash(x) & INT32_MAX;
+	}
+
+	inline float randf(int x)
+	{
+		return ihash(x) / (float)INT32_MAX;
+	}
+	inline float randf(int x, int y)
+	{
+		return randf(x xor ihash(y));
+	}
+	
+	Voronoi::vor_t Voronoi::getdist(vor_t px, vor_t py, distance_func distFunc)
 	{
 		vor_t mindist = 99;
-		int x = floor(px);
-		int y = floor(py);
+		int x = floorf(px);
+		int y = floorf(py);
 		
 		for (int dx = x-1; dx <= x+1; dx++)
 		for (int dy = y-1; dy <= y+1; dy++)
 		{
 			// create a voronoi point
-			vor_t getx = dx + snoise2(px, py);
-			vor_t gety = dy + snoise2(px + 431, py + 293);
+			vor_t getx = dx + randf(px, py);
+			vor_t gety = dy + randf(px + 431, py + 293);
 			
 			vor_t dist = distFunc( px, py, getx, gety );
 			if (dist < mindist) mindist = dist;  // mew closest value
@@ -66,35 +91,31 @@ namespace library
 		return mindist;
 	}
 	
-	Voronoi::vor_t Voronoi::vordist(vor_t px, vor_t py, distance_func distFunc)
+	int Voronoi::getid(vor_t px, vor_t py, distance_func distFunc)
 	{
 		vor_t mindist = 99;
-		int x = floor(px);
-		int y = floor(py);
-		//vor_t fx = px - x;
-		//vor_t fy = py - y;
-		
-		glm::vec3 res;
+		int x  = floorf(px);
+		int y  = floorf(py);
+		int id = 0;
 		
 		for (int dx = x-1; dx <= x+1; dx++)
 		for (int dy = y-1; dy <= y+1; dy++)
 		{
 			// create a voronoi point
-			vor_t getx = dx + snoise2(px, py);
-			vor_t gety = dy + snoise2(px + 431, py + 293);
+			vor_t getx = dx + randf(dx + 3299, dy + 5843); //glm::simplex(glm::vec2(dx + 3299, dy + 5843)) * 0.5 + 0.5;
+			vor_t gety = dy + randf(dx + 431,  dy + 293); //glm::simplex(glm::vec2(dx + 431,  dy + 293)) * 0.5 + 0.5;
 			
 			vor_t dist = distFunc( px, py, getx, gety );
 			
 			if (dist < mindist)
 			{
-				res.x = dist;
-				res.y = px - getx;
-				res.z = py - gety;
-				
+				// assign some integral id based on hash
+				id      = (dx + 2683) xor ihash(dy + 1759);
+				// save distance
 				mindist = dist;  // mew closest value
 			}
 		}
-		return mindist;
+		return id;
 	}
 	
 }
