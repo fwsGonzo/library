@@ -51,11 +51,11 @@ namespace library
 	
 	inline unsigned int hash(unsigned int x)
 	{
-		x += ( x << 10u );
-		x ^= ( x >>  6u );
-		x += ( x <<  3u );
-		x ^= ( x >> 11u );
-		x += ( x << 15u );
+		x = (x ^ 61) ^ (x >> 16);
+		x = x + (x << 3);
+		x = x ^ (x >> 4);
+		x = x * 0x27d4eb2d;
+		x = x ^ (x >> 15);
 		return x;
 	}
 	inline int ihash(int x)
@@ -102,15 +102,15 @@ namespace library
 		for (int dy = y-1; dy <= y+1; dy++)
 		{
 			// create a voronoi point
-			vor_t getx = dx + randf(dx + 3299, dy + 5843); //glm::simplex(glm::vec2(dx + 3299, dy + 5843)) * 0.5 + 0.5;
-			vor_t gety = dy + randf(dx + 431,  dy + 293); //glm::simplex(glm::vec2(dx + 431,  dy + 293)) * 0.5 + 0.5;
+			vor_t getx = dx + randf(dx + 3299, dy + 5843);
+			vor_t gety = dy + randf(dx + 431,  dy + 2437);
 			
 			vor_t dist = distFunc( px, py, getx, gety );
 			
 			if (dist < mindist)
 			{
 				// assign some integral id based on hash
-				id      = (dx + 2683) xor ihash(dy + 1759);
+				id      = ihash(dx + 5953) xor ihash(dy + 7639);
 				// save distance
 				mindist = dist;  // mew closest value
 			}
