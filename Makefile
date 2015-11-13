@@ -26,7 +26,7 @@ LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
 # compiler
 CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
-CCFLAGS = -c -MMD -Wall -Wextra -Wno-write-strings -Iinc -Iinclude
+CCFLAGS = -c -MMD -Wall -Wextra -Wno-write-strings -Iinc -Iinclude `pkg-config --static --cflags glfw3`
 # linker flags
 LDFLAGS = -Llib/linux -L. -llibrary -lbass -lGLEW -DGLEW_STATIC `pkg-config --static --libs glfw3` -Wl,-rpath,lib/linux
 ifeq ($(OS),Windows_NT)

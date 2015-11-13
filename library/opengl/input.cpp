@@ -3,9 +3,8 @@
 #include <library/log.hpp>
 #include <library/math/toolbox.hpp>
 #include <library/opengl/window.hpp>
-#include <GL/glfw3.h>
+#include <GLFW/glfw3.h>
 #include <cmath>
-
 #include <stdio.h>
 
 namespace library
