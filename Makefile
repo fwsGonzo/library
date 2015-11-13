@@ -24,7 +24,7 @@ LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
 				$(USE_OPENGL) $(USE_COMPRESSION) $(USE_NETWORK) $(USE_SCRIPT) $(USE_SOUND)
 
 # compiler
-CC = c:/tdm-gcc-64/bin/g++ $(BUILDOPT) -std=c++11
+CC = g++ $(BUILDOPT) -std=c++11
 # compiler flags
 CCFLAGS = -c -MMD -Wall -Wextra -Wno-write-strings -Iinc -Iinclude
 # linker flags
