@@ -30,7 +30,7 @@ namespace library
 		matproj = perspectiveMatrix(this->FOV, aspect, this->znear, this->zfar);
 		
 		// calculate half near-plane size
-		constexpr double pio180 = 4.0 * atan(1.0) / 180.0;
+		const double pio180 = 4.0 * atan(1.0) / 180.0;
 		
 		float halfTan = tan(this->FOV * pio180 / 2.0);
 		nearPlaneHalfSize = glm::vec2(halfTan * aspect, halfTan);

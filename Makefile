@@ -3,16 +3,16 @@
 ######################
 
 # (1) select which components to use
-USE_COMPRESSION = library/compression
+#USE_COMPRESSION = library/compression
 #USE_NETWORK = library/network
 #USE_SCRIPT  = library/script
 USE_SOUND   = library/sound
 USE_OPENGL  = library/opengl library/voxels
 
-BUILDOPT = -Ofast -march=native
+BUILDOPT = -Ofast -march=corei7-avx
 #BUILDOPT = -ggdb3 -march=native
 # output file
-OUTPUT   = ./liblibrary.a
+OUTPUT   = ./libibrary.a
 OUTTEST  = ./test
 
 ##############################################################
@@ -24,7 +24,8 @@ LIBRARY_DIRS = library library/bitmap library/math library/math/kine \
 				$(USE_OPENGL) $(USE_COMPRESSION) $(USE_NETWORK) $(USE_SCRIPT) $(USE_SOUND)
 
 # compiler
-CC = g++ $(BUILDOPT) -std=c++11
+CC = g++
+CC += $(BUILDOPT) -std=c++11 -mstackrealign
 # compiler flags
 CCFLAGS = -c -MMD -Wall -Wextra -Wno-write-strings -Iinc -Iinclude `pkg-config --static --cflags glfw3`
 # linker flags

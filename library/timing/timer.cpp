@@ -17,7 +17,7 @@ namespace library
 		microseconds micros = duration_cast<microseconds>(t1 - t0);
 		
 		// return high-precision seconds
-		return micros.count() / 1e6d;
+		return micros.count() / 1e6f;
 	}
 	
 	// defines an interval change, and returns the time between last call
@@ -30,6 +30,6 @@ namespace library
 		// set last time = this time
 		t0 = t1;
 		// return high-precision seconds
-		return micros.count() / 1e6d;
+		return micros.count() / 1e6f;
 	}
 }
