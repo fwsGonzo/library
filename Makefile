@@ -9,8 +9,7 @@
 USE_SOUND   = library/sound
 USE_OPENGL  = library/opengl library/voxels
 
-BUILDOPT = -Ofast -march=corei7-avx
-#BUILDOPT = -ggdb3 -march=native
+BUILDOPT = -ggdb3 -march=native
 # output file
 OUTPUT   = ./libibrary.a
 OUTTEST  = ./test
