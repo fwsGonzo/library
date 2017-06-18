@@ -3,41 +3,41 @@
 
 #include <glm/vec2.hpp>
 #include <string>
-#include <vector>
+#include <set>
 
 struct GLFWwindow;
 
 namespace library
 {
 	class WindowClass;
-	
+
 	class Input
 	{
 	public:
 		static const int MAX_KEYS = 512;
 		static const int MAX_MOUSE = 6;
-		
+
 		enum keystate_t
 		{
 			KEY_RELEASED,
 			KEY_PRESSED,
 			KEY_LOCKED
 		};
-		
+
 		typedef int key_t;
-		
+
 		struct input_t
 		{
 			input_t() : action(0), mods(0) {};
-			
+
 			int action;
 			int mods;
 		};
-		
+
 		// initialize input using the current context
 		void init(library::WindowClass& gamescr, bool keyboard, bool mouse);
 		~Input();
-		
+
 		// public keyboard functions
 		const input_t& getKeyEx(int) const;
 		key_t getKey(int) const;
@@ -45,7 +45,7 @@ namespace library
 		void hold(int);
 		// releases the hold of a key, setting state from KEY_LOCKED back to KEY_PRESSED
 		void release(int);
-		
+
 		// public mouse functions
 		// set mouse options
 		void mouseOptions(double speed, double sensitivity);
@@ -75,10 +75,10 @@ namespace library
 			this->rotation = newRotation;
 		}
 		void addRotation(const glm::vec2& degrees);
-		
+
 		// returns mousewheel status _AND_ resets it internally
 		int getWheel(); // 0 = no change, down < 0, up > 0
-		
+
 		// cheap solution for chat/textbox
 		inline const std::string& getText() const
 		{
@@ -89,7 +89,7 @@ namespace library
 		{
 			this->text.clear();
 		}
-		
+
 	protected:
 		WindowClass* gamescr;
 		double speed;
@@ -97,10 +97,10 @@ namespace library
 		glm::vec2 mousePos;
 		glm::vec2 lastMousePos;
 		bool   mousegrab;
-		
+
 		// pitch & yaw
 		glm::vec2 rotation;
-		
+
 		// keyboard keys
 		input_t keys[MAX_KEYS];
 		// mouse buttons
@@ -109,11 +109,11 @@ namespace library
 		int wheel;
 		// typed text
 		std::string text;
-		
+
 	private:
 		static Input* inputFromWindow(GLFWwindow*);
-		static std::vector<Input*> workingSet;
-		
+		static std::set<Input*> workingSet;
+
 		friend void keyboard(GLFWwindow*, int key, int action, int a, int b);
 		friend void keyboardType(GLFWwindow*, unsigned int character);
 		friend void mouseMove(GLFWwindow*, double x, double y);
