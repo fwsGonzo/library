@@ -62,7 +62,6 @@ namespace library
       // add new variable
 			if (!key.empty())
 			{
-        printf("config: %s = %s\n", key.c_str(), value.c_str());
 				kv.emplace(std::piecewise_construct,
                    std::forward_as_tuple(key),
                    std::forward_as_tuple(value));
