@@ -4,58 +4,72 @@
 #include <library/log.hpp>
 
 namespace library
-{	
+{
 	Config::Config(const std::string& file)
 	{
 		load(file);
 	}
-	
+
 	// load from file
-	bool Config::load(const std::string& file)
+	bool Config::load(const std::string& filename)
 	{
-		std::fstream filestream;
-		filestream.open(file.c_str(), std::fstream::in);
-		
-		if (!filestream) return false; // could not open file
-		
-		int numkeys = 0;
-		
+		std::ifstream stream(filename.c_str());
+		if (!stream) return false; // could not open file
+
+    std::string text((std::istreambuf_iterator<char>(stream)),
+                     std::istreambuf_iterator<char>());
+    size_t it = 0;
+
 		// read one line at a time until end of file
-		while(!filestream.eof())
+    while (it < text.size())
 		{
-			char line[256];
-			filestream.getline(line, 256);
-			std::string cline(line);
 			std::string key, value;
 			bool keypart = true;
-			
+      bool reading = false;
+      char last = ' ';
+
 			// iterate config line (string)
-			for (std::string::iterator it = cline.begin(); it != cline.end(); ++it)
+      while (it < text.size())
 			{
-				if(*it == '#') break; // stop at comment character
-				
-				if(*it == '=')
+        const char c = text[it];
+        if (c == 13 || c == 10) break;
+
+        // stop at space + comment
+				if (c == '#' && last == ' ') break;
+				if (c == '=')
 				{
 					keypart = false;
-				}
-				else if(*it != ' ') // ignore spaces
+        }
+        else if (c == '"') {
+          reading = not reading;
+        }
+				else if (c != ' ' || reading)
 				{
 					if(keypart)
-						key += *it;
+						key += c;
 					else
-						value += *it;
+						value += c;
 				}
+        last = c;
+        it++;
 			}
-			if(key.length())
+      // read until end of line
+      while (it < text.size() && text[it] != 13 && text[it] != 10)
+        it++;
+      // read past end of line
+      while (it < text.size() && (text[it] == 13 || text[it] == 10))
+        it++;
+      // add new variable
+			if (!key.empty())
 			{
-				kv.insert(std::pair<std::string,std::string> (key, value));
-				numkeys++;
+        printf("config: %s = %s\n", key.c_str(), value.c_str());
+				kv.emplace(std::piecewise_construct,
+                   std::forward_as_tuple(key),
+                   std::forward_as_tuple(value));
 			}
 		}
-		filestream.close();
-		
-		logger << Log::INFO << "*** Loaded " << numkeys << " variables from config." << Log::ENDL;
+		logger << Log::INFO << "*** Loaded " << kv.size() << " variables from config." << Log::ENDL;
 		return true;
-		
+
 	} // Config::load()
 }
