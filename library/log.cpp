@@ -8,55 +8,55 @@ using namespace std;
 namespace library
 {
 	Log logger;
-	
+
 	Log::Log()
 	{
 		// console output enabled by default
 		this->outputConsole = true;
 	}
-	
+
 	Log::Log(std::string filename) : Log()
 	{
 		this->open(filename);
 	}
-	
+
 	Log::~Log()
 	{
 		// close file, if open
 		this->file.close();
 	}
-	
+
 	void Log::open(std::string filename)
 	{
 		if (file.good()) file.close();
 		// output logfile
 		this->file.open(filename.c_str(), ios::app | ios::out);
 	}
-	
+
 	void Log::setOutputConsole(bool conout)
 	{
 		this->outputConsole = conout;
 	}
-	
+
 	Log& operator<<(Log& out, const Log::LogLevel level)
 	{
 		if (level) // not ENDL
 		{
-			out.synch.lock();
-			
+//			out.synch.lock();
+
 			stringstream ss;
-			
+
 			// add timestamp to log
 			time_t rawtime;
 			time(&rawtime);
 			tm* t = gmtime(&rawtime);
-			
+
 			if (t)
 			{
 				ss << "[" << t->tm_hour << ":" << t->tm_min << ":" << t->tm_sec << "] ";
 			}
 			out.log += ss.str();
-			
+
 			// add loglevel: symbol --> text
 			switch (level)
 			{
@@ -69,7 +69,7 @@ namespace library
 			case Log::ENDL:
 				break;
 			}
-			
+
 		}
 		else // Log::log_level_t.ENDL
 		{
@@ -83,29 +83,29 @@ namespace library
 				out.file << out.log << endl;
 			// clear log string
 			out.log = "";
-			
-			out.synch.unlock();
+
+//			out.synch.unlock();
 		}
 		// outgoing = incoming Log, for chaining
 		return out;
 	}
-	
+
 	bool Log::write(LogLevel level, std::string text)
 	{
 		if (this->file.is_open() == false) return false;
-		
-		synch.lock();
+
+//		synch.lock();
 		stringstream ss;
-		
+
 		time_t rawtime;
 		time(&rawtime);
 		tm* t = gmtime(&rawtime);
-		
+
 		if (t)
 		{
 			ss << "[" << t->tm_hour << ":" << t->tm_min << ":" << t->tm_sec << "] ";
 		}
-		
+
 		// add loglevel: symbol --> text
 		switch (level)
 		{
@@ -118,7 +118,7 @@ namespace library
 		case Log::ENDL:
 			break;
 		}
-		
+
 		ss << ": " << text << endl;
 		// to file
 		if (file.good())
@@ -128,9 +128,9 @@ namespace library
 		{
 			cout << ss.str() << endl;
 		}
-		
-		synch.unlock();
+
+//		synch.unlock();
 		return true;
 	}
-	
+
 }
