@@ -11,7 +11,7 @@
 
 namespace library
 {
-	Bitmap::Bitmap(int w, int h): 
+	Bitmap::Bitmap(int w, int h):
 		width(w), height(h), format(GL_BGRA), tilesX(1), tilesY(1)
 	{
 		buffer = new rgba8_t[width * height];
@@ -20,7 +20,7 @@ namespace library
 			throw std::string("Bitmap::Bitmap(int, int): Failed to allocate pixel buffer");
 		}
 	}
-	Bitmap::Bitmap(int w, int h, rgba8_t color): 
+	Bitmap::Bitmap(int w, int h, rgba8_t color):
 		width(w), height(h), format(GL_BGRA), tilesX(1), tilesY(1)
 	{
 		buffer = new rgba8_t[width * height];
@@ -30,7 +30,7 @@ namespace library
 		}
 		clear(color);
 	}
-	Bitmap::Bitmap(int w, int h, rgba8_t* data, int glformat): 
+	Bitmap::Bitmap(int w, int h, rgba8_t* data, int glformat):
 		width(w), height(h), format(glformat), tilesX(1), tilesY(1)
 	{
 		buffer = new rgba8_t[width * height];
@@ -44,25 +44,25 @@ namespace library
 	{
 		delete[] buffer;
 	}
-	
+
 	// assignment operator
 	Bitmap& Bitmap::operator= (const Bitmap& bmp)
 	{
 		this->width  = bmp.width;
 		this->height = bmp.height;
 		this->format = bmp.format;
-		
+
 		// copy buffer
 		int n = width * height;
 		this->buffer = new rgba8_t[n];
 		memcpy (this->buffer, bmp.buffer, n * sizeof(rgba8_t));
-		
+
 		// extra info (in case the bitmap was linearized)
 		this->tilesX = bmp.tilesX;
 		this->tilesY = bmp.tilesY;
 		return *this;
 	}
-	
+
 	bool Bitmap::load(const std::string file, Bitmap::bitmap_type btype)
 	{
 		if (btype == BMP)
@@ -75,7 +75,7 @@ namespace library
 		}
 		throw std::string("Bitmap::load(): Unsupported format");
 	}
-	
+
 	bool Bitmap::loadBMP(const std::string& file)
 	{
 		#pragma pack(push, 1)
@@ -84,11 +84,11 @@ namespace library
 		{
 			char magic[2];
 			int filesize;
-			short res1; 
+			short res1;
 			short res2;
 			int pixeldata;
 		};
-		
+
 		struct bmpdata_t
 		{
 			int headersize;
@@ -99,37 +99,37 @@ namespace library
 			// don't care about the rest
 		};
 		#pragma pack(pop)
-		
+
 		bmpheader_t bhead;
 		bmpdata_t bdata;
 		std::ifstream File (file.c_str(), std::ios::in | std::ios::binary);
-		
+
 		if (!File)
 		{	// Log: could not open file
 			logger << Log::ERR << "Could not open file: " << file << Log::ENDL;
 			return false;
 			//throw std::string("Bitmap::loadBMP(): Could not open file " + file);
 		}
-		
+
 		File.read ( (char*) &bhead, sizeof(bmpheader_t) );
 		File.read ( (char*) &bdata, sizeof(bmpdata_t) );
-		
+
 		this->width  = bdata.w;
 		this->height = bdata.h;
 		this->format = GL_BGRA;
 		this->tilesX = 1;
 		this->tilesY = 1;
-		
+
 		int pixels = width * height;
-		
+
 		// delete any previous buffer
 		delete[] buffer;
 		// allocate 32-bits * w * h pixels
 		buffer = new rgba8_t[pixels];
-		
+
 		// seek to pixeldata relative to beginning of file
 		File.seekg(bhead.pixeldata);
-		
+
 		if (bdata.bits == 24)
 		{
 			// width of image on file in bytes
@@ -137,18 +137,18 @@ namespace library
 			if (pad) pad = 4 - pad;
 			// width of image in memory in bytes
 			int scanline = width * 3 + pad; // pitch
-			
+
 			unsigned char* scanbuffer = new unsigned char[scanline];
 			unsigned char* buf = (unsigned char*)buffer;
 			unsigned char* tmp;
-			
+
 			for (int y = 0; y < height; y++)
 			{
 				buf = (unsigned char*) buffer + (height-1 - y) * width * sizeof(rgba8_t);
 				tmp = scanbuffer;
 				// read entire scanline
 				File.read((char*)tmp, scanline);
-				
+
 				for (int x = 0; x < width; x++)
 				{
 					buf[0] = tmp[0];
@@ -157,19 +157,19 @@ namespace library
 					buf[3] = 255;
 					buf += 4; tmp += 3;
 				}
-				
+
 			}
 			// cleanup
-			delete scanbuffer;
+			delete[] scanbuffer;
 		}
 		else if (bdata.bits == 32)
 		{
 			// 32-bits (8 per channel)
-			
+
 			// width of image in bytes
 			int scanline = width * sizeof(rgba8_t);
 			char* scanpos = (char*) this->buffer + height * scanline;
-			
+
 			while (scanpos > (char*) this->buffer)
 			{
 				scanpos -= scanline;
@@ -185,7 +185,7 @@ namespace library
 		File.close();
 		return true;
 	}
-	
+
 	bool Bitmap::loadPNG(const std::string& file)
 	{
 		std::vector<unsigned char> image, png;
@@ -207,17 +207,17 @@ namespace library
 		this->format = GL_RGBA;
 		this->tilesX = 1;
 		this->tilesY = 1;
-		
+
 		this->width  = w;
 		this->height = h;
-		
+
 		delete[] this->buffer;
 		this->buffer = new rgba8_t[w * h];
 		memcpy (this->buffer, image.data(), sizeof(rgba8_t) * w * h);
-		
+
 		return true;
 	}
-	
+
 	void Bitmap::blit(Bitmap& dest, int srcX, int srcY, int width, int height, int dstX, int dstY) const
 	{
 		// copy from this at (x, y) with size (w, h) to destination at (dstX, dstY)
@@ -225,27 +225,27 @@ namespace library
 		{
 			rgba8_t* src = this->buffer + (y + srcY) * this->width + srcX;
 			rgba8_t* dst = dest.buffer  + (y + dstY) * dest.getWidth() + dstX;
-			
+
 			memcpy (dst, src, width * sizeof(rgba8_t));
 		}
 		dest.format = this->format;
 	}
-	
+
 	// splits a bitmap in a 1d continous memory array
 	// of tiles used by GL_TEXTURE_2D_ARRAY (GL 3.x)
 	void Bitmap::parse2D(int tw, int th)
 	{
 		if (this->buffer == nullptr)
 			throw std::string("Bitmap::parse2D(): Buffer was null");
-		
+
 		// nearest tilew/h multiple floor
 		int maxx = int(this->width  / tw) * tw;
 		int maxy = int(this->height / th) * th;
-		
+
 		// buffers
 		rgba8_t* newBuffer = new rgba8_t[maxx * maxy];
 		rgba8_t *p, *n = newBuffer;
-		
+
 		// for each tile
 		int tx, ty;
 		for (int y = th-1; y < maxy; y += th)
@@ -253,18 +253,18 @@ namespace library
 		{
 			//p = this->buffer + (y + th-1) * this->width + x;
 			p = this->buffer + y * this->width + x;
-			
+
 			// blit internal tile
 			for (ty = 0; ty < th; ty++)
 			{
 				for (tx = 0; tx < tw; tx++)
 					*n++ = *p++;
-				
+
 				p -= this->width + tw;
 			} // ty
-			
+
 		} // (x, y)
-		
+
 		// replace with new buffer
 		delete[] this->buffer;
 		this->buffer = newBuffer;
@@ -278,33 +278,33 @@ namespace library
 	{
 		if (this->buffer == nullptr)
 			throw std::string("Bitmap::parse2D(): Buffer was null");
-		
+
 		// nearest tilew/h multiple floor
 		int maxx = int(this->width  / tw) * tw;
 		int maxy = int(this->height / th) * th;
-		
+
 		// buffers
 		rgba8_t* newBuffer = new rgba8_t[maxx * maxy];
 		rgba8_t *p, *n = newBuffer;
-		
+
 		// for each tile
 		int tx, ty;
 		for (int y = 0; y < maxy; y += th)
 		for (int x = 0; x < maxx; x += tw)
 		{
 			p = this->buffer + y * this->width + x;
-			
+
 			// blit internal tile
 			for (ty = 0; ty < th; ty++)
 			{
 				for (tx = 0; tx < tw; tx++)
 					*n++ = *p++;
-				
+
 				p += this->width - tw;
 			} // ty
-			
+
 		} // (x, y)
-		
+
 		// replace with new buffer
 		delete[] this->buffer;
 		this->buffer = newBuffer;
@@ -314,7 +314,7 @@ namespace library
 		this->width  = tw;
 		this->height = th;
 	}
-	
+
 	// clear a bitmap with a given color
 	void Bitmap::clear(rgba8_t color)
 	{
@@ -322,7 +322,7 @@ namespace library
 		for (int i = 0; i < n; i++)
 			buffer[i] = color;
 	}
-	
+
 	// replace a color on the bitmap with another
 	void Bitmap::replace(rgba8_t color, rgba8_t replacecolor)
 	{
@@ -330,7 +330,7 @@ namespace library
 		for (int i = 0; i < n; i++)
 			if (buffer[i] == color) buffer[i] = replacecolor;
 	}
-	
+
 	// rotate 90 degrees
 	Bitmap Bitmap::rotate90() const
 	{
@@ -364,14 +364,13 @@ namespace library
 		}
 		return bmp;
 	}
-	
+
 	bool Bitmap::isValid() const
 	{
 		return (
-			this->buffer != nullptr && 
-			this->width  > 0 && 
+			this->buffer != nullptr &&
+			this->width  > 0 &&
 			this->height > 0
 		);
 	}
 }
-
