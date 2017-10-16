@@ -26,7 +26,6 @@ SET(LIBRARY_SOURCES
 
     library/opengl/camera.cpp
     library/opengl/fbo.cpp
-    library/opengl/input.cpp
     library/opengl/oglfont.cpp
     library/opengl/oglfont_shader.cpp
     library/opengl/opengl.cpp
@@ -34,7 +33,6 @@ SET(LIBRARY_SOURCES
     library/opengl/shader.cpp
     library/opengl/texture.cpp
     library/opengl/vao.cpp
-    library/opengl/window.cpp
 
     library/threading/TThread.cpp
     library/threading/TThreadPool.cpp

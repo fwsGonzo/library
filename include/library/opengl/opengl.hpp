@@ -7,34 +7,23 @@
 
 #define GLEW_STATIC
 #include <GL/glew.h>
-#include <GLFW/glfw3.h>
 
 namespace library
 {
-	class WindowClass;
-	
-	class OpenGL
-	{
+	class OpenGL {
 	public:
-		OpenGL() { initialized = false; }
-		
 		bool supportsVBO;
 		bool supportsVAO;
-		
+
 		bool supportsFramebuffers;
 		bool supportsShaders;
 		bool supportsAttribs;
-		
+
 		bool supportsGenMipmap;
 		bool supportsTextureArrays;
-		
-		void init(bool core_context);
-		
+
+		OpenGL(bool core_context);
 		static bool checkError();
-		
-	private:
-		bool initialized;
 	};
-	extern OpenGL ogl;
 }
 #endif
