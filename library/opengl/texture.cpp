@@ -10,10 +10,15 @@ namespace library
 {
 	GLuint Texture::lastid[TEXTURE_UNITS] = {0};
 	GLenum Texture::lastUnit = -1;
-	
+
 	Texture::Texture(GLenum target)
 		: Texture(target, GL_RGBA8) {}
-	
+
+  Texture::~Texture()
+  {
+    glDeleteTextures(1, &this->id);
+  }
+
 	Texture::Texture(GLenum target, GLint format)
 	{
 		glGenTextures(1, &this->id);
@@ -22,7 +27,7 @@ namespace library
 		this->boundUnit = -1;
 		this->isMipmapped = false;
 	}
-	
+
 	void Texture::create(const Bitmap& bmp, bool mipmap = true, GLint wrapmode = GL_CLAMP_TO_EDGE, GLint magfilter = GL_NEAREST, GLint minfilter = GL_LINEAR_MIPMAP_LINEAR)
 	{
 		// Implementation is a C library, so no const& :)
@@ -30,21 +35,21 @@ namespace library
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
 		const GLuint* pixel = bmp.data();
-		
+
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, wrapmode);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, wrapmode);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, magfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
-		
+
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, (int)(log(width) / log(2.0)));
 		}
-		
+
 		GLenum byteFormat = getByteFormat();
-		
+
 		if (this->type == GL_TEXTURE_1D)
 		{
 			glTexImage1D(this->type, 0, format, width, 0, bmp.getFormat(), byteFormat, pixel);
@@ -56,11 +61,11 @@ namespace library
 		else if (this->type == GL_TEXTURE_CUBE_MAP)
 		{
 			/* ====================================== */
-			
+
 			// create temporary bitmap consisting of 1 side of a cubemap
 			int cmsize = width / 4;
 			Bitmap blitdump(cmsize, cmsize, 32);
-			
+
 			// iterate the 6 sides of a cubemap
 			for (int i = 0; i < 6; i++)
 			{
@@ -94,7 +99,7 @@ namespace library
 		else if (this->type == GL_TEXTURE_2D_ARRAY)
 		{
 			int numTiles = bmp.getTilesX() * bmp.getTilesY();
-			
+
 			glTexImage3D(this->type, 0, format, width, height, numTiles, 0, bmp.getFormat(), byteFormat, pixel);
 		}
 		else
@@ -102,12 +107,12 @@ namespace library
 			logger << Log::ERR << "@Texture::create(Bitmap&): Unknown texture target (" << (int)this->type << ")" << Log::ENDL;
 			throw std::string("Texture::create(Bitmap&): Unknown texture target (" + std::to_string(this->type) + ")");
 		}
-		
+
 		if (this->isMipmapped)
 		{
 			glGenerateMipmap(this->type);
 		}
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::create(Bitmap&): OpenGL state error" << Log::ENDL;
@@ -115,30 +120,30 @@ namespace library
 			throw std::string("Texture::create(Bitmap&): OpenGL state error");
 		}
 	}
-	
+
 	void Texture::create(int levels, int width, int height)
 	{
 		this->isMipmapped = (levels > 0);
 		this->width  = width;
 		this->height = height;
-		
+
 		bind(0);
 		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
 		const GLint maxfilter = GL_NEAREST;
-		
+
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
-		
+
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
-		
+
 		const GLenum sformat = getStorageFormat();
-		
+
 		switch (this->type)
 		{
 		case GL_TEXTURE_1D:
@@ -154,7 +159,7 @@ namespace library
 		}
 		if (this->isMipmapped)
 			glGenerateMipmap(this->type);
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
@@ -162,31 +167,31 @@ namespace library
 			throw std::string("Texture::create(): OpenGL state error");
 		}
 	}
-	
+
 	void Texture::create3d(int levels, int x, int y, int z)
 	{
 		this->isMipmapped = (levels > 0);
 		this->width  = x;
 		this->height = y;
-		
+
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		
+
 		const GLint minfilter = (levels) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST;
 		const GLint maxfilter = GL_NEAREST;
-		
+
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
-		
+
 		if (this->isMipmapped)
 		{
 			glTexParameteri(this->type, GL_TEXTURE_BASE_LEVEL, 0);
 			glTexParameteri(this->type, GL_TEXTURE_MAX_LEVEL, levels);
 		}
-		
+
 		const GLenum sformat = getStorageFormat();
-		
+
 		switch (this->type)
 		{
 		case GL_TEXTURE_3D:
@@ -199,7 +204,7 @@ namespace library
 		}
 		if (this->isMipmapped)
 			glGenerateMipmap(this->type);
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
@@ -207,16 +212,16 @@ namespace library
 			throw std::string("Texture::create(): OpenGL state error");
 		}
 	}
-	
+
 	void Texture::setInterpolation(bool linear)
 	{
 		GLint maxfilter = (linear) ? GL_LINEAR : GL_NEAREST;
 		GLint minfilter = maxfilter;
 		if (isMipmapped) minfilter = (linear) ? GL_LINEAR_MIPMAP_LINEAR : GL_NEAREST_MIPMAP_NEAREST;
-		
+
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, maxfilter);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, minfilter);
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::setInterpolation(): OpenGL state error" << Log::ENDL;
@@ -233,19 +238,19 @@ namespace library
 	{
 		glTexParameterf(this->type, GL_TEXTURE_MAX_ANISOTROPY_EXT, samples);
 	}
-	
+
 	void Texture::createDepth(int width, int height)
 	{
 		// create empty depth buffer texture
 		this->width  = width;
 		this->height = height;
-		
+
 		bind(0);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(this->type, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(this->type, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		
+
 		if (format == GL_DEPTH24_STENCIL8 ||
 			format == GL_DEPTH32F_STENCIL8)
 		{
@@ -263,16 +268,16 @@ namespace library
 			throw std::string("Texture::createDepth(): OpenGL state error");
 		}
 	}
-	
+
 	void Texture::createMultisample(int width, int height, int samples)
 	{
 		this->width  = width;
 		this->height = height;
 		this->isMipmapped = false;
-		
+
 		bind(0);
 		glTexImage2DMultisample(this->type, samples, this->format, width, height, true);
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::createMultisample(): OpenGL state error" << Log::ENDL;
@@ -286,10 +291,10 @@ namespace library
 		this->width  = width;
 		this->height = height;
 		this->isMipmapped = false;
-		
+
 		bind(0);
 		glTexImage2DMultisample(this->type, samples, this->format, width, height, true);
-		
+
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::createDepthMultisampled(): OpenGL state error" << Log::ENDL;
@@ -297,22 +302,22 @@ namespace library
 			throw std::string("Texture::createDepthMultisampled(): OpenGL state error");
 		}
 	}
-	
+
 	void Texture::bind(GLenum unit)
 	{
 		// avoid binding same texture twice on the same texture unit
 		if (lastid[unit] == this->id) return;
 		lastid[unit] = this->id;
-		
+
 		if (lastUnit != unit)
 		{
 			lastUnit = unit;
 			glActiveTexture(GL_TEXTURE0 + unit);
 		}
-		
+
 		glBindTexture(this->type, this->id);
 		this->boundUnit = unit;
-		
+
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
@@ -322,12 +327,12 @@ namespace library
 		}
 		#endif
 	}
-	
+
 	void Texture::unbind()
 	{
 		unbind(boundUnit);
 	}
-	
+
 	void Texture::unbind(GLenum unit)
 	{
 		if (lastUnit != unit)
@@ -338,7 +343,7 @@ namespace library
 		glBindTexture(GL_TEXTURE_2D, 0);
 		lastid[unit] = 0;
 	}
-	
+
 	void Texture::copyScreen()
 	{
 		copyScreen(this->width, this->height);
@@ -353,7 +358,7 @@ namespace library
 		}
 		// copy screen
 		glCopyTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, 0, 0, w, h);
-		
+
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
@@ -363,12 +368,12 @@ namespace library
 		}
 		#endif
 	}
-	
+
 	void Texture::upload(const Bitmap& bmp)
 	{
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
-		
+
 		// upload pixel data
 		if (this->type == GL_TEXTURE_1D)
 		{
@@ -378,13 +383,13 @@ namespace library
 		{
 			glTexImage2D(this->type, 0, format, width, height, 0, bmp.getFormat(), getByteFormat(), bmp.data());
 		}
-		
+
 		// auto-generate new mipmap levels
 		if (this->isMipmapped)
 		{
 			glGenerateMipmap(this->type);
 		}
-		
+
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
@@ -394,18 +399,18 @@ namespace library
 		}
 		#endif
 	}
-	
+
 	void Texture::upload3D(int x, int y, int z, void* data)
 	{
 		// upload pixel data
 		glTexImage3D(GL_TEXTURE_3D, 0, format, x, y, z, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
-		
+
 		// auto-generate new mipmap levels
 		if (this->isMipmapped)
 		{
 			glGenerateMipmap(this->type);
 		}
-		
+
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
@@ -415,7 +420,7 @@ namespace library
 		}
 		#endif
 	}
-	
+
 	GLenum Texture::getStorageFormat()
 	{
 		if (format == GL_RGBA16F || format == GL_R16F || format == GL_RGBA32F || format == GL_R32F)
@@ -450,12 +455,12 @@ namespace library
 		else
 			return GL_UNSIGNED_BYTE;
 	}
-	
+
 	std::string Texture::toString() const
 	{
 		std::string typeString;
 		std::string formatString;
-		
+
 		switch (type)
 		{
 		case GL_TEXTURE_1D:
@@ -475,7 +480,7 @@ namespace library
 		default:
 			typeString = "(Unknown type)"; break;
 		}
-		
+
 		switch (format)
 		{
 		case GL_RGBA:
@@ -499,10 +504,10 @@ namespace library
 		default:
 			formatString = "(Unknown format)"; break;
 		}
-		
+
 		std::stringstream ss;
 		ss << "Texture ID: " << id << " Size: (" << width << ", " << height << ") Type: " + typeString + " Format: " + formatString;
 		return ss.str();
 	}
-	
+
 }

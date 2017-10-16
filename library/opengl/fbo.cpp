@@ -9,8 +9,20 @@ namespace library
 {
 	GLuint FBO::lastFBO = 0;
 
+  FBO::~FBO()
+  {
+    if (this->fbo != 0) {
+      glDeleteFramebuffers(1, &this->fbo);
+    }
+  }
+
 	void FBO::create()
 	{
+    // remove old, if any
+    if (this->fbo != 0)
+    {
+      glDeleteFramebuffers(1, &this->fbo);
+    }
 		// check for framebuffers support
     assert(glGenFramebuffers != nullptr && "OpenGL was not initialized, or does not support framebuffers");
 		glGenFramebuffers(1, &this->fbo);
