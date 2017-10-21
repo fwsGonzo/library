@@ -10,31 +10,31 @@ namespace library
 {
 	float xm_vertex[6][12] =
 	{
-		{0.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 1.0, 1.0,  0.0, 1.0, 1.0}, // front 
+		{0.0, 0.0, 1.0,  1.0, 0.0, 1.0,  1.0, 1.0, 1.0,  0.0, 1.0, 1.0}, // front
 		{0.0, 0.0, 0.0,  0.0, 1.0, 0.0,  1.0, 1.0, 0.0,  1.0, 0.0, 0.0}, // back
 		{0.0, 1.0, 0.0,  0.0, 1.0, 1.0,  1.0, 1.0, 1.0,  1.0, 1.0, 0.0}, // top
 		{0.0, 0.0, 0.0,  1.0, 0.0, 0.0,  1.0, 0.0, 1.0,  0.0, 0.0, 1.0}, // bottom
 		{1.0, 0.0, 0.0,  1.0, 1.0, 0.0,  1.0, 1.0, 1.0,  1.0, 0.0, 1.0}, // right
 		{0.0, 0.0, 0.0,  0.0, 0.0, 1.0,  0.0, 1.0, 1.0,  0.0, 1.0, 0.0}  // left
 	};
-	
+
 	char xm_normal[6][3] =
 	{
 		{0, 0, 127}, { 0,  0, -128}, // front back
 		{0, 127, 0}, { 0, -128,  0}, // top   bottom
 		{127, 0, 0}, {-128,  0,  0}  // right left
 	};
-	
+
 	char xm_tangent[6][3] =
 	{
 		{127, 0,  0}, {-128,  0,    0}, // front back
 		{127, 0,  0}, {-128,  0,    0}, // top   bottom
 		{0, 0, -128}, { 0  ,  0,  127}  // right left
 	};
-	
+
 	// initialize xvertex dump
 	XModel::xvertex_t* XModel::xv_dump = nullptr;
-	
+
 	// empty model
 	XModel::XModel()
 	{
@@ -45,32 +45,32 @@ namespace library
 	{
 		delete[] this->vdata;
 	}
-	
+
 	// copy of existing model
 	XModel::XModel(XModel& mod)
 	{
 		this->vdata = mod.data();
 		this->verts = mod.vertices();
 	}
-	
+
 	void XModel::initVoxelizer()
 	{
 		xv_dump = (xvertex_t*) malloc(VOXELIZER_MAX_VERTICES * sizeof(xvertex_t));
 	}
-	
+
 	inline bool culltest(XModel::xcolor_t value)
 	{
 		// returns true if the alpha-channel value is 0
 		return ((value >> 24) == 0);
 	}
-	
+
 	short XModel::cull2D(const Bitmap& img, int x, int y)
 	{
 		int w = img.getWidth();
 		int h = img.getHeight();
-		
+
 		short facing = 1 + 2; // always add +z and -z
-		
+
 		if (y == h-1)
 		{
 			facing |= 4; // add top when at top
@@ -87,7 +87,7 @@ namespace library
 		{
 			if (culltest( img.data()[ x + (y - 1) * w ])) facing |= 8;
 		}
-		
+
 		if (x == w-1)
 		{
 			facing |= 16; // add front when on right side
@@ -104,10 +104,10 @@ namespace library
 		{
 			if (culltest( img.data()[ (x - 1) + y * w ] )) facing |= 32;
 		}
-		
+
 		return facing;
 	}
-	
+
 	void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid, int vid, xcolor_t vcolor)
 	{
 		// position
@@ -123,28 +123,28 @@ namespace library
 		// next vertex
 		this->vdata += 1;
 	}
-	
+
 	void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& scale)
 	{
 		int w = fromImage.getWidth();
 		int h = fromImage.getHeight();
-		
+
 		int numfaces = 0; // counter for faces
-		
+
 		// initialize static vertex dump, if null
 		if (xv_dump == nullptr) initVoxelizer();
-		
+
 		this->vdata = xv_dump;
 		xvertex_t* lastpz;
 		xvertex_t* lastnz;
 		short facing;
-		
+
 		for (int y = 0; y < h; y++)
 		{
-			xcolor_t* cv = fromImage.data() + (y * w);
+			const xcolor_t* cv = fromImage.data() + (y * w);
 			lastpz = nullptr;
 			lastnz = nullptr;
-			
+
 			for (int x = 0; x < w; x++)
 			{
 				// if this pixel has alpha
@@ -153,7 +153,7 @@ namespace library
 					xcolor_t c = cv[0];
 					// cull from bottoms up (different coordinate system)
 					facing = cull2D(fromImage, x, y);
-					
+
 					// unrolled loop of each face
 					if (facing & 1) // +z
 					{
@@ -235,27 +235,27 @@ namespace library
 					lastpz = nullptr;
 					lastnz = nullptr;
 				}
-				
+
 				cv += 1;
 			} // x
 		} // y
-		
+
 		// allocate vertices, using xv_dump as base
 		this->verts = numfaces * 4;
-		
+
 		this->vdata = new xvertex_t[this->verts];
 		memcpy(this->vdata, this->xv_dump, this->verts * sizeof(xvertex_t));
-		
+
 	}
-	
+
 	XModel::xvertex_t* XModel::data()
 	{
 		return this->vdata;
 	}
-	
+
 	int XModel::vertices()
 	{
 		return this->verts;
 	}
-	
+
 }

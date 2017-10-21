@@ -4,7 +4,7 @@
 namespace library
 {
 	static const double PI = 4 * atan(1);
-
+/*
 	static inline double cosntri(double *p, double x, double y, double z)
 	{
 		return( p[0] * (1-x) * (1-y) * (1-z) +  // 0,0,0
@@ -16,7 +16,7 @@ namespace library
 				p[6] *   x   *   y   * (1-z) +  // 1,1,0
 				p[7] *   x   *   y   *   z   ); // 1,1,1
 	}
-
+*/
 	static inline double cosntri_const1(double *p, double y)
 	{
 		return  ( ( p[0] * (1-y)  +  // 0,0,0
