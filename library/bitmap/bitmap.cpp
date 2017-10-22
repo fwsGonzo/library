@@ -1,10 +1,11 @@
 #include <library/bitmap/bitmap.hpp>
 
 #include <library/log.hpp>
+#include <library/bitmap/colortools.hpp>
 #include "lodepng.h"
 #include <fstream>
 #include <memory>
-#include <string>
+#include <cassert>
 
 #define GL_RGB  0x1907
 #define GL_RGBA 0x1908
@@ -39,13 +40,10 @@ namespace library
 	// assignment operator
 	Bitmap& Bitmap::operator= (const Bitmap& bmp)
 	{
-		// copy buffer
     buffer = bmp.buffer;
-
     this->width  = bmp.width;
 		this->height = bmp.height;
 		this->format = bmp.format;
-
 		// extra info (in case the bitmap was linearized)
 		this->tilesX = bmp.tilesX;
 		this->tilesY = bmp.tilesY;
@@ -115,7 +113,7 @@ namespace library
 
 			for (int y = 0; y < height; y++)
 			{
-				auto* buf = buffer.data() + (height-1 - y) * width * sizeof(rgba8_t);
+				auto* buf = (uint8_t*) buffer.data() + (height-1 - y) * width * sizeof(rgba8_t);
 				auto* tmp = scanbuffer.get();
 				// read entire scanline
 				File.read((char*) tmp, SCANLINE);
@@ -282,8 +280,38 @@ namespace library
 
 	bool Bitmap::isValid() const
 	{
-		return (
-			this->width  > 0 && this->height > 0
-		);
+		return this->width > 0 && this->height > 0;
 	}
+
+  void Bitmap::convert_to_tilesheet(const int tile_size)
+  {
+    this->width  = tile_size;
+    this->height = tile_size;
+    // initialize buffer to a single magenta tile
+    buffer = std::vector<rgba8_t> (tile_size * tile_size, RGBA8(255, 0, 255, 255));
+    this->format = GL_RGBA;
+    this->tilesX = 1;
+    this->tilesY = 1;
+  }
+  void Bitmap::add_tile(const Bitmap& other, int tx, int ty)
+  {
+    // we have to assume same tile size
+    const int srcX = tx * this->getWidth();
+    const int srcY = ty * this->getHeight();
+    assert(srcX + this->getWidth() <= other.getWidth());
+    assert(srcY + this->getHeight() <= other.getHeight());
+    // add single tile
+    const size_t end = buffer.size();
+    this->tilesX ++;
+    buffer.resize(getTileCount() * getWidth() * getHeight());
+
+    auto* scan = this->buffer.data() + end;
+
+    for (int y = this->getHeight()-1; y >= 0; y--)
+    {
+      auto* src = other.buffer.data() + (y + srcY) * other.width + srcX;
+      std::copy(src, src + this->getWidth(), scan);
+      scan += this->getWidth();
+    }
+  }
 }

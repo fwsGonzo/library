@@ -62,12 +62,15 @@ namespace library
 			return this->buffer.data();
 		}
 
-		int getTilesX() const {
+		int getTilesX() const noexcept {
 			return this->tilesX;
 		}
-		int getTilesY() const {
+		int getTilesY() const noexcept {
 			return this->tilesY;
 		}
+    int getTileCount() const noexcept {
+      return getTilesX() * getTilesY();
+    }
 
 		// isValid: returns false if the bitmap is currently invalid
 		bool isValid() const;
@@ -76,7 +79,11 @@ namespace library
 		void clear(rgba8_t color);
 		void replace(rgba8_t color, rgba8_t replacecolor);
 		void blit(Bitmap& dest, int srcX, int srcY, int width, int height, int dstX, int dstY) const;
-		void parse2D(int, int, bool invert_y = false);
+
+    // tile operations
+    void parse2D(int, int, bool invert_y = false);
+    void convert_to_tilesheet(int tile_size);
+    void add_tile(const Bitmap&, int tx, int ty);
 
 		Bitmap rotate90() const;
 		Bitmap flipX() const;
@@ -87,8 +94,10 @@ namespace library
 		void loadPNG(const std::string& file);
 
 		std::vector<rgba8_t> buffer;
-		int width = 1, height = 1;
-		int format, tilesX, tilesY;
+		int width = 0, height = 0;
+		int format;
+    int tilesX = 0;
+    int tilesY = 0;
 	};
 
 }
