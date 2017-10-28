@@ -26,6 +26,7 @@ SET(LIBRARY_SOURCES
 
     library/opengl/camera.cpp
     library/opengl/fbo.cpp
+    library/opengl/input.cpp
     library/opengl/oglfont.cpp
     library/opengl/oglfont_shader.cpp
     library/opengl/opengl.cpp

@@ -2,229 +2,143 @@
 
 #include <library/log.hpp>
 #include <library/math/toolbox.hpp>
-#include <library/opengl/window.hpp>
-#include <GLFW/glfw3.h>
+#include <library/opengl/opengl.hpp>
 #include <cmath>
-#include <stdio.h>
+#include <cstdio>
+#include <set>
 
 namespace library
 {
+  static Input* currentInput = nullptr;
 	void keyboard(GLFWwindow* window, int key, int action, int a, int b);
-	void keyboardType(GLFWwindow* window, unsigned int character);
 	void mouseMove(GLFWwindow* window, double x, double y);
 	void mouseButton(GLFWwindow* window, int button, int action, int mods);
 	void mouseWheel(GLFWwindow* window, double x, double y);
 
-	void Input::init(WindowClass& gamescr, bool kbd, bool mouse)
+	void Input::init(GLFWwindow* window, const bool kbd, const bool mouse)
 	{
-		workingSet.insert(this);
+		currentInput = this;
 		// set owning window
-		this->gamescr = &gamescr;
-		this->speed   = 0.12;
-		this->sensitivity = 8;
+		this->m_window = window;
+		this->m_speed  = 0.12;
+		this->m_sensitivity = 8;
 		// default rotation
-		this->rotation  = glm::vec2(0.0f);
-		this->mousegrab = false;
+		this->m_rot = glm::vec2(0.0f);
 
 		if (kbd)
 		{
 			// hook keyboard events
-			glfwSetKeyCallback (gamescr.window(), &keyboard);
-			glfwSetCharCallback(gamescr.window(), &keyboardType);
+			glfwSetKeyCallback (m_window, &keyboard);
 			// disable sticky keys
-			glfwSetInputMode(gamescr.window(), GLFW_STICKY_KEYS, GL_TRUE);
+			glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
 		}
 		if (mouse)
 		{
 			// hook mouse events
-			glfwSetCursorPosCallback(gamescr.window(), &mouseMove);
+			glfwSetCursorPosCallback(m_window, &mouseMove);
 			// mouse button event
-			glfwSetMouseButtonCallback(gamescr.window(), &mouseButton);
+			glfwSetMouseButtonCallback(m_window, &mouseButton);
 			// mouse wheel event
-			glfwSetScrollCallback(gamescr.window(), &mouseWheel);
+			glfwSetScrollCallback(m_window, &mouseWheel);
 		}
 	}
 	Input::~Input()
 	{
-		workingSet.erase(this);
+		currentInput = nullptr;
 	}
 
-	const Input::input_t& Input::getKeyEx(int key) const
+	void Input::mouse_options(double speed, double sensitivity)
 	{
-		if (key < 0 || key >= MAX_KEYS)
-			throw std::string("Input::getKey(): Invalid key value");
-
-		return keys[key];
+		this->m_speed       = speed;
+		this->m_sensitivity = sensitivity;
 	}
-	Input::key_t Input::getKey(int key) const
+	void Input::mouse_grab(const bool grab)
 	{
-		return getKeyEx(key).action;
-	}
-
-	void Input::hold(int key)
-	{
-		keys[key].action = KEY_LOCKED;
-	}
-	void Input::release(int key)
-	{
-		if (keys[key].action == KEY_LOCKED)
-			keys[key].action = KEY_PRESSED;
-	}
-
-	void Input::mouseOptions(double speed, double sensitivity)
-	{
-		this->speed    = speed;
-		this->sensitivity = sensitivity;
-	}
-	void Input::showMouse(bool show)
-	{
-		if (show)
-			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    this->m_mousegrab = grab;
+    if (grab)
+      glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 		else
-			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
-
-	}
-	void Input::grabMouse(bool grab)
-	{
-		this->mousegrab = grab;
-		if (grab)
-		{
-			glfwSetInputMode(gamescr->window(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			// move cursor to center of window
-			//lastMousePos = glm::vec2(gamescr->getWidth(), gamescr->getHeight()) * 0.5f;
-			//mousePos = lastMousePos;
-			//glfwSetCursorPos(gamescr->window(), mousePos.x, mousePos.y);
-		}
+      glfwSetInputMode(m_window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 	}
 
-	const Input::input_t& Input::getMouseEx(int button) const
+	int Input::mouse_wheel() const
 	{
-		return mouse[button];
-	}
-	Input::key_t Input::getMouse(int button) const
-	{
-		return getMouseEx(button).action;
-	}
-	void  Input::holdMouse(int button)
-	{
-		mouse[button].action = KEY_LOCKED;
-	}
-
-	int Input::getWheel()
-	{
-		int wheel = this->wheel;
-		this->wheel = 0;
+		int wheel = this->m_wheel;
+		this->m_wheel = 0;
 		return wheel;
-	}
-
-	bool Input::textBackspace()
-	{
-		if (text.size() == 0) return false;
-
-		text = text.substr(0, text.size() - 1);
-		return true;
 	}
 
 	//void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
 	void keyboard(GLFWwindow* window, int key, int, int action, int mods)
 	{
-		Input* input = Input::inputFromWindow(window);
+		auto* input = Input::inputFromWindow(window);
 		if (input)
 		{
 			// action: GLFW_PRESS, GLFW_REPEAT or GLFW_RELEASE
 			if (action == GLFW_PRESS || action == GLFW_REPEAT)
 			{
 				// as long as the key isnt force-held, set to pressed
-				if (input->keys[key].action != Input::KEY_LOCKED)
-					input->keys[key].action = Input::KEY_PRESSED;
+				if (input->m_keys[key].action != Input::KEY_LOCKED)
+					input->m_keys[key].action = Input::KEY_PRESSED;
 			}   // key is no longer pressed
-			else input->keys[key].action = Input::KEY_RELEASED;
+			else input->m_keys[key].action = Input::KEY_RELEASED;
 			// keypress modifiers: SHIFT, CTRL, ALT
-			input->keys[key].mods = mods;
+			input->m_keys[key].mods = mods;
 		}
 	}
 
-	void keyboardType(GLFWwindow* window, unsigned int character)
-	{
-		Input* input = Input::inputFromWindow(window);
-		if (input)
-		{
-			// typing!
-			input->text += char(character & 255);
-		}
-	}
-
-	void Input::addRotation(const glm::vec2& degrees)
+	void Input::rotate_degrees(glm::vec2 degrees)
 	{
 		static const float PI = 4 * atan(1);
 		static const float degToRad = PI / 180;
 		static const float maxX = 89 * degToRad;
 		static const float maxY = PI * 2.0;
 
-		rotation += degrees * degToRad;
+		this->m_rot += degrees * degToRad;
 		// clamping
-		if (rotation.x >  maxX) rotation.x =  maxX;
-		if (rotation.x < -maxX) rotation.x = -maxX;
-		while (rotation.y <     0) rotation.y += PI * 2;
-		while (rotation.y >= maxY) rotation.y -= PI * 2;
+		if (this->m_rot.x >  maxX) this->m_rot.x =  maxX;
+		if (this->m_rot.x < -maxX) this->m_rot.x = -maxX;
+		while (this->m_rot.y <     0) this->m_rot.y += PI * 2;
+		while (this->m_rot.y >= maxY) this->m_rot.y -= PI * 2;
 	}
 
 	void mouseMove(GLFWwindow* window, double x, double y)
 	{
-		Input* input = Input::inputFromWindow(window);
-		if (input)
+    Input* input = Input::inputFromWindow(window);
+    assert (input != nullptr);
+		if (input->m_mousegrab)
 		{
-			if (input->mousegrab)
-			{
-				// in-game
-				double dx = (x - input->lastMousePos.x) * input->speed;
-				double dy = (y - input->lastMousePos.y) * input->speed;
+			// in-game
+			double dx = (x - input->m_last_mouse_xy.x) * input->m_speed;
+			double dy = (y - input->m_last_mouse_xy.y) * input->m_speed;
 
-				if (fabs(dx) > input->sensitivity)
-					dx = signum(dx) * input->sensitivity + dx / input->sensitivity;
-				if (fabs(dy) > input->sensitivity)
-					dy = signum(dy) * input->sensitivity + dy / input->sensitivity;
+			if (fabs(dx) > input->m_sensitivity)
+				dx = signum(dx) * input->m_sensitivity + dx / input->m_sensitivity;
+			if (fabs(dy) > input->m_sensitivity)
+				dy = signum(dy) * input->m_sensitivity + dy / input->m_sensitivity;
 
-				// rotation on axes
-				input->addRotation(glm::vec2(dy, dx));
+			// rotation on axes
+			input->rotate_degrees(glm::vec2(dy, dx));
 
-				// remember the last pos >:|
-				input->lastMousePos.x = x;
-				input->lastMousePos.y = y;
-			}
-			else
-			{
-				input->lastMousePos.x = input->mousePos.x;
-				input->lastMousePos.y = input->mousePos.y;
-			}
-			input->mousePos.x = x;
-			input->mousePos.y = y;
+			// remember the last pos >:|
+			input->m_last_mouse_xy = {x, y};
 		}
+		else
+		{
+			input->m_last_mouse_xy.x = input->m_mouse_xy.x;
+			input->m_last_mouse_xy.y = input->m_mouse_xy.y;
+		}
+		input->m_mouse_xy = {x, y};
 	}
 
 	void mouseButton(GLFWwindow* window, int button, int action, int mods)
 	{
 		#define MACTION() (action == GLFW_PRESS) ? Input::KEY_PRESSED : Input::KEY_RELEASED
 
-		Input* input = Input::inputFromWindow(window);
-		if (input)
-		{
-			if (button == GLFW_MOUSE_BUTTON_1) // left mouse button
-			{
-				input->mouse[0].action = MACTION();
-				input->mouse[0].mods = mods;
-			}
-			else if (button == GLFW_MOUSE_BUTTON_2)
-			{
-				input->mouse[1].action = MACTION();
-				input->mouse[1].mods = mods;
-			}
-			else if (button == GLFW_MOUSE_BUTTON_3)
-			{
-				input->mouse[2].action = MACTION();
-				input->mouse[2].mods = mods;
-			}
-		}
+		auto* input = Input::inputFromWindow(window);
+		assert (input != nullptr);
+    input->m_mouse.at(button).action = MACTION();
+    input->m_mouse.at(button).mods = mods;
 	}
 
 	void mouseWheel(GLFWwindow* window, double, double y)
@@ -232,18 +146,14 @@ namespace library
 		Input* input = Input::inputFromWindow(window);
 		if (input)
 		{
-			if (y < 0)      input->wheel -= 1;
-			else if (y > 0) input->wheel += 1;
-			else            input->wheel  = 0;
+			if (y < 0)      input->m_wheel -= 1;
+			else if (y > 0) input->m_wheel += 1;
+			else            input->m_wheel  = 0;
 		}
 	}
 
-	Input* Input::inputFromWindow(GLFWwindow* wnd)
+	Input* Input::inputFromWindow(GLFWwindow*)
 	{
-		for (Input* input : workingSet)
-		{
-			if (input->gamescr->window() == wnd) return input;
-		}
-		return nullptr;
+		return currentInput;
 	}
 }

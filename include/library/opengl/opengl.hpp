@@ -2,11 +2,12 @@
  * OpenGL state & resource manager
 **/
 
-#ifndef OPENGL_HPP
-#define OPENGL_HPP
+#ifndef LIBRARY_OPENGL_HPP
+#define LIBRARY_OPENGL_HPP
 
 #define GLEW_STATIC
 #include <GL/glew.h>
+#include <GLFW/glfw3.h>
 
 namespace library
 {

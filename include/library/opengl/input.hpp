@@ -2,15 +2,13 @@
 #define LIBRARY_INPUT_HPP
 
 #include <glm/vec2.hpp>
+#include <array>
 #include <string>
-#include <set>
 
 struct GLFWwindow;
 
 namespace library
 {
-	class WindowClass;
-
 	class Input
 	{
 	public:
@@ -35,87 +33,70 @@ namespace library
 		};
 
 		// initialize input using the current context
-		void init(library::WindowClass& gamescr, bool keyboard, bool mouse);
+		void init(GLFWwindow*, bool keyboard, bool mouse);
 		~Input();
 
 		// public keyboard functions
-		const input_t& getKeyEx(int) const;
-		key_t getKey(int) const;
+		input_t key_ex(int key) const { return this->m_keys.at(key); }
+		key_t key(int key) const { return key_ex(key).action; }
 		// "holds" a key, allowing code to see that a single-fire event has been executed already
-		void hold(int);
+		void key_hold(int key) { m_keys.at(key).action = KEY_LOCKED; }
 		// releases the hold of a key, setting state from KEY_LOCKED back to KEY_PRESSED
-		void release(int);
+		void key_release(int key) {
+      if (m_keys.at(key).action == KEY_LOCKED) m_keys[key].action = KEY_PRESSED;
+    }
 
 		// public mouse functions
 		// set mouse options
-		void mouseOptions(double speed, double sensitivity);
+		void mouse_options(double speed, double sensitivity);
 		// enable FPS-like mouse grabbing
-		void grabMouse(bool grab);
-		// mouse visibility
-		void showMouse(bool show);
+		void mouse_grab(bool grab);
 		// mouse position
-		inline const glm::vec2& getMousePos() const
-		{
-			return mousePos;
+		glm::vec2 mouse_xy() const { return this->m_mouse_xy; }
+		input_t mouse_button_ex(int btn) const { return this->m_mouse.at(btn); }
+		key_t mouse_button(int btn) const { return this->m_mouse.at(btn).action; }
+		void  mouse_hold(int btn) {
+      this->m_mouse.at(btn).action = KEY_LOCKED;
+    }
+		// mouse rotation functions
+		glm::vec2 rotation() const noexcept {
+			return this->m_rot;
 		}
-		inline const glm::vec2& getMouseLastPos() const
+		void set_rotation(glm::vec2 rot)
 		{
-			return lastMousePos;
+			this->m_rot = rot;
 		}
-		const input_t& getMouseEx(int) const;
-		key_t getMouse(int) const;
-		void  holdMouse(int);
-		// rotation functions
-		inline const glm::vec2& getRotation() const noexcept
-		{
-			return this->rotation;
-		}
-		void setRotation(const glm::vec2& newRotation)
-		{
-			this->rotation = newRotation;
-		}
-		void addRotation(const glm::vec2& degrees);
+    void add_rotation(glm::vec2 rot) {
+      this->m_rot += rot;
+    }
+		void rotate_degrees(glm::vec2 degrees);
 
 		// returns mousewheel status _AND_ resets it internally
-		int getWheel(); // 0 = no change, down < 0, up > 0
-
-		// cheap solution for chat/textbox
-		inline const std::string& getText() const
-		{
-			return this->text;
-		}
-		bool textBackspace();
-		inline void clearText()
-		{
-			this->text.clear();
-		}
+		int mouse_wheel() const; // 0 = no change, down < 0, up > 0
 
 	protected:
-		WindowClass* gamescr;
-		double speed;
-		double sensitivity;
-		glm::vec2 mousePos;
-		glm::vec2 lastMousePos;
-		bool   mousegrab;
+		GLFWwindow* m_window = nullptr;
+		double m_speed;
+		double m_sensitivity;
+		glm::vec2 m_mouse_xy;
+		glm::vec2 m_last_mouse_xy;
 
 		// pitch & yaw
-		glm::vec2 rotation;
+		glm::vec2 m_rot;
 
 		// keyboard keys
-		input_t keys[MAX_KEYS];
+		std::array<input_t, MAX_KEYS> m_keys;
 		// mouse buttons
-		input_t mouse[MAX_MOUSE];
+		std::array<input_t, MAX_MOUSE> m_mouse;
 		// mousewheel
-		int wheel;
-		// typed text
-		std::string text;
+		mutable int m_wheel = 0;
+    // mouse grabbing mode
+    bool m_mousegrab = false;
 
 	private:
 		static Input* inputFromWindow(GLFWwindow*);
-		static std::set<Input*> workingSet;
 
 		friend void keyboard(GLFWwindow*, int key, int action, int a, int b);
-		friend void keyboardType(GLFWwindow*, unsigned int character);
 		friend void mouseMove(GLFWwindow*, double x, double y);
 		friend void mouseButton(GLFWwindow*, int button, int action, int mods);
 		friend void mouseWheel(GLFWwindow*, double x, double y);
