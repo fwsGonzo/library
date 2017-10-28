@@ -10,10 +10,6 @@
 namespace library
 {
   static Input* currentInput = nullptr;
-	void keyboard(GLFWwindow* window, int key, int action, int a, int b);
-	void mouseMove(GLFWwindow* window, double x, double y);
-	void mouseButton(GLFWwindow* window, int button, int action, int mods);
-	void mouseWheel(GLFWwindow* window, double x, double y);
 
 	void Input::init(GLFWwindow* window, const bool kbd, const bool mouse)
 	{
@@ -27,21 +23,29 @@ namespace library
 
 		if (kbd)
 		{
-			// hook keyboard events
-			glfwSetKeyCallback (m_window, &keyboard);
-			// disable sticky keys
-			glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
+      restore_keyboard();
 		}
 		if (mouse)
 		{
-			// hook mouse events
-			glfwSetCursorPosCallback(m_window, &mouseMove);
-			// mouse button event
-			glfwSetMouseButtonCallback(m_window, &mouseButton);
-			// mouse wheel event
-			glfwSetScrollCallback(m_window, &mouseWheel);
+      restore_mouse();
 		}
 	}
+  void Input::restore_keyboard()
+  {
+    // hook keyboard events
+    glfwSetKeyCallback (m_window, &Input::keyboard);
+    // disable sticky keys
+    glfwSetInputMode(m_window, GLFW_STICKY_KEYS, GL_TRUE);
+  }
+  void Input::restore_mouse()
+  {
+    // hook mouse events
+    glfwSetCursorPosCallback(m_window, &Input::mouseMove);
+    // mouse button event
+    glfwSetMouseButtonCallback(m_window, &Input::mouseButton);
+    // mouse wheel event
+    glfwSetScrollCallback(m_window, &Input::mouseWheel);
+  }
 	Input::~Input()
 	{
 		currentInput = nullptr;
@@ -68,8 +72,7 @@ namespace library
 		return wheel;
 	}
 
-	//void keyboard(GLFWwindow* window, int key, int scancode, int action, int mods)
-	void keyboard(GLFWwindow* window, int key, int, int action, int mods)
+	void Input::keyboard(GLFWwindow* window, int key, int, int action, int mods)
 	{
 		auto* input = Input::inputFromWindow(window);
 		if (input)
@@ -102,7 +105,7 @@ namespace library
 		while (this->m_rot.y >= maxY) this->m_rot.y -= PI * 2;
 	}
 
-	void mouseMove(GLFWwindow* window, double x, double y)
+	void Input::mouseMove(GLFWwindow* window, double x, double y)
 	{
     Input* input = Input::inputFromWindow(window);
     assert (input != nullptr);
@@ -131,7 +134,7 @@ namespace library
 		input->m_mouse_xy = {x, y};
 	}
 
-	void mouseButton(GLFWwindow* window, int button, int action, int mods)
+	void Input::mouseButton(GLFWwindow* window, int button, int action, int mods)
 	{
 		#define MACTION() (action == GLFW_PRESS) ? Input::KEY_PRESSED : Input::KEY_RELEASED
 
@@ -141,7 +144,7 @@ namespace library
     input->m_mouse.at(button).mods = mods;
 	}
 
-	void mouseWheel(GLFWwindow* window, double, double y)
+	void Input::mouseWheel(GLFWwindow* window, double, double y)
 	{
 		Input* input = Input::inputFromWindow(window);
 		if (input)

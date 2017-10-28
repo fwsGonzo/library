@@ -74,6 +74,13 @@ namespace library
 		// returns mousewheel status _AND_ resets it internally
 		int mouse_wheel() const; // 0 = no change, down < 0, up > 0
 
+    void restore_keyboard();
+    void restore_mouse();
+
+    static void keyboard(GLFWwindow*, int key, int action, int a, int b);
+		static void mouseMove(GLFWwindow*, double x, double y);
+		static void mouseButton(GLFWwindow*, int button, int action, int mods);
+		static void mouseWheel(GLFWwindow*, double x, double y);
 	protected:
 		GLFWwindow* m_window = nullptr;
 		double m_speed;
@@ -95,11 +102,6 @@ namespace library
 
 	private:
 		static Input* inputFromWindow(GLFWwindow*);
-
-		friend void keyboard(GLFWwindow*, int key, int action, int a, int b);
-		friend void mouseMove(GLFWwindow*, double x, double y);
-		friend void mouseButton(GLFWwindow*, int button, int action, int mods);
-		friend void mouseWheel(GLFWwindow*, double x, double y);
 	};
 }
 
