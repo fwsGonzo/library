@@ -148,7 +148,8 @@ namespace library
 		Shader(filename, nullptr, linkstage) { }
 
 	// shader from external file
-	Shader::Shader(const std::string& filename, processFunc tokenizer, const std::vector<std::string>& attributes)
+	Shader::Shader(const std::string& filename, processFunc tokenizer, 
+                 const std::vector<std::string>& attributes)
 	{
 		// recursively process text from files and #includes
 		std::string vertshader = shaderProcessor(filename, tokenizer, true );
@@ -159,7 +160,8 @@ namespace library
 	}
 
 	// shader from source code
-	Shader::Shader(const std::string& vertex, const std::string& frag, const std::string& title, std::vector<std::string>& attributes)
+	Shader::Shader(const std::string& vertex, const std::string& frag,
+                 const std::string& title, const std::vector<std::string>& attributes)
 	{
 		createShader(vertex, frag, title, attributes);
 	}
