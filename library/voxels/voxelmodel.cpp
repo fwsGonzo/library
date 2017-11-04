@@ -5,12 +5,7 @@
 
 namespace library
 {
-	VoxelModel::VoxelModel(const VoxelModel& vx)
-	{
-		this->vao = vx.vao;
-	}
-	
-	void VoxelModel::create(GLsizei vertices, GLvoid* data)
+  VoxelModel::VoxelModel(GLsizei vertices, GLvoid* data)
 	{
 		vao.begin(sizeof(XModel::xvertex_t), vertices, data);
 		vao.attrib(0, 3, GL_FLOAT,         GL_FALSE, 0);
@@ -18,7 +13,12 @@ namespace library
 		vao.attrib(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16);
 		vao.end();
 	}
-	
+
+	VoxelModel::VoxelModel(const VoxelModel& vx)
+	{
+		this->vao = vx.vao;
+	}
+
 	void VoxelModel::render()
 	{
 		vao.render(GL_QUADS);
@@ -27,5 +27,5 @@ namespace library
 	{
 		vao.render(mode);
 	}
-	
+
 }
