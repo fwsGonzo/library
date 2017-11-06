@@ -35,12 +35,7 @@ SET(LIBRARY_SOURCES
     library/opengl/texture.cpp
     library/opengl/vao.cpp
 
-    library/threading/TThread.cpp
-    library/threading/TThreadPool.cpp
-
-    library/timing/highperf.cpp
     library/timing/integrator.cpp
-    library/timing/timer.cpp
 
     library/voxels/voxelizer.cpp
     library/voxels/voxelmodel.cpp
