@@ -68,9 +68,15 @@ namespace library
 
 		// bind this texture to texture unit
 		void bind(GLenum unit);
+    // bind custom texture to unit
+    static void raw_bind(GLenum unit, GLenum type, GLuint id);
 		// free a texture unit
-		void unbind();
-		void unbind(GLenum unit);
+		void unbind() noexcept {
+    	unbind(this->boundUnit);
+    }
+    // unbind whatever is bound on @unit
+		static void unbind(GLenum unit) noexcept;
+
 		// copy entire screen to this texture
 		void copyScreen();
 		void copyScreen(int w, int h);
@@ -80,12 +86,13 @@ namespace library
 		void upload3D(int sizeX, int sizeY, int sizeZ, void* pixeldata);
 
 		// returns (raw) texture handle
-		inline GLuint getHandle() const { return this->id; }
+		inline GLuint getHandle() const noexcept { return this->id; }
 		// returns texture width/height
-		inline int getWidth() const { return width; }
-		inline int getHeight() const { return height; }
+		inline int getWidth() const noexcept { return this->width; }
+		inline int getHeight() const noexcept { return this->height; }
 		// returns last bound texture unit for this texture
-		inline GLenum getBoundUnit() const { return this->boundUnit; }
+		inline GLenum getBoundUnit() const noexcept { return this->boundUnit; }
+    static GLenum currentUnit() noexcept { return Texture::lastUnit; }
 
 		std::string toString() const;
 
@@ -94,9 +101,9 @@ namespace library
 		GLenum type;
 		GLint  format;
 		// last bound texture unit
-		GLenum boundUnit;
+		GLenum boundUnit = 0;
 		// true if we want to auto-generate mipmaps
-		bool isMipmapped;
+		bool isMipmapped = false;
 
 		// size of texture, or a tile if texture array
 		int width, height;

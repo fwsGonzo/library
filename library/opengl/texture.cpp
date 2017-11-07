@@ -303,11 +303,11 @@ namespace library
 		}
 	}
 
-	void Texture::bind(GLenum unit)
-	{
-		// avoid binding same texture twice on the same texture unit
-		if (lastid[unit] == this->id) return;
-		lastid[unit] = this->id;
+  void Texture::raw_bind(GLenum unit, GLenum type, GLuint tex_id)
+  {
+    // avoid binding same texture twice on the same texture unit
+		if (lastid[unit] == tex_id) return;
+		lastid[unit] = tex_id;
 
 		if (lastUnit != unit)
 		{
@@ -315,25 +315,24 @@ namespace library
 			glActiveTexture(GL_TEXTURE0 + unit);
 		}
 
-		glBindTexture(this->type, this->id);
-		this->boundUnit = unit;
+		glBindTexture(type, tex_id);
 
-		#ifdef DEBUG
+#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
 			throw std::string("Texture::bind(): OpenGL state error");
 		}
-		#endif
-	}
-
-	void Texture::unbind()
+#endif
+  }
+	void Texture::bind(GLenum unit)
 	{
-		unbind(boundUnit);
+    raw_bind(unit, this->type, this->id);
+    this->boundUnit = unit;
 	}
 
-	void Texture::unbind(GLenum unit)
+	void Texture::unbind(GLenum unit) noexcept
 	{
 		if (lastUnit != unit)
 		{
