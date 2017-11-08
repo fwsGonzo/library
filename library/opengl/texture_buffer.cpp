@@ -11,7 +11,7 @@ namespace library
     // create buffer (with capacity hint)
     glGenBuffers(1, &this->m_buffer);
     glBindBuffer(GL_TEXTURE_BUFFER, this->m_buffer);
-    glBufferData(GL_TEXTURE_BUFFER, capacity, nullptr, GL_STATIC_DRAW_ARB);
+    glBufferData(GL_TEXTURE_BUFFER, capacity, nullptr, GL_STREAM_DRAW_ARB);
     // create binding
     glTexBuffer(GL_TEXTURE_BUFFER, format, this->m_buffer);
   }
@@ -24,6 +24,6 @@ namespace library
   void BufferTexture::upload(const void* data, size_t len)
   {
     glBindBuffer(GL_TEXTURE_BUFFER, this->m_buffer);
-    glBufferData(GL_TEXTURE_BUFFER, len, data, GL_STATIC_DRAW_ARB);
+    glBufferData(GL_TEXTURE_BUFFER, len, data, GL_STREAM_DRAW_ARB);
   }
 }
