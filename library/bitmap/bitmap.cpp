@@ -283,12 +283,12 @@ namespace library
 		return this->width > 0 && this->height > 0;
 	}
 
-  void Bitmap::convert_to_tilesheet(const int tile_size)
+  void Bitmap::convert_to_tilesheet(const int tile_size, const uint32_t color)
   {
     this->width  = tile_size;
     this->height = tile_size;
-    // initialize buffer to a single magenta tile
-    buffer = std::vector<rgba8_t> (tile_size * tile_size, RGBA8(255, 0, 255, 255));
+    // initialize buffer to a single colored tile
+    buffer = std::vector<rgba8_t> (tile_size * tile_size, color);
     this->format = GL_RGBA;
     this->tilesX = 1;
     this->tilesY = 1;

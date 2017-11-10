@@ -82,7 +82,7 @@ namespace library
 
     // tile operations
     void parse2D(int, int, bool invert_y = false);
-    void convert_to_tilesheet(int tile_size);
+    void convert_to_tilesheet(int tile_size, uint32_t tile_zero_color);
     void add_tile(const Bitmap&, int tx, int ty);
 
 		Bitmap rotate90() const;
