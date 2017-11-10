@@ -15,7 +15,7 @@ namespace library
 
 		//! \brief returns the time (in fractional seconds) between the last getDeltaTime()
 		//! function call, or time since object was instantiated (whichever happened last)
-		inline time_t getTime();
+		inline time_t getTime() const;
 
 		//! \brief returns time elapsed, and sets new time, so
 		//! all future rounds and deltas are calculated from new time point
@@ -32,7 +32,7 @@ namespace library
 	}
 
 	// returns time elapsed in high-precision seconds
-	Timer::time_t Timer::getTime()
+	Timer::time_t Timer::getTime() const
 	{
     using namespace std::chrono;
 		auto t1 = high_resolution_clock::now();

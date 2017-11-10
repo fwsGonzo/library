@@ -10,13 +10,13 @@
  *   end();
  * 3. Render:
  *   render(GL_*);
- * 
+ *
  * 4. Updating VAO content:
  *   upload(..., data);
- * 
+ *
  * To check if VAO has been initialized or not:
  *   if (vao.isGood())
- * 
+ *
  * Don't spam VAOs. Try to avoid updating content.
  * Define vertex attribs only once.
  * You don't have to bind() before:
@@ -41,8 +41,8 @@ namespace library
 			vao = vbo = ibo = 0;
 			isCreating = false;
 		}
-		
-		inline bool isGood() const
+
+		inline bool good() const
 		{
 			return (vao != 0 && isCreating == false);
 		}
@@ -55,7 +55,7 @@ namespace library
 		{
 			return this->indices;
 		}
-		
+
 		// begin sending data to VAO
 		inline void begin(GLuint vertexSize, GLsizei vertices, GLvoid* data)
 		{
@@ -79,14 +79,14 @@ namespace library
 			upload(vertexSize, vertices, data, GL_STATIC_DRAW_ARB);
 		}
 		void upload(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage);
-		
+
 		// pre-made VAOs
 		void createScreenspaceVAO();
-		
+
 		// bind / unbind mesh
 		void bind();
 		static void unbind();
-		
+
 		// bind and render all vertices
 		inline void render(GLenum mode)
 		{
@@ -97,13 +97,13 @@ namespace library
 		// render using indexed buffer
 		void renderIndexed(GLenum mode);
 		void renderIndexed(GLenum mode, GLuint first, GLint count);
-		
+
 	private:
 		GLuint  vao, vbo, ibo;
 		GLuint  vertexSize;
 		GLsizei vertices;
 		GLsizei indices;
-		
+
 		static GLuint lastVAO;
 		bool   isCreating;
 	};

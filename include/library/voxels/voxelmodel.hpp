@@ -17,7 +17,7 @@ namespace library
 		VoxelModel(const VoxelModel& vx);
 
 		bool isGood() const {
-			return vao.isGood();
+			return vao.good();
 		}
 
 		void render();
