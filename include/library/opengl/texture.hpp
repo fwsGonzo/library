@@ -42,7 +42,7 @@ namespace library
 	class Texture
 	{
 	public:
-		static const int TEXTURE_UNITS = 8;
+		static const int TEXTURE_UNITS = 32;
 
 		Texture() : id(0), type(0), format(0), boundUnit(0), isMipmapped(false) {}
     ~Texture();
