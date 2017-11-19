@@ -10,7 +10,7 @@ namespace library
 	GLuint VAO::lastVAO = 0;
 
 	// custom drawing
-	void VAO::begin(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage)
+	void VAO::begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage)
 	{
 		this->isCreating = true;
 
@@ -22,7 +22,7 @@ namespace library
 		}
 		upload(vertexSize, vertices, data, usage);
 	}
-	void VAO::upload(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage)
+	void VAO::upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage)
 	{
 		bind();
 		glBindBuffer(GL_ARRAY_BUFFER_ARB, vbo);

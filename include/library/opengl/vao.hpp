@@ -57,12 +57,12 @@ namespace library
 		}
 
 		// begin sending data to VAO
-		inline void begin(GLuint vertexSize, GLsizei vertices, GLvoid* data)
+		inline void begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data)
 		{
 			#define GL_STATIC_DRAW_ARB 0x88E4
 			begin(vertexSize, vertices, data, GL_STATIC_DRAW_ARB);
 		}
-		void begin(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage);
+		void begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage);
 		// add indices to the mix
 		void indexes(GLvoid* data, GLsizei count);
 		// and, some vertex attributes as well
@@ -78,7 +78,7 @@ namespace library
 			#define GL_STATIC_DRAW_ARB 0x88E4
 			upload(vertexSize, vertices, data, GL_STATIC_DRAW_ARB);
 		}
-		void upload(GLuint vertexSize, GLsizei vertices, GLvoid* data, GLenum usage);
+		void upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage);
 
 		// pre-made VAOs
 		void createScreenspaceVAO();
