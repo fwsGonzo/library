@@ -15,7 +15,7 @@
  *   upload(..., data);
  *
  * To check if VAO has been initialized or not:
- *   if (vao.isGood())
+ *   if (vao.good())
  *
  * Don't spam VAOs. Try to avoid updating content.
  * Define vertex attribs only once.

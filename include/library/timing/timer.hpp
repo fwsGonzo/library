@@ -20,7 +20,7 @@ namespace library
 		inline void restart();
 
 	private:
-		std::chrono::steady_clock::time_point t0;
+		std::chrono::high_resolution_clock::time_point t0;
 	};
 
   inline Timer::Timer()
