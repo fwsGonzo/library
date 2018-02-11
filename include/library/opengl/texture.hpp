@@ -43,11 +43,18 @@ namespace library
 	{
 	public:
 		static const int TEXTURE_UNITS = 32;
+    static const int RGBA8 = 0x8058;
 
-		Texture() : id(0), type(0), format(0), boundUnit(0), isMipmapped(false) {}
+		Texture() : id(0), type(0), format(0), boundUnit(-1), isMipmapped(false) {}
     ~Texture();
-		Texture(GLenum target);
-		Texture(GLenum target, GLint format);
+		Texture(GLenum target, GLint format = RGBA8) {
+      this->init(target, format);
+    }
+    Texture(Texture&&);
+    void init(GLenum target, GLint format = RGBA8);
+    void reset();
+    // just can't allow this
+    Texture& operator= (const Texture&) = delete;
 
 		// set new format (if needed) before any create*()
 		inline void setFormat(GLint newFormat)

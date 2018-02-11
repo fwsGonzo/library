@@ -11,22 +11,36 @@ namespace library
 	GLuint Texture::lastid[TEXTURE_UNITS] = {0};
 	GLenum Texture::lastUnit = -1;
 
-	Texture::Texture(GLenum target)
-		: Texture(target, GL_RGBA8) {}
-
   Texture::~Texture()
   {
-    glDeleteTextures(1, &this->id);
+    if (this->id != 0)
+      glDeleteTextures(1, &this->id);
   }
 
-	Texture::Texture(GLenum target, GLint format)
-	{
-		glGenTextures(1, &this->id);
+  Texture::Texture(Texture&& other)
+    : id(other.id), type(other.type), format(other.format),
+      boundUnit(other.boundUnit), isMipmapped(other.isMipmapped),
+      width(other.width), height(other.height)
+  {
+    other.id = 0;
+    other.reset();
+  }
+  void Texture::init(GLenum target, GLint format)
+  {
+    if (this->id) glDeleteTextures(1, &this->id);
+    glGenTextures(1, &this->id);
 		this->type   = target;
 		this->format = format;
 		this->boundUnit = -1;
 		this->isMipmapped = false;
-	}
+  }
+  void Texture::reset()
+  {
+    if (this->id) glDeleteTextures(1, &this->id);
+    this->id = 0;
+		this->boundUnit = -1;
+		this->isMipmapped = false;
+  }
 
 	void Texture::create(const Bitmap& bmp, bool mipmap = true, GLint wrapmode = GL_CLAMP_TO_EDGE, GLint magfilter = GL_NEAREST, GLint minfilter = GL_LINEAR_MIPMAP_LINEAR)
 	{
@@ -321,7 +335,6 @@ namespace library
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
-			logger << Log::ERR << toString() << Log::ENDL;
 			throw std::string("Texture::bind(): OpenGL state error");
 		}
 #endif
