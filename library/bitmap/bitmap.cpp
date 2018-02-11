@@ -20,7 +20,7 @@ namespace library
 		buffer(w * h, color), width(w), height(h), format(GL_BGRA) {}
 
 	Bitmap::Bitmap(int w, int h, const rgba8_t* data, int glformat):
-    buffer(data, data + w * h * sizeof(rgba8_t)),
+    buffer(data, data + w * h),
 		width(w), height(h), format(glformat) {}
 
   Bitmap::Bitmap(const std::string file, Bitmap::bitmap_type btype)
