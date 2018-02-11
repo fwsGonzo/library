@@ -1,7 +1,6 @@
 #include <library/opengl/fbo.hpp>
 
 #include <library/log.hpp>
-//#include <library/opengl/opengl.hpp>
 #include <library/opengl/texture.hpp>
 #include <cassert>
 
@@ -164,19 +163,6 @@ namespace library
 		{
 			logger << Log::ERR << "FBO::drawBuffer(GLenum): Error setting draw buffers" << Log::ENDL;
 			throw std::runtime_error("FBO::drawBuffer(GLenum): Error setting draw buffers");
-		}
-		#endif
-	}
-	void FBO::drawBuffer()
-	{
-		GLenum one = GL_COLOR_ATTACHMENT0;
-		glDrawBuffers(1, &one);
-
-		#ifdef DEBUG
-		if (OpenGL::checkError())
-		{
-			logger << Log::ERR << "FBO::drawBuffer(): Error setting draw buffer" << Log::ENDL;
-			throw std::runtime_error("FBO::drawBuffer(): Error setting draw buffer");
 		}
 		#endif
 	}

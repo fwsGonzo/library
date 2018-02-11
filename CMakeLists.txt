@@ -34,6 +34,7 @@ SET(LIBRARY_SOURCES
     library/opengl/shader.cpp
     library/opengl/texture.cpp
     library/opengl/texture_buffer.cpp
+    library/opengl/window.cpp
     library/opengl/ubo.cpp
     library/opengl/vao.cpp
 

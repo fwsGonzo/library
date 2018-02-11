@@ -35,7 +35,7 @@ namespace library
 		glBufferData(GL_ARRAY_BUFFER_ARB, totalBytes, data, usage);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::beginCreate(): OpenGL error for vao = " << vao << ", vbo = " << vbo << Log::ENDL;
 			throw std::runtime_error("VAO::beginCreate(): OpenGL error");
@@ -55,7 +55,7 @@ namespace library
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, count * sizeof(GLushort), data, GL_STATIC_DRAW_ARB);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::indexes(): OpenGL error for vao = " << vao << ", ibo = " << ibo << Log::ENDL;
 			throw std::runtime_error("VAO::indexes(): OpenGL error");
@@ -70,7 +70,7 @@ namespace library
 		glVertexAttribPointer(index, size, type, (normalize) ? GL_TRUE : GL_FALSE, vertexSize, (GLvoid*) dataPointer);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::attrib(): OpenGL error for vao = " << vao << ", vbo = " << vbo << Log::ENDL;
 			logger << Log::ERR << "VAO::attrib(): Attrib = { index = " << index << ", size = " << size << ", type = " << type << ", normalize = " << normalize << ", offset = " << offset << " }" << Log::ENDL;
@@ -117,7 +117,7 @@ namespace library
 		glDrawArrays(mode, first, count);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::render(): OpenGL error for vao = " << vao << Log::ENDL;
 			logger << Log::ERR << "VAO::render(): render = { mode = " << mode << ", first = " << first << ", count = " << count << " }" << Log::ENDL;
@@ -132,7 +132,7 @@ namespace library
 		glDrawRangeElements(mode, first, first + count, count, GL_UNSIGNED_SHORT, 0);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::renderIndexed(3): OpenGL error for vao = " << vao << Log::ENDL;
 			throw std::runtime_error("VAO::renderIndexed(3): OpenGL error");
@@ -145,7 +145,7 @@ namespace library
 		glDrawElements(mode, this->indices, GL_UNSIGNED_SHORT, 0);
 
 		#ifdef DEBUG
-		if (ogl.checkError())
+		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "VAO::renderIndexed(1): OpenGL error for vao = " << vao << Log::ENDL;
 			throw std::runtime_error("VAO::renderIndexed(1): OpenGL error");
