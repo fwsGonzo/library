@@ -15,22 +15,30 @@ namespace library
 	{
 	public:
 		Integrator(double timestep);
-		
+
 		void restart();
 		void integrate();
-		
+
 		double getTimeStep() const
 		{
 			return timestep;
 		}
-		
+
+    void setGameSpeed(float speed) {
+      this->game_speed = speed;
+    }
+    float gameSpeed() {
+      return this->game_speed;
+    }
+
 	protected:
 		// inherit this function, which will run for each <timestep> passed
 		virtual bool timeStep(double timestep, double timeElapsed) = 0;
-		
+
 	private:
 		double timestep;
 		double currentTime;
+    double game_speed = 1.0;
 		Timer  timer;
 	};
 }
