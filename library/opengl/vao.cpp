@@ -47,6 +47,7 @@ namespace library
 	{
 		this->indices = count;
 
+    bind();
 		if (ibo == 0)
 		{
 			glGenBuffers(1, &ibo);
@@ -88,10 +89,12 @@ namespace library
 
 		screenvertex_t sv_t[4] =
 		{
-			{ 0, 0 }, { 1, 0 }, { 1, 1 }, { 0, 1 }
+			{ 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 }
 		};
+    uint16_t ind[6] = {0,1,2,0,2,3};
 
 		begin(sizeof(screenvertex_t), 4, sv_t);
+    indexes(ind, sizeof(ind));
 		attrib(0, 2, GL_FLOAT, GL_FALSE, 0);
 		end();
 	}
