@@ -89,7 +89,7 @@ namespace library
 
 		screenvertex_t sv_t[4] =
 		{
-			{ 0, 0 }, { 0, 1 }, { 1, 1 }, { 1, 0 }
+			{ 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 }
 		};
     uint16_t ind[6] = {0,1,2,0,2,3};
 
