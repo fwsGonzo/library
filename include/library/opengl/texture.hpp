@@ -90,6 +90,7 @@ namespace library
 
 		// upload (new) data
 		void upload(const Bitmap& bmp);
+    void upload(int sizeX, int sizeY, int format, const void* data);
 		void upload3D(int sizeX, int sizeY, int sizeZ, void* pixeldata);
 
 		// returns (raw) texture handle

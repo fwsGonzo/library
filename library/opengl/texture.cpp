@@ -383,6 +383,7 @@ namespace library
 
 	void Texture::upload(const Bitmap& bmp)
 	{
+    bind(this->boundUnit);
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
 
@@ -405,15 +406,47 @@ namespace library
 		#ifdef DEBUG
 		if (OpenGL::checkError())
 		{
-			logger << Log::ERR << "Texture::uploadBGRA8(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << "Texture::upload(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::uploadBGRA8(): OpenGL state error");
+			throw std::runtime_error("Texture::upload(): OpenGL state error");
+		}
+		#endif
+	}
+  void Texture::upload(int sizeX, int sizeY, int fmat, const void* data)
+	{
+    bind(this->boundUnit);
+		this->width  = sizeX;
+		this->height = sizeY;
+
+		// upload pixel data
+		if (this->type == GL_TEXTURE_1D)
+		{
+			glTexImage1D(this->type, 0, this->format, width, 0, fmat, getByteFormat(), data);
+		}
+		else if (this->type == GL_TEXTURE_2D)
+		{
+			glTexImage2D(this->type, 0, this->format, width, height, 0, fmat, getByteFormat(), data);
+		}
+
+		// auto-generate new mipmap levels
+		if (this->isMipmapped)
+		{
+			glGenerateMipmap(this->type);
+		}
+
+		#ifdef DEBUG
+		if (OpenGL::checkError())
+		{
+			logger << Log::ERR << "Texture::upload(): OpenGL state error" << Log::ENDL;
+			logger << Log::ERR << toString() << Log::ENDL;
+			throw std::runtime_error("Texture::upload(): OpenGL state error");
 		}
 		#endif
 	}
 
 	void Texture::upload3D(int x, int y, int z, void* data)
 	{
+    bind(this->boundUnit);
 		// upload pixel data
 		glTexImage3D(GL_TEXTURE_3D, 0, format, x, y, z, 0, GL_BGRA, GL_UNSIGNED_BYTE, data);
 
