@@ -91,10 +91,10 @@ namespace library
 		{
 			{ 1, 0 }, { 0, 0 }, { 0, 1 }, { 1, 1 }
 		};
-    uint16_t ind[6] = {0,1,2,0,2,3};
+    std::array<uint16_t, 6> ind {0,1,2,0,2,3};
 
 		begin(sizeof(screenvertex_t), 4, sv_t);
-    indexes(ind, sizeof(ind));
+    indexes(ind.data(), ind.size());
 		attrib(0, 2, GL_FLOAT, GL_FALSE, 0);
 		end();
 	}
