@@ -29,6 +29,10 @@ typedef int  GLint;
 typedef int  GLsizei;
 typedef void GLvoid;
 
+#ifndef GL_STATIC_DRAW_ARB
+#define GL_STATIC_DRAW_ARB 0x88E4
+#endif
+
 #include <string>
 
 namespace library
@@ -36,11 +40,7 @@ namespace library
 	class VAO
 	{
 	public:
-		VAO()
-		{
-			vao = vbo = ibo = 0;
-			isCreating = false;
-		}
+		VAO() = default;
 
 		inline bool good() const
 		{
@@ -59,12 +59,11 @@ namespace library
 		// begin sending data to VAO
 		inline void begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data)
 		{
-			#define GL_STATIC_DRAW_ARB 0x88E4
 			begin(vertexSize, vertices, data, GL_STATIC_DRAW_ARB);
 		}
 		void begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage);
 		// add indices to the mix
-		void indexes(GLvoid* data, GLsizei count);
+		void indexes(GLvoid* data, GLsizei count, GLenum usage = GL_STATIC_DRAW_ARB);
 		// and, some vertex attributes as well
 		void attrib(GLuint index, GLsizei size, GLenum type, bool normalize, int offset);
 		// then stop defining the VAO (vao should be isGood() after this)
@@ -73,12 +72,11 @@ namespace library
 			this->isCreating = false;
 		}
 		// RE-upload data, assuming VAO is already initialized
-		inline void upload(GLuint vertexSize, GLsizei vertices, GLvoid* data)
-		{
-			#define GL_STATIC_DRAW_ARB 0x88E4
-			upload(vertexSize, vertices, data, GL_STATIC_DRAW_ARB);
-		}
-		void upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage);
+		void upload(
+          GLuint        vertexSize,
+          GLsizei       vertices,
+          const GLvoid* data,
+          GLenum        usage = GL_STATIC_DRAW_ARB);
 
 		// pre-made VAOs
 		void createScreenspaceVAO();
@@ -99,13 +97,15 @@ namespace library
 		void renderIndexed(GLenum mode, GLuint first, GLint count);
 
 	private:
-		GLuint  vao, vbo, ibo;
-		GLuint  vertexSize;
-		GLsizei vertices;
-		GLsizei indices;
+		GLuint  vao = 0;
+    GLuint  vbo = 0;
+    GLuint  ibo = 0;
+		GLuint  vertexSize = 0;
+		GLsizei vertices = 0;
+		GLsizei indices = 0;
 
 		static GLuint lastVAO;
-		bool   isCreating;
+		bool   isCreating = false;
 	};
 }
 #endif

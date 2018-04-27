@@ -43,7 +43,7 @@ namespace library
 		#endif
 	}
 
-	void VAO::indexes(GLvoid* data, GLsizei count)
+	void VAO::indexes(GLvoid* data, GLsizei count, GLenum usage)
 	{
 		this->indices = count;
 
@@ -53,7 +53,7 @@ namespace library
 			glGenBuffers(1, &ibo);
 		}
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER_ARB, ibo);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, count * sizeof(GLushort), data, GL_STATIC_DRAW_ARB);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER_ARB, count * sizeof(GLushort), data, usage);
 
 		#ifdef DEBUG
 		if (OpenGL::checkError())
