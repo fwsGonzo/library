@@ -24,7 +24,7 @@ namespace library
 		FBO() = default;
     ~FBO();
 
-		// creates VBO handle, allowing further usage
+		// creates FBO handle, allowing further usage
 		void create();
 		// binds this FBO
 		inline void bind()

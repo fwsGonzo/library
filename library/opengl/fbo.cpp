@@ -26,6 +26,7 @@ namespace library
     assert(glGenFramebuffers != nullptr && "OpenGL was not initialized, or does not support framebuffers");
 		glGenFramebuffers(1, &this->fbo);
 		assert(this->fbo != 0 && "FBO handle cannot be zero");
+    this->bind();
 	}
 
 	void FBO::attachColor(GLenum index, Texture& texture)
