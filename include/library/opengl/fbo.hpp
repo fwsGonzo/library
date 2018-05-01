@@ -29,14 +29,18 @@ namespace library
 		// binds this FBO
 		inline void bind()
 		{
-			glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-			lastFBO = fbo;
+      FBO::bind(this->fbo);
 		}
 		inline void unbind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			lastFBO = 0;
 		}
+    // FBO::bind(handle)
+    static void bind(GLuint fbo) {
+      glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+			lastFBO = fbo;
+    }
 
 		// attaches a color target to this FBO, but will only work
 		// if the texture isn't being read at the same time as being rendered to!
@@ -74,6 +78,8 @@ namespace library
 		// returns false if the framebuffer is incomplete, and thus cannot be used yet
 		static bool isComplete();
 		static std::string errorString();
+
+    static GLuint current_bound() { return lastFBO; }
 	};
 }
 
