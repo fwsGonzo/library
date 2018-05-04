@@ -31,7 +31,7 @@ namespace library
 		{
       FBO::bind(this->fbo);
 		}
-		inline void unbind()
+		static void unbind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			lastFBO = 0;
