@@ -2,6 +2,7 @@
 #define LIBRARY_TEXTURE_HPP
 
 #include <string>
+#include <glm/vec2.hpp>
 
 // aliases to avoid including GL header
 typedef unsigned int GLenum;
@@ -94,12 +95,14 @@ namespace library
 		void upload3D(int sizeX, int sizeY, int sizeZ, void* pixeldata);
 
 		// returns (raw) texture handle
-		inline GLuint getHandle() const noexcept { return this->id; }
+		GLuint getHandle() const noexcept { return this->id; }
 		// returns texture width/height
-		inline int getWidth() const noexcept { return this->width; }
-		inline int getHeight() const noexcept { return this->height; }
+		int getWidth() const noexcept { return this->width; }
+		int getHeight() const noexcept { return this->height; }
+    glm::vec2 size() const noexcept { return glm::vec2(this->width, this->height); }
+
 		// returns last bound texture unit for this texture
-		inline GLenum getBoundUnit() const noexcept { return this->boundUnit; }
+		GLenum getBoundUnit() const noexcept { return this->boundUnit; }
     static GLenum currentUnit() noexcept { return Texture::lastUnit; }
 
 		std::string toString() const;
