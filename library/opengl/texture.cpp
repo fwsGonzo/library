@@ -119,7 +119,7 @@ namespace library
 		else
 		{
 			logger << Log::ERR << "@Texture::create(Bitmap&): Unknown texture target (" << (int)this->type << ")" << Log::ENDL;
-			throw std::string("Texture::create(Bitmap&): Unknown texture target (" + std::to_string(this->type) + ")");
+			throw std::runtime_error("Texture::create(Bitmap&): Unknown texture target (" + std::to_string(this->type) + ")");
 		}
 
 		if (this->isMipmapped)
@@ -131,7 +131,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::create(Bitmap&): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::create(Bitmap&): OpenGL state error");
+			throw std::runtime_error("Texture::create(Bitmap&): OpenGL state error");
 		}
 	}
 
@@ -169,7 +169,7 @@ namespace library
 		default:
 			logger << Log::ERR << "Texture::create(): Unknown texture target (" << this->type << ")" << Log::ENDL;
 			logger << Log::ERR << toString();
-			throw std::string("Failed to create texture");
+			throw std::runtime_error("Failed to create texture");
 		}
 		if (this->isMipmapped)
 			glGenerateMipmap(this->type);
@@ -178,7 +178,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::create(): OpenGL state error");
+			throw std::runtime_error("Texture::create(): OpenGL state error");
 		}
 	}
 
@@ -214,7 +214,7 @@ namespace library
 		default:
 			logger << Log::ERR << "Texture::create3d(): Unknown texture target (" << this->type << ")" << Log::ENDL;
 			logger << Log::ERR << toString();
-			throw std::string("Failed to create 3d texture");
+			throw std::runtime_error("Failed to create 3d texture");
 		}
 		if (this->isMipmapped)
 			glGenerateMipmap(this->type);
@@ -223,7 +223,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::create(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::create(): OpenGL state error");
+			throw std::runtime_error("Texture::create(): OpenGL state error");
 		}
 	}
 
@@ -240,7 +240,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::setInterpolation(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::setInterpolation(): OpenGL state error");
+			throw std::runtime_error("Texture::setInterpolation(): OpenGL state error");
 		}
 	}
 	void Texture::setWrapMode(GLint wrapmode)
@@ -279,7 +279,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::createDepth(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::createDepth(): OpenGL state error");
+			throw std::runtime_error("Texture::createDepth(): OpenGL state error");
 		}
 	}
 
@@ -296,7 +296,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::createMultisample(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::createMultisample(): OpenGL state error");
+			throw std::runtime_error("Texture::createMultisample(): OpenGL state error");
 		}
 	}
 	void Texture::createDepthMultisampled(int width, int height, int samples)
@@ -313,7 +313,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::createDepthMultisampled(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::createDepthMultisampled(): OpenGL state error");
+			throw std::runtime_error("Texture::createDepthMultisampled(): OpenGL state error");
 		}
 	}
 
@@ -335,7 +335,7 @@ namespace library
 		if (OpenGL::checkError())
 		{
 			logger << Log::ERR << "Texture::bind(): OpenGL state error" << Log::ENDL;
-			throw std::string("Texture::bind(): OpenGL state error");
+			throw std::runtime_error("Texture::bind(): OpenGL state error");
 		}
 #endif
   }
@@ -376,14 +376,14 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::copyScreen(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::copyScreen(): OpenGL state error");
+			throw std::runtime_error("Texture::copyScreen(): OpenGL state error");
 		}
 		#endif
 	}
 
 	void Texture::upload(const Bitmap& bmp)
 	{
-    bind(this->boundUnit);
+    bind(boundUnit >= 0 ? boundUnit : 0);
 		this->width  = bmp.getWidth();
 		this->height = bmp.getHeight();
 
@@ -461,7 +461,7 @@ namespace library
 		{
 			logger << Log::ERR << "Texture::upload3D(): OpenGL state error" << Log::ENDL;
 			logger << Log::ERR << toString() << Log::ENDL;
-			throw std::string("Texture::upload3D(): OpenGL state error");
+			throw std::runtime_error("Texture::upload3D(): OpenGL state error");
 		}
 		#endif
 	}
