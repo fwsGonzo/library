@@ -13,8 +13,9 @@ namespace library
 
   Texture::~Texture()
   {
-    if (this->id != 0)
+    if (this->id != 0) {
       glDeleteTextures(1, &this->id);
+    }
   }
 
   Texture::Texture(Texture&& other)
@@ -27,7 +28,9 @@ namespace library
   }
   void Texture::init(GLenum target, GLint format)
   {
-    if (this->id) glDeleteTextures(1, &this->id);
+    if (this->id) {
+      glDeleteTextures(1, &this->id);
+    }
     glGenTextures(1, &this->id);
 		this->type   = target;
 		this->format = format;
@@ -36,10 +39,14 @@ namespace library
   }
   void Texture::reset()
   {
-    if (this->id) glDeleteTextures(1, &this->id);
-    this->id = 0;
+    if (this->id) {
+      glDeleteTextures(1, &this->id);
+      this->id = 0;
+    }
 		this->boundUnit = -1;
 		this->isMipmapped = false;
+    this->width  = 0;
+    this->height = 0;
   }
 
 	void Texture::create(const Bitmap& bmp, bool mipmap = true, GLint wrapmode = GL_CLAMP_TO_EDGE, GLint magfilter = GL_NEAREST, GLint minfilter = GL_LINEAR_MIPMAP_LINEAR)

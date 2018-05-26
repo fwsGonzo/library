@@ -108,7 +108,7 @@ namespace library
 		std::string toString() const;
 
 	private:
-		GLuint id;
+		GLuint id = 0;
 		GLenum type;
 		GLint  format;
 		// last bound texture unit
