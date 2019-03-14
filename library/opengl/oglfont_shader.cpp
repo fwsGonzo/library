@@ -36,8 +36,8 @@ namespace library
 			
 			void main(void)
 			{
-				color = texture(fontimage, texCoord);
-				color = mix(bgcolor, fcolor, color.r);
+				color = fcolor * texture(fontimage, texCoord);
+				color = mix(bgcolor, color, length(color.rgb));
 			}
 		)";
 		
