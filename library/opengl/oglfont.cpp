@@ -8,13 +8,9 @@
 namespace library
 {
 	SimpleFont::SimpleFont()
-		: tilesize(0), lastUnit(-1), max_vertices(0), vdata(nullptr)
+		: tilesize(0), lastUnit(-1)
 	{
 		setClip(glm::vec2(0.0));
-	}
-	SimpleFont::~SimpleFont()
-	{
-		delete[] vdata;
 	}
 
 	void SimpleFont::bind(GLenum unit)
@@ -48,64 +44,35 @@ namespace library
 
 	void SimpleFont::print(const glm::vec3& location, const glm::vec2& size, std::string text, bool YaxisUp)
 	{
-		// vertex count
-		int current_vertices = text.length();
-		if (current_vertices == 0) return;
-		current_vertices *= 4;
-
-		/// create vertex array ///
-		resizeVertexArray(current_vertices);
-
-		font_vertex_t* vertex = this->vdata;
+		vdata.clear();
+    idata.clear();
 		std::vector<float>& windings = (YaxisUp) ? font_windings_up : font_windings_down;
 
 		/// emit vertex data
-		emitTextBlock(vertex, location, size, text, windings);
+		emitTextBlock(location, size, text, windings);
 
 		// upload to GPU and render
-		upload(current_vertices);
-		render();
+		this->upload();
+		this->render();
 	}
-	void SimpleFont::serialUpload(std::vector<SimpleFont::print_data_t>& data, bool YaxisUp)
+	void SimpleFont::serialPrint(std::vector<SimpleFont::print_data_t>& data, bool YaxisUp)
 	{
-		// vertex count
-		int current_vertices = 0;
-		for (size_t i = 0; i < data.size(); i++)
-			current_vertices += data[i].text.length();
-
-		if (current_vertices == 0) return;
-		current_vertices *= 4;
-
-		/// create vertex array ///
-		resizeVertexArray(current_vertices);
-
-		font_vertex_t* vertex = this->vdata;
+    vdata.clear();
+    idata.clear();
 		std::vector<float>& windings = (YaxisUp) ? font_windings_up : font_windings_down;
 
 		/// emit vertex data for each data structure
 		for (size_t i = 0; i < data.size(); i++)
 		{
-			emitTextBlock(vertex, data[i].location, data[i].size, data[i].text, windings);
+			emitTextBlock(data[i].location, data[i].size, data[i].text, windings);
 		}
 
-		// upload to GPU and render
-		upload(current_vertices);
+    // upload to GPU and render
+		this->upload();
+		this->render();
 	}
 
-	void SimpleFont::resizeVertexArray(int verts)
-	{
-		// vertex data
-		if (this->max_vertices < verts)
-		{
-			// delete any old data
-			delete[] this->vdata;
-			// resize when too small
-			this->max_vertices = verts;
-			this->vdata = new font_vertex_t[this->max_vertices];
-		}
-	}
-
-	void SimpleFont::emitTextBlock(font_vertex_t*& vertex, const glm::vec3& location, const glm::vec2& size, std::string& text, const std::vector<float>& wind)
+	void SimpleFont::emitTextBlock(const glm::vec3& location, const glm::vec2& size, std::string& text, const std::vector<float>& wind)
 	{
 		for (size_t i = 0; i < text.length(); i++)
 		{
@@ -114,61 +81,74 @@ namespace library
 
 			#define clipInt(x) ((x > 0.5) ? 1 : 0)
 
+      const size_t idx = vdata.size();
 			// emit characters as quads
-			vertex->x = location.x + (clipInt(wind[0]) + i) * size.x;
-			vertex->y = location.y + 0.0;
-			vertex->z = location.z;
-			vertex->s = wind[0];
-			vertex->t = wind[1];
-			vertex->p = text[i];
-			vertex++;
+      vdata.push_back(font_vertex_t {
+			     .x = location.x + (clipInt(wind[0]) + i) * size.x,
+			     .y = location.y + 0.0,
+			     .z = location.z,
+			     .s = wind[0],
+			     .t = wind[1],
+			     .p = text[i]
+      });
 
-			vertex->x = location.x + (clipInt(wind[2]) + i) * size.x;
-			vertex->y = location.y + 0.0;
-			vertex->z = location.z;
-			vertex->s = wind[2];
-			vertex->t = wind[3];
-			vertex->p = text[i];
-			vertex++;
+      vdata.push_back(font_vertex_t {
+			     .x = location.x + (clipInt(wind[2]) + i) * size.x,
+			     .y = location.y + 0.0,
+			     .z = location.z,
+			     .s = wind[2],
+			     .t = wind[3],
+			     .p = text[i]
+      });
 
-			vertex->x = location.x + (clipInt(wind[4]) + i) * size.x;
-			vertex->y = location.y + size.y;
-			vertex->z = location.z;
-			vertex->s = wind[4];
-			vertex->t = wind[5];
-			vertex->p = text[i];
-			vertex++;
+      vdata.push_back(font_vertex_t {
+				   .x = location.x + (clipInt(wind[4]) + i) * size.x,
+				   .y = location.y + size.y,
+				   .z = location.z,
+				   .s = wind[4],
+				   .t = wind[5],
+				   .p = text[i]
+      });
 
-			vertex->x = location.x + (clipInt(wind[6]) + i) * size.x;
-			vertex->y = location.y + size.y;
-			vertex->z = location.z;
-			vertex->s = wind[6];
-			vertex->t = wind[7];
-			vertex->p = text[i];
-			vertex++;
+      vdata.push_back(font_vertex_t {
+  			   .x = location.x + (clipInt(wind[6]) + i) * size.x,
+				   .y = location.y + size.y,
+				   .z = location.z,
+				   .s = wind[6],
+				   .t = wind[7],
+				   .p = text[i]
+      });
+      
+      idata.push_back(idx + 0);
+      idata.push_back(idx + 1);
+      idata.push_back(idx + 2);
+      idata.push_back(idx + 2);
+      idata.push_back(idx + 3);
+      idata.push_back(idx + 0);
 		}
 	}
 
-	void SimpleFont::upload(int verts)
+	void SimpleFont::upload()
 	{
 		// upload data to vao
 		if (vao.good() == false)
 		{
-			vao.begin(sizeof(font_vertex_t), verts, this->vdata, GL_STREAM_DRAW);
+			vao.begin(sizeof(font_vertex_t), vdata.size(), vdata.data(), GL_STREAM_DRAW);
 			vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
 			vao.attrib(1, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, s));
 			vao.end();
 		}
 		else
 		{
-			vao.upload(sizeof(font_vertex_t), verts, this->vdata, GL_STREAM_DRAW);
+			vao.upload(sizeof(font_vertex_t), vdata.size(), vdata.data(), GL_STREAM_DRAW);
 		}
+    vao.indexes(idata.data(), idata.size());
 	}
 
 	// a simple render call
 	void SimpleFont::render()
 	{
-		vao.render(GL_QUADS);
+		vao.renderIndexed(GL_TRIANGLES);
 	}
 
 	Texture* SimpleFont::createTexture(const std::string& filename, int tilesize)

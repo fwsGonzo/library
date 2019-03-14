@@ -7,7 +7,7 @@ namespace library
 {
 	Shader* SimpleFont::createShader()
 	{
-		const std::string font_vertex_shader = 
+		const std::string font_vertex_shader =
 		R"(
 			#version 130
 			uniform mat4 mvp;
@@ -24,7 +24,7 @@ namespace library
 				gl_Position = mvp * vec4(in_vertex.xyz, 1.0);
 			}
 		)";
-		const std::string font_fragment_shader = 
+		const std::string font_fragment_shader =
 		R"(
 			#version 130
 			#extension GL_EXT_gpu_shader4 : enable
@@ -34,14 +34,13 @@ namespace library
 			uniform vec4 fcolor;
 			
 			in vec3 texCoord;
+      out vec4 color;
 			
 			void main(void)
 			{
-				vec4 color = texture2DArray(fontimage, texCoord.stp);
+				color = texture2DArray(fontimage, texCoord.stp);
 				
 				color = mix(bgcolor, fcolor, color.r);
-				
-				gl_FragData[0] = color;
 			}
 		)";
 		
