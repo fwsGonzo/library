@@ -33,12 +33,12 @@ namespace library
 		// Y-axis goes positively upwards
 		font_windings_up =
 		{
-			clip.x, clip.y,   1-clip.x, clip.y,   1-clip.x, 1-clip.y,   clip.x, 1-clip.y
+      clip.x, 1-clip.y,   1-clip.x, 1-clip.y,   1-clip.x, clip.y,   clip.x, clip.y
 		};
 		// Y-axis goes positively downwards
 		font_windings_down =
 		{
-			clip.x, 1-clip.y,   1-clip.x, 1-clip.y,   1-clip.x, clip.y,   clip.x, clip.y
+      clip.x, clip.y,   1-clip.x, clip.y,   1-clip.x, 1-clip.y,   clip.x, 1-clip.y
 		};
 	}
 
@@ -77,7 +77,9 @@ namespace library
 		for (size_t i = 0; i < text.length(); i++)
 		{
 			// convert text to font array index positions
-			text[i] -= 32;
+			const char c = text[i] - 32;
+      const int tex_s = c % 16;
+      const int tex_t = c / 16;
 
 			#define clipInt(x) ((x > 0.5) ? 1 : 0)
 
@@ -85,38 +87,34 @@ namespace library
 			// emit characters as quads
       vdata.push_back(font_vertex_t {
 			     .x = location.x + (clipInt(wind[0]) + i) * size.x,
-			     .y = location.y + 0.0,
+			     .y = location.y + 0.0f,
 			     .z = location.z,
-			     .s = wind[0],
-			     .t = wind[1],
-			     .p = text[i]
+			     .s = (tex_s + wind[0]) / 16.0f,
+			     .t = (tex_t + wind[1]) / 16.0f
       });
 
       vdata.push_back(font_vertex_t {
 			     .x = location.x + (clipInt(wind[2]) + i) * size.x,
-			     .y = location.y + 0.0,
+			     .y = location.y + 0.0f,
 			     .z = location.z,
-			     .s = wind[2],
-			     .t = wind[3],
-			     .p = text[i]
+			     .s = (tex_s + wind[2]) / 16.0f,
+			     .t = (tex_t + wind[3]) / 16.0f
       });
 
       vdata.push_back(font_vertex_t {
 				   .x = location.x + (clipInt(wind[4]) + i) * size.x,
 				   .y = location.y + size.y,
 				   .z = location.z,
-				   .s = wind[4],
-				   .t = wind[5],
-				   .p = text[i]
+				   .s = (tex_s + wind[4]) / 16.0f,
+				   .t = (tex_t + wind[5]) / 16.0f
       });
 
       vdata.push_back(font_vertex_t {
   			   .x = location.x + (clipInt(wind[6]) + i) * size.x,
 				   .y = location.y + size.y,
 				   .z = location.z,
-				   .s = wind[6],
-				   .t = wind[7],
-				   .p = text[i]
+				   .s = (tex_s + wind[6]) / 16.0f,
+				   .t = (tex_t + wind[7]) / 16.0f
       });
       
       idata.push_back(idx + 0);
@@ -135,7 +133,7 @@ namespace library
 		{
 			vao.begin(sizeof(font_vertex_t), vdata.size(), vdata.data(), GL_STREAM_DRAW);
 			vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
-			vao.attrib(1, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, s));
+			vao.attrib(1, 2, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, s));
 			vao.end();
 		}
 		else
@@ -154,17 +152,15 @@ namespace library
 	Texture* SimpleFont::createTexture(const std::string& filename, int tilesize)
 	{
 		if (tilesize <= 1)
-			throw std::string("SimpleFont::createTexture: Invalid tile size");
+			throw std::runtime_error("SimpleFont::createTexture: Invalid tile size");
 
 		// FIXME: assuming PNG format
-		Bitmap fontImage(filename, Bitmap::PNG);
+		const Bitmap fontImage(filename, Bitmap::PNG);
 		if (fontImage.isValid() == false)
-			throw std::string("SimpleFont::createTexture: Bitmap ended up invalid");
-
-		fontImage.parse2D(tilesize, tilesize);
+			throw std::runtime_error("SimpleFont::createTexture: Bitmap ended up invalid");
 
 		// create texture, upload image data
-		texture = new Texture(GL_TEXTURE_2D_ARRAY);
+		texture = new Texture(GL_TEXTURE_2D);
 		texture->create(fontImage, true, GL_CLAMP_TO_EDGE, GL_LINEAR, GL_LINEAR_MIPMAP_LINEAR);
 
 		return texture;

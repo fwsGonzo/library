@@ -13,9 +13,9 @@ namespace library
 			uniform mat4 mvp;
 			
 			in vec3 in_vertex;
-			in vec3 in_texture;
+			in vec2 in_texture;
 			
-			out vec3 texCoord;
+			out vec2 texCoord;
 			
 			void main(void)
 			{
@@ -27,19 +27,16 @@ namespace library
 		const std::string font_fragment_shader =
 		R"(
 			#version 130
-			#extension GL_EXT_gpu_shader4 : enable
-			
-			uniform sampler2DArray fontimage;
+			uniform sampler2D fontimage;
 			uniform vec4 bgcolor;
 			uniform vec4 fcolor;
 			
-			in vec3 texCoord;
+			in vec2 texCoord;
       out vec4 color;
 			
 			void main(void)
 			{
-				color = texture2DArray(fontimage, texCoord.stp);
-				
+				color = texture(fontimage, texCoord);
 				color = mix(bgcolor, fcolor, color.r);
 			}
 		)";

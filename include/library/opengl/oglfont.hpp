@@ -55,7 +55,7 @@ namespace library
 		struct font_vertex_t
 		{
 			float x, y, z;
-			float s, t, p;
+			float s, t;
 		};
 		struct print_data_t
 		{
