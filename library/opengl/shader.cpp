@@ -2,7 +2,6 @@
 
 #include <library/log.hpp>
 #include <library/opengl/opengl.hpp>
-#include <GL/glext.h>
 #include <stdexcept>
 #include <fstream>
 
@@ -148,7 +147,7 @@ namespace library
 		Shader(filename, nullptr, linkstage) { }
 
 	// shader from external file
-	Shader::Shader(const std::string& filename, processFunc tokenizer, 
+	Shader::Shader(const std::string& filename, processFunc tokenizer,
                  const std::vector<std::string>& attributes)
 	{
 		// recursively process text from files and #includes
