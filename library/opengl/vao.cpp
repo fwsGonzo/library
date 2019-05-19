@@ -2,6 +2,7 @@
 
 #include <library/log.hpp>
 #include <library/opengl/opengl.hpp>
+#include <cassert>
 #include <cstdint>
 #include <stdexcept>
 
@@ -12,8 +13,6 @@ namespace library
 	// custom drawing
 	void VAO::begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage)
 	{
-		this->isCreating = true;
-
 		// create VAO & VBO
 		if (vao == 0)
 		{
@@ -24,6 +23,7 @@ namespace library
 	}
 	void VAO::upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage)
 	{
+    assert(this->vao != 0);
 		bind();
 		glBindBuffer(GL_ARRAY_BUFFER_ARB, vbo);
 
@@ -96,7 +96,6 @@ namespace library
 		begin(sizeof(screenvertex_t), 4, sv_t);
     indexes(ind.data(), ind.size());
 		attrib(0, 2, GL_FLOAT, GL_FALSE, 0);
-		end();
 	}
 
 	void VAO::bind()

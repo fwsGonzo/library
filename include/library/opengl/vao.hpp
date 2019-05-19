@@ -7,7 +7,6 @@
  *   begin(..., data);
  *   attrib(0, ...);
  *   attrib(1, ...);
- *   end();
  * 3. Render:
  *   render(GL_*);
  *
@@ -44,7 +43,7 @@ namespace library
 
 		inline bool good() const
 		{
-			return (vao != 0 && isCreating == false);
+			return vao != 0;
 		}
 		// getters
 		inline GLsizei getVertexCount() const
@@ -66,12 +65,7 @@ namespace library
 		void indexes(GLvoid* data, GLsizei count, GLenum usage = GL_STATIC_DRAW_ARB);
 		// and, some vertex attributes as well
 		void attrib(GLuint index, GLsizei size, GLenum type, bool normalize, int offset);
-		// then stop defining the VAO (vao should be isGood() after this)
-		inline void end()
-		{
-			this->isCreating = false;
-		}
-		// RE-upload data, assuming VAO is already initialized
+		// RE-upload data (assuming VAO is already initialized)
 		void upload(
           GLuint        vertexSize,
           GLsizei       vertices,
@@ -105,7 +99,6 @@ namespace library
 		GLsizei indices = 0;
 
 		static GLuint lastVAO;
-		bool   isCreating = false;
 	};
 }
 #endif

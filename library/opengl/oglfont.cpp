@@ -134,7 +134,6 @@ namespace library
 			vao.begin(sizeof(font_vertex_t), vdata.size(), vdata.data(), GL_STREAM_DRAW);
 			vao.attrib(0, 3, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, x));
 			vao.attrib(1, 2, GL_FLOAT, GL_FALSE, offsetof(font_vertex_t, s));
-			vao.end();
 		}
 		else
 		{

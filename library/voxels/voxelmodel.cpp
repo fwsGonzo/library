@@ -11,7 +11,6 @@ namespace library
 		vao.attrib(0, 3, GL_FLOAT,         GL_FALSE, 0);
 		vao.attrib(1, 4, GL_BYTE,          GL_TRUE, 12);
 		vao.attrib(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16);
-		vao.end();
 	}
 
 	VoxelModel::VoxelModel(const VoxelModel& vx)
