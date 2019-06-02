@@ -16,7 +16,12 @@ namespace library
 	public:
 		Integrator(double timestep);
 
-		void restart();
+    // reset the integrator internal clock such that the
+    // game time doesn't change even when time has passed
+    void integrator_resume();
+    // restart the integrator completely, which will change game time
+		void integrator_restart();
+    // check if time has passed, and if so call timeStep(...)
 		void integrate();
 
 		double getTimeStep() const
@@ -37,7 +42,8 @@ namespace library
 
 	private:
 		double timestep;
-		double currentTime;
+    double timeZero;
+		double currentTime = 0.0;
     double game_speed = 1.0;
 		Timer  timer;
 	};

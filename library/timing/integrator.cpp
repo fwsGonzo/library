@@ -5,21 +5,28 @@ namespace library
 	Integrator::Integrator(double timestep)
 	{
 		this->timestep = timestep;
-		this->currentTime = timer.getTime();
+		this->timeZero = timer.getTime();
 	}
 
-	void Integrator::restart()
+  void Integrator::integrator_resume()
+  {
+    // set timer.getTime() - timeZero == currentTime
+    // NOTE: don't modify currentTime
+    this->timeZero = timer.getTime() - currentTime;
+  }
+
+	void Integrator::integrator_restart()
 	{
-		timer.restart();
-		this->currentTime = 0.0;
+		this->timeZero = timer.getTime();
+    this->currentTime = 0.0;
 	}
 
 	void Integrator::integrate()
 	{
-		double timeElapsed = timer.getTime();
+		double elapsed = timer.getTime() - this->timeZero;
 
     const double step = this->timestep / game_speed;
-		while (timeElapsed >= currentTime + step)
+		while (elapsed >= currentTime + step)
 		{
 			if (timeStep(step, this->currentTime))
 				break;
