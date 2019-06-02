@@ -1,12 +1,13 @@
 /**
  * Simple window renderer/manager
- * 
+ *
 **/
 
 #ifndef LIBRARY_WINDOW_HPP
 #define LIBRARY_WINDOW_HPP
 
 #include <string>
+#include <glm/vec2.hpp>
 struct GLFWwindow;
 
 namespace library
@@ -73,21 +74,14 @@ namespace library
 		}
 		
 		//! \brief returns the width of the glfw window
-		int getWidth() const
-		{
-			return SW;
-		}
+		int getWidth() const noexcept;
 		//! \brief returns the height of the glfw window
-		int getHeight() const
-		{
-			return SH;
-		}
+		int getHeight() const noexcept;
+    //! \brief returns the width, height of the glfw window
+    glm::vec2 getSize() const noexcept;
 		//! \brief returns the window aspect, calculated as (width / height)
 		//! \warning the commonly used inverse aspect is 1.0 / getAspect()
-		float getAspect() const
-		{
-			return SA;
-		}
+		float getAspect() const noexcept;
 		
 		//! \brief returns the glfw window handle to this window
 		//! \warning the value is undefined if the window is not opened
@@ -108,7 +102,6 @@ namespace library
 		bool fullscreen;
 		bool is_core_context;
 		
-		int SW, SH; //! screen size
 		float SA;   //! screen aspect
 		GLFWwindow* wndHandle;
 	};

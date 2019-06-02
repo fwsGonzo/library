@@ -90,15 +90,15 @@ namespace library
 		this->wndHandle = glfwCreateWindow(wndconf.SW, wndconf.SH, wndconf.title.c_str(), monitor, nullptr);
 		if (this->wndHandle == nullptr)
 		{
-			logger << Log::ERR << "Could not open 32bit / 24d8s window of size: " << SW << ", " << SH << Log::ENDL;
+			logger << Log::ERR << "Could not open 32bit / 24d8s window of size: " << wndconf.SW << ", " << wndconf.SH << Log::ENDL;
 			glfwTerminate();
 			throw std::string("Window::init(): Could not open OpenGL context window, check your drivers!");
 		}
 
 		// get actual size, since it may not be supported
-		glfwGetFramebufferSize(this->wndHandle, &this->SW, &this->SH);
-		// screen aspect
-		this->SA = (float)this->SW / (float)this->SH;
+    int width;
+    int height;
+		glfwGetFramebufferSize(this->wndHandle, &width, &height);
 
 		// make this window the current OpenGL context
 		setCurrent();
@@ -107,7 +107,7 @@ namespace library
 		glfwSwapInterval((wndconf.vsync) ? 1 : 0);
 
 		// set default viewport
-		glViewport(0, 0, this->SW, this->SH);
+		glViewport(0, 0, width, height);
 
 		// initialize OpenGL automatically
 		if (this->init == false)
@@ -117,6 +117,35 @@ namespace library
 			OpenGL ogl(this->is_core_context);
 		}
 	}
+
+  int WindowClass::getWidth() const noexcept
+  {
+    int width;
+    int height;
+		glfwGetFramebufferSize(this->wndHandle, &width, &height);
+    return width;
+  }
+  int WindowClass::getHeight() const noexcept
+  {
+    int width;
+    int height;
+		glfwGetFramebufferSize(this->wndHandle, &width, &height);
+    return height;
+  }
+  glm::vec2 WindowClass::getSize() const noexcept
+  {
+    int width;
+    int height;
+		glfwGetFramebufferSize(this->wndHandle, &width, &height);
+    return glm::vec2(width, height);
+  }
+  float WindowClass::getAspect() const noexcept
+  {
+    int width;
+    int height;
+		glfwGetFramebufferSize(this->wndHandle, &width, &height);
+    return width / (float) height;
+  }
 
 	void WindowClass::close()
 	{
