@@ -5,10 +5,10 @@
 
 namespace library
 {
-	Shader* SimpleFont::createShader()
-	{
-		const std::string font_vertex_shader =
-		R"(
+Shader* SimpleFont::createShader()
+{
+    const std::string font_vertex_shader =
+        R"(
 			#version 130
 			uniform mat4 mvp;
 			
@@ -24,8 +24,8 @@ namespace library
 				gl_Position = mvp * vec4(in_vertex.xyz, 1.0);
 			}
 		)";
-		const std::string font_fragment_shader =
-		R"(
+    const std::string font_fragment_shader =
+        R"(
 			#version 130
 			uniform sampler2D fontimage;
 			uniform vec4 bgcolor;
@@ -40,15 +40,15 @@ namespace library
 				color = mix(bgcolor, color, length(color.rgb));
 			}
 		)";
-		
-		std::vector<std::string> attr;
-		attr.emplace_back("in_vertex");
-		attr.emplace_back("in_texture");
-		
-		shader = new Shader(font_vertex_shader, font_fragment_shader, "Internal font shader", attr);
-		shader->sendVec4("bgcolor", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // black
-		shader->sendVec4("fcolor", glm::vec4(1.0f)); // white
-		
-		return shader;
-	}
+
+    std::vector<std::string> attr;
+    attr.emplace_back("in_vertex");
+    attr.emplace_back("in_texture");
+
+    shader = new Shader(font_vertex_shader, font_fragment_shader, "Internal font shader", attr);
+    shader->sendVec4("bgcolor", glm::vec4(0.0f, 0.0f, 0.0f, 1.0f)); // black
+    shader->sendVec4("fcolor", glm::vec4(1.0f));                    // white
+
+    return shader;
 }
+} // namespace library

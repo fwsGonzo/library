@@ -1,6 +1,6 @@
 /**
  * OpenGL state & resource manager
-**/
+ **/
 
 #ifndef LIBRARY_OPENGL_HPP
 #define LIBRARY_OPENGL_HPP
@@ -11,20 +11,21 @@
 
 namespace library
 {
-	class OpenGL {
-	public:
-		bool supportsVBO;
-		bool supportsVAO;
+class OpenGL
+{
+public:
+    bool supportsVBO;
+    bool supportsVAO;
 
-		bool supportsFramebuffers;
-		bool supportsShaders;
-		bool supportsAttribs;
+    bool supportsFramebuffers;
+    bool supportsShaders;
+    bool supportsAttribs;
 
-		bool supportsGenMipmap;
-		bool supportsTextureArrays;
+    bool supportsGenMipmap;
+    bool supportsTextureArrays;
 
-		OpenGL(bool core_context);
-		static bool checkError();
-	};
-}
+    OpenGL(bool core_context);
+    static bool checkError();
+};
+} // namespace library
 #endif
