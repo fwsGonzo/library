@@ -81,18 +81,14 @@ public:
     // set-once senders
     inline void sendInteger(const std::string& uniform, GLint id)
     {
-        GLint location = glGetUniformLocation(this->shader, (GLchar*) uniform.c_str());
+        GLint location = getUniform(uniform);
         if (location + 1) glUniform1i(location, id);
     }
-
-    // queries OpenGL for the location of a uniform
-    // prefetch uniform slot value, and store it
-    inline GLint prepareUniform(const std::string& uniform)
+    inline void sendBoolean(const std::string& uniform, GLint value)
     {
-        GLint location = glGetUniformLocation(this->shader, (GLchar*) uniform.c_str());
-        uniforms[uniform] = location;
-        return location;
+		sendInteger(uniform, value);
     }
+
     // returns a previously prepared uniform location
     inline GLint getUniform(const std::string& uniform)
     {
@@ -101,6 +97,11 @@ public:
         // return uniform value
         return uniforms[uniform];
     }
+
+	inline void bindOutputLocation(GLuint index, const std::string& name)
+	{
+		glBindFragDataLocation(this->shader, index, name.c_str());
+	}
 
     // unbinds any bound shader
     inline static void unbind()
@@ -113,6 +114,15 @@ public:
     }
 
 private:
+	// queries OpenGL for the location of a uniform
+    // prefetch uniform slot value, and store it
+    inline GLint prepareUniform(const std::string& uniform)
+    {
+        GLint location = glGetUniformLocation(this->shader, (GLchar*) uniform.c_str());
+        uniforms[uniform] = location;
+        return location;
+    }
+
     GLuint shader;
     std::map<std::string, GLint> uniforms;
 

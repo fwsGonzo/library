@@ -63,6 +63,9 @@ public:
     // pre-made VAOs
     void createScreenspaceVAO();
 
+	// render a fullscreen quad NOW
+	static void renderScreenspaceNow();
+
     // bind / unbind mesh
     void bind();
     static void unbind();

@@ -98,6 +98,15 @@ void VAO::createScreenspaceVAO()
     attrib(0, 2, GL_FLOAT, GL_FALSE, 0);
 }
 
+void VAO::renderScreenspaceNow()
+{
+	static VAO vao;
+	if (!vao.good()) {
+		vao.createScreenspaceVAO();
+	}
+	vao.renderIndexed(GL_TRIANGLES);
+}
+
 void VAO::bind()
 {
     if (lastVAO != vao)
