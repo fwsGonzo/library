@@ -17,16 +17,18 @@ class Shader
 {
 public:
     typedef std::string (*processFunc)(std::string text);
+	using attributes_t = std::vector<std::string>;
+	using outputs_t    = std::vector<std::string>;
 
     // initializes empty shader object
     Shader() { this->shader = 0; };
     // creates shader from external file
-    Shader(const std::string& filename, const std::vector<std::string>& attributes);
+    Shader(const std::string& filename, const attributes_t& attributes, const outputs_t& = {});
     Shader(const std::string& filename, processFunc tokenizer,
-           const std::vector<std::string>& attributes);
+           const attributes_t& attributes, const outputs_t& = {});
     // create shader from string (as shader code)
     Shader(const std::string& vertex, const std::string& frag, const std::string& title,
-           const std::vector<std::string>& attributes);
+           const attributes_t& attributes, const outputs_t& = {});
 
     // binds/activates this shader
     void bind();
@@ -128,7 +130,7 @@ private:
 
     // internal function for uploading shader code, creating and compiling the shader program
     void createShader(const std::string& vertshader, const std::string& fragshader,
-                      const std::string& source, const std::vector<std::string>& attributes);
+                      const std::string& source, const attributes_t&, const outputs_t&);
 
     // get errors/warnings from OpenGL context
     void printShaderStatus(GLuint shader, bool linkstage);

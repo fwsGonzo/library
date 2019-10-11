@@ -139,32 +139,33 @@ std::string Shader::shaderProcessor(const std::string& filename, Shader::process
     return shaderText;
 }
 
-Shader::Shader(const std::string& filename, const std::vector<std::string>& linkstage)
-    : Shader(filename, nullptr, linkstage)
+Shader::Shader(const std::string& filename, const attributes_t& attr, const outputs_t& outputs)
+    : Shader(filename, nullptr, attr, outputs)
 {}
 
 // shader from external file
 Shader::Shader(const std::string& filename, processFunc tokenizer,
-               const std::vector<std::string>& attributes)
+               const attributes_t& attributes, const outputs_t& outputs)
 {
     // recursively process text from files and #includes
     std::string vertshader = shaderProcessor(filename, tokenizer, true);
     std::string fragshader = shaderProcessor(filename, tokenizer, false);
 
     // use the separated vertex and fragment code to create the shader
-    createShader(vertshader, fragshader, filename, attributes);
+    createShader(vertshader, fragshader, filename, attributes, outputs);
 }
 
 // shader from source code
 Shader::Shader(const std::string& vertex, const std::string& frag, const std::string& title,
-               const std::vector<std::string>& attributes)
+               const attributes_t& attributes, const outputs_t& outputs)
 {
-    createShader(vertex, frag, title, attributes);
+    createShader(vertex, frag, title, attributes, outputs);
 }
 
 // internal function for uploading shader code, creating and compiling the shader program
 void Shader::createShader(const std::string& vertshader, const std::string& fragshader,
-                          const std::string& source, const std::vector<std::string>& attributes)
+                          const std::string& source, const attributes_t& attributes,
+						  const outputs_t& outputs)
 {
     // char arrays for GL call
     const GLchar* source_v[1] = {(GLchar*) vertshader.c_str()};
@@ -206,8 +207,14 @@ void Shader::createShader(const std::string& vertshader, const std::string& frag
     glAttachShader(this->shader, shader_f);
 
     // common attributes
-    for (size_t i = 0; i < attributes.size(); i++)
-    { glBindAttribLocation(this->shader, i, (GLchar*) attributes[i].c_str()); }
+    for (size_t i = 0; i < attributes.size(); i++) {
+		glBindAttribLocation(this->shader, i, (GLchar*) attributes[i].c_str());
+	}
+
+	// bind fragment data locations
+	for (size_t i = 0; i < outputs.size(); i++) {
+		glBindFragDataLocation(this->shader, i, (GLchar*) outputs[i].c_str());
+	}
 
     // link program
     glLinkProgram(this->shader);
