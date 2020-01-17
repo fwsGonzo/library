@@ -115,6 +115,8 @@ public:
         }
     }
 
+    void destroy();
+
 private:
 	// queries OpenGL for the location of a uniform
     // prefetch uniform slot value, and store it

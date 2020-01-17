@@ -226,6 +226,9 @@ void Shader::createShader(const std::string& vertshader, const std::string& frag
         throw std::runtime_error("Shader::load() failed to link shader " + source);
     }
 
+    glDeleteShader(shader_v);
+    glDeleteShader(shader_f);
+
     // check for errors
     if (OpenGL::checkError())
     {
@@ -252,6 +255,11 @@ void Shader::bind()
         throw std::runtime_error("Shader::bind() OpenGL state error");
     }
 #endif
+}
+
+void Shader::destroy()
+{
+    glDeleteProgram(this->shader);
 }
 
 } // namespace library
