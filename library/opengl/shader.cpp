@@ -240,9 +240,9 @@ void Shader::createShader(const std::string& vertshader, const std::string& frag
     bind();
 }
 
-void Shader::bind()
+bool Shader::bind()
 { // avoid costly rebind
-    if (lastShader == shader) return;
+    if (lastShader == shader) return false;
     lastShader = shader;
 
     glUseProgram(shader);
@@ -255,6 +255,7 @@ void Shader::bind()
         throw std::runtime_error("Shader::bind() OpenGL state error");
     }
 #endif
+    return true;
 }
 
 void Shader::destroy()

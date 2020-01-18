@@ -31,7 +31,7 @@ public:
            const attributes_t& attributes, const outputs_t& = {});
 
     // binds/activates this shader
-    void bind();
+    bool bind();
 
     // returns exposed (internal) handle
     GLuint getShader() const { return this->shader; }
