@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <library/log.hpp>
 #include <library/opengl/opengl.hpp>
+#include <array>
 #include <stdexcept>
 
 namespace library
