@@ -2,13 +2,9 @@
 #define LOG_HPP
 
 #include <fstream>
-#include <mutex>
-#include <sstream>
 #include <string>
 
 /**
- * Thread-safe logger class, logs to file & console/stdout (if enabled)
- *
  * To open a logfile:
  * 	  library::logger.open("myproject.log");
  *
@@ -40,34 +36,41 @@ public:
         ERR
     };
 
-    Log();
-    Log(std::string);
+    Log() = default;
+    Log(std::string filename);
     ~Log();
     void open(std::string);
-    bool write(LogLevel, std::string);
 
-    void setOutputConsole(bool console);
+    void output_to_console(bool enabled) { this->outputConsole = enabled; }
 
 private:
     bool autoLock;
-    // std::mutex synch;
     std::string log;
     std::ofstream file;
 
-    bool outputConsole;
+    bool outputConsole = true;
 
     friend Log& operator<<(Log& out, const LogLevel level);
+	friend Log& operator<<(Log& out, const std::string& str);
+	friend Log& operator<<(Log& out, const char* str);
     template <class T>
     friend Log& operator<<(Log& out, const T t);
 };
 
-// Log << T
-template <class T>
-Log& operator<<(Log& out, const T t)
+inline Log& operator<<(Log& out, const std::string& str)
 {
-    std::stringstream ss;
-    ss << t;
-    out.log += ss.str();
+    out.log += str;
+    return out;
+}
+inline Log& operator<<(Log& out, const char* str)
+{
+    out.log.append(str);
+    return out;
+}
+template <class T>
+inline Log& operator<<(Log& out, const T t)
+{
+    out.log += std::to_string(t);
     return out;
 }
 
