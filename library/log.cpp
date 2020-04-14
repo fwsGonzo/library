@@ -59,6 +59,7 @@ Log& operator<<(Log& out, const Log::LogLevel level)
     {
         if (out.outputConsole) {
             // output to console, if enabled
+			out.log.append("\n", 1);
             write(STDOUT_FILENO, out.log.c_str(), out.log.size());;
         }
         // output to file
