@@ -4,6 +4,7 @@
 #include <library/math/matrix.hpp>
 #include <library/opengl/opengl.hpp>
 #include <library/opengl/texture.hpp>
+#include <stdexcept>
 
 namespace library
 {
