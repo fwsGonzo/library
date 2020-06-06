@@ -36,6 +36,9 @@ public:
         ERR
     };
 
+	template <typename T>
+	static std::string hex(T value);
+
     Log() = default;
     Log(std::string filename);
     ~Log();
@@ -44,6 +47,7 @@ public:
     void output_to_console(bool enabled) { this->outputConsole = enabled; }
 
 private:
+	static constexpr char digits[] = "0123456789ABCDEF";
     bool autoLock;
     std::string log;
     std::ofstream file;
@@ -70,13 +74,7 @@ inline Log& operator<<(Log& out, const char* str)
 }
 inline Log& operator<<(Log& out, void* const ptr)
 {
-	static const char* digits = "0123456789ABCDEF";
-	const size_t hex_len = sizeof(void*) * 2;
-	const uintptr_t val = (uintptr_t) ptr;
-	std::string str(hex_len, '0');
-	for (size_t i = 0, j = (hex_len-1)*4 ; i<hex_len; ++i, j -= 4)
-		str[i] = digits[(val >> j) & 0xF];
-    out.log.append(str);
+    out.log.append("0x" + Log::hex(ptr));
     return out;
 }
 template <class T>
@@ -84,6 +82,17 @@ inline Log& operator<<(Log& out, const T t)
 {
     out.log += std::to_string(t);
     return out;
+}
+
+template <typename T>
+inline std::string Log::hex(T value)
+{
+	const size_t hex_len = sizeof(T) * 2;
+	const uintptr_t val = (uintptr_t) value;
+	std::string str(hex_len, '0');
+	for (size_t i = 0, j = (hex_len-1)*4 ; i<hex_len; ++i, j -= 4)
+		str[i] = digits[(val >> j) & 0xF];
+	return str;
 }
 
 extern Log logger;
