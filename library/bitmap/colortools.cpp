@@ -4,23 +4,7 @@ using namespace glm;
 
 namespace library
 {
-Color::Color(int red, int grn, int blu)
-{
-    this->r = red & 255;
-    this->g = grn & 255;
-    this->b = blu & 255;
-}
-Color::Color(int r, int g, int b, int a)
-{
-    this->r = r & 255;
-    this->g = g & 255;
-    this->b = b & 255;
-    this->a = a & 255;
-}
-
-uint32_t Color::toBGRA() { return r + (g << 8) + (b << 16) + (a << 24); }
-
-Color Color::mixColor(Color& a, Color& b, float mixlevel)
+Color Color::mixColor(const Color& a, const Color& b, float mixlevel)
 {
     return Color((int) ((float) a.r * (1.0 - mixlevel) + (float) b.r * mixlevel),
                  (int) ((float) a.g * (1.0 - mixlevel) + (float) b.g * mixlevel),
@@ -28,14 +12,23 @@ Color Color::mixColor(Color& a, Color& b, float mixlevel)
                  (int) ((float) a.a * (1.0 - mixlevel) + (float) b.a * mixlevel));
 }
 
-void Color::addColorv(Color& a, Color& b, float level)
+void Color::addRGB(const Color& color, float level)
 {
-    a.r += (int) ((float) b.r * level) & 255;
-    a.g += (int) ((float) b.g * level) & 255;
-    a.b += (int) ((float) b.b * level) & 255;
+    const int R = this->r + (int) ((float) color.r * level);
+    const int G = this->g + (int) ((float) color.g * level);
+    const int B = this->b + (int) ((float) color.b * level);
+	this->r = (R < 256) ? R : 255;
+	this->g = (G < 256) ? G : 255;
+	this->b = (B < 256) ? B : 255;
+}
+void Color::addRGBA(const Color& color, float level)
+{
+	this->addRGB(color, level);
+    const int A = this->a + (int) ((float) color.a * level);
+	this->a = (A < 256) ? A : 255;
 }
 
-Color Color::getGradientColor(float v, Color* array, int size)
+Color Color::getGradientColor(float v, const Color* array, int size)
 {
     int vint = (int) v, vnxt;
     float vfrac = v - vint;
@@ -51,8 +44,8 @@ Color Color::getGradientColor(float v, Color* array, int size)
     if (vnxt >= size) vnxt = size - 1;
 
     // get gradient array colors
-    Color& cl1 = array[vint];
-    Color& cl2 = array[vnxt];
+    const Color& cl1 = array[vint];
+    const Color& cl2 = array[vnxt];
 
     // convert fractional to interpolator
     if (vfrac < 0.5)
