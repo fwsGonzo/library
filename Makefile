@@ -11,7 +11,7 @@ USE_OPENGL  = library/opengl library/voxels
 
 BUILDOPT = -ggdb3 -march=native
 # output file
-OUTPUT   = ./libibrary.a
+OUTPUT   = ./liblibrary.a
 OUTTEST  = ./test
 
 ##############################################################
