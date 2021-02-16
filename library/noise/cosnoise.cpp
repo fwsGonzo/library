@@ -60,7 +60,8 @@ double cosnoise(glm::vec3& v, double density, double scale_xz, double scale_y, d
     // real slope
     slope = curve + density * density * fatness;
     // weights
-    double weights[8] __attribute__((aligned(32)));
+    //double weights[8] __attribute__((aligned(32)));
+    double __declspec(align(32)) weights[8];
     size_x += size_x; // size_x == size_z
 
     // optimized formula
