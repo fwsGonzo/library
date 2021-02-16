@@ -35,7 +35,7 @@ bool Config::load(const std::string& filename)
             if (c == '=') { keypart = false; }
             else if (c == '"')
             {
-                reading = not reading;
+                reading = !reading;
             }
             else if (c != ' ' || reading)
             {

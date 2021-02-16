@@ -116,7 +116,7 @@ int Voronoi::getid(vor_t px, vor_t py, distance_func distFunc)
             if (dist < mindist)
             {
                 // assign some integral id based on hash
-                id = ihash(dx + 5953) xor ihash(dy + 7639);
+                id = ihash(dx + 5953) ^ ihash(dy + 7639);
                 // save distance
                 mindist = dist; // mew closest value
             }
