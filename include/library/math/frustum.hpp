@@ -33,7 +33,8 @@ private:
     void normalizePlane(int side);
 
     // this holds the A B C and D values for each side of our frustum
-    frustum_t frustum[6][4] __attribute__((aligned(32)));
+    //frustum_t frustum[6][4] __attribute__((aligned(32)));
+    frustum_t __declspec(align(32)) frustum[6][4];
 };
 
 } // namespace library
