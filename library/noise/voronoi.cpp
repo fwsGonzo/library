@@ -62,10 +62,21 @@ inline unsigned int hash(unsigned int x)
     x = x ^ (x >> 15);
     return x;
 }
-inline int ihash(int x) { return hash(x) & INT32_MAX; }
 
-inline float randf(int x) { return ihash(x) / (float) INT32_MAX; }
-inline float randf(int x, int y) { return randf(x xor ihash(y)); }
+inline int ihash(int x)
+{
+    return hash(x) & INT32_MAX;
+}
+
+inline float randf(int x)
+{
+    return ihash(x) / (float)INT32_MAX;
+}
+
+inline float randf(int x, int y)
+{
+    return randf(x ^ ihash(y));
+}
 
 Voronoi::vor_t Voronoi::getdist(vor_t px, vor_t py, distance_func distFunc)
 {
