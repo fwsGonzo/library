@@ -26,9 +26,9 @@ union Color
 	};
 	uint32_t whole = 0;
 
-    constexpr Color(int r, int g, int b);
-    constexpr Color(int r, int g, int b, int a);
-	constexpr Color(uint32_t full);
+    Color(int r, int g, int b);
+    Color(int r, int g, int b, int a);
+	Color(uint32_t full);
 
     rgba8_t toBGRA() const;
     rgba8_t toRGBA() const;
@@ -47,21 +47,21 @@ rgba8_t vectorToColor(const glm::vec4& vector);
 
 
 
-inline constexpr Color::Color(int red, int grn, int blu)
+inline Color::Color(int red, int grn, int blu)
 {
     this->r = red & 255;
     this->g = grn & 255;
     this->b = blu & 255;
 	this->a = 255;
 }
-inline constexpr Color::Color(int r, int g, int b, int a)
+inline Color::Color(int r, int g, int b, int a)
 {
     this->r = r & 255;
     this->g = g & 255;
     this->b = b & 255;
     this->a = a & 255;
 }
-inline constexpr Color::Color(uint32_t full)
+inline Color::Color(uint32_t full)
 	: whole(full) {}
 inline Color Color::mix(const Color& b, float mixlevel)
 {

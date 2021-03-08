@@ -67,6 +67,8 @@ void SimpleFont::serialPrint(std::vector<SimpleFont::print_data_t>& data, bool Y
 void SimpleFont::emitTextBlock(const glm::vec3& location, const glm::vec2& size, std::string& text,
                                const std::vector<float>& wind)
 {
+    font_vertex_t fv{};
+
     for (size_t i = 0; i < text.length(); i++)
     {
         // convert text to font array index positions
@@ -78,29 +80,34 @@ void SimpleFont::emitTextBlock(const glm::vec3& location, const glm::vec2& size,
 
         const size_t idx = vdata.size();
         // emit characters as quads
-        vdata.push_back(font_vertex_t{.x = location.x + (clipInt(wind[0]) + i) * size.x,
-                                      .y = location.y + 0.0f,
-                                      .z = location.z,
-                                      .s = (tex_s + wind[0]) / 16.0f,
-                                      .t = (tex_t + wind[1]) / 16.0f});
 
-        vdata.push_back(font_vertex_t{.x = location.x + (clipInt(wind[2]) + i) * size.x,
-                                      .y = location.y + 0.0f,
-                                      .z = location.z,
-                                      .s = (tex_s + wind[2]) / 16.0f,
-                                      .t = (tex_t + wind[3]) / 16.0f});
+        fv.x = location.x + (clipInt(wind[0]) + i) * size.x;
+        fv.y = location.y + 0.0f;
+        fv.z = location.z;
+        fv.s = (tex_s + wind[0]) / 16.0f;
+        fv.t = (tex_t + wind[1]) / 16.0f;
+        vdata.push_back(fv);
 
-        vdata.push_back(font_vertex_t{.x = location.x + (clipInt(wind[4]) + i) * size.x,
-                                      .y = location.y + size.y,
-                                      .z = location.z,
-                                      .s = (tex_s + wind[4]) / 16.0f,
-                                      .t = (tex_t + wind[5]) / 16.0f});
+        fv.x = location.x + (clipInt(wind[2]) + i) * size.x;
+        fv.y = location.y + 0.0f;
+        fv.z = location.z;
+        fv.s = (tex_s + wind[2]) / 16.0f;
+        fv.t = (tex_t + wind[3]) / 16.0f;
+        vdata.push_back(fv);
 
-        vdata.push_back(font_vertex_t{.x = location.x + (clipInt(wind[6]) + i) * size.x,
-                                      .y = location.y + size.y,
-                                      .z = location.z,
-                                      .s = (tex_s + wind[6]) / 16.0f,
-                                      .t = (tex_t + wind[7]) / 16.0f});
+        fv.x = location.x + (clipInt(wind[4]) + i) * size.x;
+        fv.y = location.y + size.y;
+        fv.z = location.z;
+        fv.s = (tex_s + wind[4]) / 16.0f;
+        fv.t = (tex_t + wind[5]) / 16.0f;
+        vdata.push_back(fv);
+
+        fv.x = location.x + (clipInt(wind[6]) + i) * size.x;
+        fv.y = location.y + size.y;
+        fv.z = location.z;
+        fv.s = (tex_s + wind[6]) / 16.0f;
+        fv.t = (tex_t + wind[7]) / 16.0f;
+        vdata.push_back(fv);
 
         idata.push_back(idx + 0);
         idata.push_back(idx + 1);

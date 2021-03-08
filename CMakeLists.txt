@@ -44,6 +44,7 @@ SET(LIBRARY_SOURCES
     library/voxels/voxelmodel.cpp
   )
 
+include_directories(inc)
 add_library(library STATIC ${LIBRARY_SOURCES})
 target_include_directories(library PUBLIC include)
 target_link_libraries(library glfw)
