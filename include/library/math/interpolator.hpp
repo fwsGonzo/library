@@ -1,6 +1,7 @@
 #pragma once
-#include <map>
 #include <algorithm>
+#include <functional>
+#include <map>
 
 template <typename T>
 class Interpolator {
