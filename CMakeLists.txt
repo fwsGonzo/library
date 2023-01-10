@@ -2,6 +2,8 @@
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
 
+add_subdirectory(inc/glm)
+
 SET(LIBRARY_SOURCES
     library/config.cpp
     library/log.cpp
@@ -49,4 +51,4 @@ SET(LIBRARY_SOURCES
 
 add_library(library STATIC ${LIBRARY_SOURCES})
 target_include_directories(library PUBLIC include inc ${GLEW_INCLUDE_DIRS})
-target_link_libraries(library glfw ${GLEW_LIBRARIES} GL)
+target_link_libraries(library PUBLIC glm glfw ${GLEW_LIBRARIES} GL)
