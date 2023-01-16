@@ -74,6 +74,7 @@ public:
 	static void mouseButton(GLFWwindow*, int button, int action, int mods);
 	static void mouseWheel(GLFWwindow*, double x, double y);
 
+	auto* window() { return m_window; }
 protected:
 	GLFWwindow* m_window = nullptr;
 	double m_speed;
