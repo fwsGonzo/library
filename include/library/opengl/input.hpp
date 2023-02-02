@@ -54,6 +54,7 @@ public:
 	void mouse_grab(bool grab);
 	// mouse position
 	glm::vec2 mouse_xy() const { return this->m_mouse_xy; }
+	void set_mouse_xy(glm::vec2 pos) { this->m_mouse_xy = pos; this->m_last_mouse_xy = pos; }
 	input_t mouse_button_ex(int btn) const { return this->m_mouse.at(btn); }
 	key_t mouse_button(int btn) const { return this->m_mouse.at(btn).action; }
 	void mouse_hold(int btn) { this->m_mouse.at(btn).action = KEY_LOCKED; }
