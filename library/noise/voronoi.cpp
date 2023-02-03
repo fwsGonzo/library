@@ -113,4 +113,31 @@ int Voronoi::getid(vor_t px, vor_t py, distance_func distFunc)
     return id;
 }
 
+Voronoi::Result Voronoi::get(vor_t px, vor_t py, distance_func distFunc)
+{
+    vor_t mindist = 99;
+    int x = floorf(px);
+    int y = floorf(py);
+    int id = 0;
+
+    for (int dx = x - 1; dx <= x + 1; dx++)
+	for (int dy = y - 1; dy <= y + 1; dy++)
+	{
+		// create a voronoi point
+		vor_t getx = dx + randf(dx + 3299, dy + 5843);
+		vor_t gety = dy + randf(dx + 431, dy + 2437);
+
+		vor_t dist = distFunc(px, py, getx, gety);
+
+		if (dist < mindist)
+		{
+			// assign some integral id based on hash
+			id = ihash(dx + 5953) xor ihash(dy + 7639);
+			// save distance
+			mindist = dist; // mew closest value
+		}
+	}
+    return {id, mindist};
+}
+
 } // namespace library

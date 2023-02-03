@@ -20,6 +20,12 @@ public:
 
     static vor_t getdist(vor_t x, vor_t y, distance_func);
     static int getid(vor_t x, vor_t y, distance_func);
+
+	struct Result {
+		int   id;
+		float dist;
+	};
+    static Result get(vor_t x, vor_t y, distance_func);
 };
 
 } // namespace library
