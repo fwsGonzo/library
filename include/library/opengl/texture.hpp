@@ -72,6 +72,8 @@ public:
 
     // bind this texture to texture unit
     void bind(GLenum unit);
+	// rebind (when someone else has changed active texture unit and texture id)
+	void rebind(GLenum unit);
     // bind custom texture to unit
     static void raw_bind(GLenum unit, GLenum type, GLuint id);
     // free a texture unit
