@@ -310,4 +310,14 @@ void Bitmap::add_tile(const Bitmap& other, int tx, int ty)
         scan += this->getWidth();
     }
 }
+void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
+{
+    // add single tile
+    const size_t end = buffer.size();
+    this->tilesX++;
+    buffer.resize(getTileCount() * getWidth() * getHeight());
+
+    auto* scan = this->buffer.data() + end;
+	callback(scan, this->buffer.size() - end);
+}
 } // namespace library
