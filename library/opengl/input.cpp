@@ -38,6 +38,9 @@ void Input::restore_mouse()
 	glfwSetMouseButtonCallback(m_window, &Input::mouseButton);
 	// mouse wheel event
 	glfwSetScrollCallback(m_window, &Input::mouseWheel);
+	// Reset keyboard and mouse input states
+	this->m_keys = {};
+	this->m_mouse = {};
 }
 Input::~Input() { currentInput = nullptr; }
 
