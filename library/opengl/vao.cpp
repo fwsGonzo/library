@@ -45,7 +45,7 @@ void VAO::upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum
 #endif
 }
 
-void VAO::indexes(GLvoid* data, GLsizei count, GLenum usage)
+void VAO::indexes(const GLvoid* data, GLsizei count, GLenum usage)
 {
     this->indices = count;
 

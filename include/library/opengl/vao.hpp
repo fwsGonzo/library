@@ -53,7 +53,7 @@ public:
     }
     void begin(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum usage);
     // add indices to the mix
-    void indexes(GLvoid* data, GLsizei count, GLenum usage = GL_STATIC_DRAW_ARB);
+    void indexes(const GLvoid* data, GLsizei count, GLenum usage = GL_STATIC_DRAW_ARB);
     // and, some vertex attributes as well
     void attrib(GLuint index, GLsizei size, GLenum type, bool normalize, int offset);
     // RE-upload data (assuming VAO is already initialized)
