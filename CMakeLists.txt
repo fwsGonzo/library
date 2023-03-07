@@ -1,6 +1,9 @@
+option(LIBRARY_USE_GLFW "Use GLFW for library features" ON)
 
+if (LIBRARY_USE_GLFW)
 find_package(glfw3 REQUIRED)
 find_package(GLEW REQUIRED)
+endif()
 
 add_subdirectory(inc/glm)
 
@@ -29,26 +32,35 @@ SET(LIBRARY_SOURCES
     library/math/frustum.cpp
     library/math/matrix.cpp
 
-    library/opengl/camera.cpp
-    library/opengl/fbo.cpp
-    library/opengl/input.cpp
-    library/opengl/oglfont.cpp
-    library/opengl/oglfont_shader.cpp
-    library/opengl/opengl.cpp
-    library/opengl/shader.cpp
-    library/opengl/shader.cpp
-    library/opengl/texture.cpp
-    library/opengl/texture_buffer.cpp
-    library/opengl/window.cpp
-    library/opengl/ubo.cpp
-    library/opengl/vao.cpp
-
     library/timing/integrator.cpp
 
     library/voxels/voxelizer.cpp
     library/voxels/voxelmodel.cpp
   )
 
+if (LIBRARY_USE_GLFW)
+	list(APPEND LIBRARY_SOURCES
+		library/opengl/camera.cpp
+		library/opengl/fbo.cpp
+		library/opengl/input.cpp
+		library/opengl/oglfont.cpp
+		library/opengl/oglfont_shader.cpp
+		library/opengl/opengl.cpp
+		library/opengl/shader.cpp
+		library/opengl/shader.cpp
+		library/opengl/texture.cpp
+		library/opengl/texture_buffer.cpp
+		library/opengl/window.cpp
+		library/opengl/ubo.cpp
+		library/opengl/vao.cpp
+	)
+endif()
+
 add_library(library STATIC ${LIBRARY_SOURCES})
-target_include_directories(library PUBLIC include inc ${GLEW_INCLUDE_DIRS})
-target_link_libraries(library PUBLIC glm glfw ${GLEW_LIBRARIES} GL)
+target_include_directories(library PUBLIC include inc)
+target_link_libraries(library PUBLIC glm)
+
+if (LIBRARY_USE_GLFW)
+target_include_directories(library PUBLIC ${GLEW_INCLUDE_DIRS})
+target_link_libraries(library PUBLIC glfw ${GLEW_LIBRARIES} GL)
+endif()
