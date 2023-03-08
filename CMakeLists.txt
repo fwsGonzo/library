@@ -62,5 +62,5 @@ target_link_libraries(library PUBLIC glm)
 
 if (LIBRARY_USE_GLFW)
 target_include_directories(library PUBLIC ${GLEW_INCLUDE_DIRS})
-target_link_libraries(library PUBLIC glfw ${GLEW_LIBRARIES} GL)
+target_link_libraries(library PUBLIC glfw ${GLEW_LIBRARIES})
 endif()
