@@ -289,7 +289,7 @@ void Bitmap::convert_to_tilesheet(const int tile_size, const uint32_t color)
     this->tilesX = 1;
     this->tilesY = 1;
 }
-void Bitmap::add_tile(const Bitmap& other, int tx, int ty)
+void Bitmap::add_tile(const Bitmap& other, int tx, int ty, bool fix_transparent_areas)
 {
     // we have to assume same tile size
     const int srcX = tx * this->getWidth();
@@ -309,6 +309,47 @@ void Bitmap::add_tile(const Bitmap& other, int tx, int ty)
         std::copy(src, src + this->getWidth(), scan);
         scan += this->getWidth();
     }
+
+	if (fix_transparent_areas == false)
+		return;
+
+	scan = this->buffer.data() + end;
+	auto getpixel = [&] (int x, int y) -> uint32_t&
+	{
+		//y = this->getHeight() - 1 - y;
+		return scan[y * this->getWidth() + x];
+	};
+	auto search = [&] (int x, int y) -> uint32_t
+	{
+		// Don't look up
+		for (int lx = x-1; lx >= 0; lx--) {
+			const auto pixel = getpixel(lx, y);
+			if (pixel >> 24) return pixel;
+		}
+		for (int lx = x+1; lx < this->getWidth(); lx++) {
+			const auto pixel = getpixel(lx, y);
+			if (pixel >> 24) return pixel;
+		}
+		// Look down
+		for (int ly = y-1; ly >= 0; ly--) {
+			const auto pixel = getpixel(x, ly);
+			if (pixel >> 24) return pixel;
+		}
+		// Give up
+		return getpixel(x, y);
+	};
+
+	// The goal is to fix mipmapping interpolation problems
+	for (int y = 0; y < this->getHeight(); y++)
+	for (int x = 0; x < this->getWidth(); x++)
+    {
+		// We only care about transparent pixels
+		if (getpixel(x, y) == 0)
+		{
+			// Find nearest color and use that instead
+			getpixel(x, y) = search(x, y) & 0xFFFFFF;
+		}
+    }
 }
 void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
 {
@@ -320,4 +361,5 @@ void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
     auto* scan = this->buffer.data() + end;
 	callback(scan, this->buffer.size() - end);
 }
-} // namespace library
+
+} // library
