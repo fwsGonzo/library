@@ -95,10 +95,19 @@ public:
     inline GLint getUniform(const std::string& uniform)
     {
         // if the value doesn't exist yet, find it
-        if (uniforms.find(uniform) == uniforms.end()) return prepareUniform(uniform);
-        // return uniform value
-        return uniforms[uniform];
+		auto it = uniforms.find(uniform);
+        if (it != uniforms.end()) {
+        	// return uniform value directly
+        	return it->second;
+		}
+		return prepareUniform(uniform);
     }
+
+	// bind a named uniform block to a global index
+	void bindUniformBlock(const std::string& uniform_block, GLint globalIndex);
+
+	// get the index of a uniform block in the shader
+    GLint getUniformBlockIndex(const std::string& uniform_block);
 
 	inline void bindOutputLocation(GLuint index, const std::string& name)
 	{

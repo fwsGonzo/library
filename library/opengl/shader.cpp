@@ -285,4 +285,18 @@ void Shader::destroy()
 	glDeleteProgram(this->shader);
 }
 
-} // namespace library
+GLint Shader::getUniformBlockIndex(const std::string& uniform_block)
+{
+	return glGetUniformBlockIndex(this->shader, uniform_block.c_str());
+}
+
+void Shader::bindUniformBlock(const std::string& uniform_block, GLint globalIndex)
+{
+	const GLint index = getUniformBlockIndex(uniform_block);
+	if (index >= 0)
+	{
+		glUniformBlockBinding(this->shader, index, globalIndex);
+	}
+}
+
+} // library
