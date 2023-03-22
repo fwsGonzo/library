@@ -59,6 +59,7 @@ public:
     // RE-upload data (assuming VAO is already initialized)
     void upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data,
                 GLenum usage = GL_STATIC_DRAW_ARB);
+    void uploadAt(GLuint vertexSize, GLsizei offset, GLsizei vertices, const GLvoid* data);
 
     // pre-made VAOs
     void createScreenspaceVAO();

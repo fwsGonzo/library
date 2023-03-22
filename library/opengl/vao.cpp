@@ -38,9 +38,31 @@ void VAO::upload(GLuint vertexSize, GLsizei vertices, const GLvoid* data, GLenum
 #ifdef DEBUG
     if (OpenGL::checkError())
     {
-        logger << Log::ERR << "VAO::beginCreate(): OpenGL error for vao = " << vao
+        logger << Log::ERR << "VAO::upload(): OpenGL error for vao = " << vao
                << ", vbo = " << vbo << Log::ENDL;
-        throw std::runtime_error("VAO::beginCreate(): OpenGL error");
+        throw std::runtime_error("VAO::upload(): OpenGL error");
+    }
+#endif
+}
+void VAO::uploadAt(GLuint vertexSize, GLsizei offset, GLsizei vertices, const GLvoid* data)
+{
+    assert(this->vao != 0);
+    bind();
+    glBindBuffer(GL_ARRAY_BUFFER_ARB, vbo);
+
+    this->vertexSize = vertexSize;
+    this->vertices = std::max(this->vertices, GLsizei(offset + vertices));
+    unsigned int totalBytes = vertices * vertexSize;
+
+    // upload data
+    glBufferSubData(GL_ARRAY_BUFFER_ARB, offset * vertexSize, totalBytes, data);
+
+#ifdef DEBUG
+    if (OpenGL::checkError())
+    {
+        logger << Log::ERR << "VAO::uploadAt(): OpenGL error for vao = " << vao
+               << ", vbo = " << vbo << Log::ENDL;
+        throw std::runtime_error("VAO::uploadAt(): OpenGL error");
     }
 #endif
 }
