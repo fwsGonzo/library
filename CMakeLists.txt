@@ -1,7 +1,10 @@
+option(LIBRARY_USE_GLFW_PACKAGE "" ON)
 option(LIBRARY_USE_GLFW "Use GLFW for library features" ON)
 
 if (LIBRARY_USE_GLFW)
-find_package(glfw3 REQUIRED)
+if (LIBRARY_USE_GLFW_PACKAGE)
+	find_package(glfw3 REQUIRED)
+endif ()
 find_package(GLEW REQUIRED)
 endif()
 
