@@ -197,6 +197,20 @@ void Bitmap::blit(Bitmap& dest, const int srcX, const int srcY, const int width,
     dest.format = this->format;
 }
 
+void Bitmap::merge(const int srcX, const int srcY, const int width, const int height,
+    Bitmap& dest, const int dstX, const int dstY) const
+{
+    // Conditionally blit, where alpha is non-zero
+    for (int y = 0; y < height; y++)
+    {
+        auto* src = this->buffer.data() + (y + srcY) * this->width + srcX;
+        auto* dst = dest.buffer.data() + (y + dstY) * dest.getWidth() + dstX;
+		for (int x = 0; x < width; x++)
+			if (src[x] >> 24)
+				dst[x] = src[x];
+    }
+}
+
 // splits a bitmap in a 1d continous memory array
 // of tiles used by GL_TEXTURE_2D_ARRAY (GL 3.x)
 void Bitmap::parse2D(const int tw, const int th, bool invert_y)
@@ -360,6 +374,51 @@ void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
 
     auto* scan = this->buffer.data() + end;
 	callback(scan, this->buffer.size() - end);
+}
+
+void Bitmap::merge_tile(const int tileID, const Bitmap& other, unsigned tileSize, int tx, int ty)
+{
+    const int srcX = tx * tileSize;
+    const int srcY = ty * tileSize;
+    assert(srcX + tileSize <= other.getWidth());
+    assert(srcY + tileSize <= other.getHeight());
+    // Merge with existing tileID
+    const size_t offset = tileID * this->getWidth() * this->getHeight();
+
+    auto* scan = this->buffer.data() + offset;
+
+    for (int y = this->getHeight()-1; y >= 0; y--)
+    {
+        auto* src = other.buffer.data() + (srcY + (y % tileSize)) * other.width + srcX;
+
+		for (int x = 0; x < this->getWidth(); x++)
+			if (src[x % tileSize] >> 24)
+				scan[x] = src[x % tileSize];
+
+        scan += this->getWidth();
+    }
+}
+void Bitmap::merge_tilemask(const int tileID, const Bitmap& other, unsigned tileSize, int tx, int ty, rgba8_t mask_color)
+{
+    const int srcX = tx * tileSize;
+    const int srcY = ty * tileSize;
+    assert(srcX + tileSize <= other.getWidth());
+    assert(srcY + tileSize <= other.getHeight());
+    // Merge with existing tileID
+    const size_t offset = tileID * this->getWidth() * this->getHeight();
+
+    auto* scan = this->buffer.data() + offset;
+
+    for (int y = this->getHeight()-1; y >= 0; y--)
+    {
+        auto* src = other.buffer.data() + (srcY + (y % tileSize)) * other.width + srcX;
+
+		for (int x = 0; x < this->getWidth(); x++)
+			if (src[x % tileSize] >> 24)
+				scan[x] = mask_color;
+
+        scan += this->getWidth();
+    }
 }
 
 } // library

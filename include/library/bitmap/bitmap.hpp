@@ -54,7 +54,14 @@ public:
     // operations
     void clear(rgba8_t color);
     void replace(rgba8_t color, rgba8_t replacecolor);
+	// Copy from this bitmap into dest
     void blit(Bitmap& dest, int srcX, int srcY, int width, int height, int dstX, int dstY) const;
+	// Conditionally blit from here into dest, where alpha is non-zero
+	void merge(const int srcX, const int srcY, const int width, const int height,
+		Bitmap& dest, const int dstX, const int dstY) const;
+	// Conditionally blit tile at srcTileID into dest at destTileID
+	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty);
+	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
 
     // tile operations
     void parse2D(int, int, bool invert_y = false);
