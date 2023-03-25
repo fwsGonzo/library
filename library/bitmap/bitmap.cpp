@@ -399,13 +399,13 @@ void Bitmap::merge_tile(const int tileID,
 
 			if (merged.a > 0)
 			{
-				const float blend = merged.a / 255.0f;
-
 				if (tone != 0) {
 					merged = Color::multiply(toneColor, merged);
+					const float blend = merged.a / 255.0f;
 
 					scan[x] = Color::mixColor(original, merged, blend).whole;
 				} else {
+					const float blend = merged.a / 255.0f;
 					scan[x] = Color::mixColor(original, merged, blend).whole;
 				}
 			}
