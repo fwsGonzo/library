@@ -402,6 +402,7 @@ void Bitmap::merge_tile(const int tileID,
 				if (tone != 0) {
 					merged = Color::multiply(toneColor, merged);
 					const float blend = merged.a / 255.0f;
+					merged.a = original.a;
 
 					scan[x] = Color::mixColor(original, merged, blend).whole;
 				} else {
