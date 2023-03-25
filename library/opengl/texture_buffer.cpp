@@ -24,6 +24,6 @@ void BufferTexture::bind(GLenum unit)
 void BufferTexture::upload(const void* data, size_t len)
 {
     glBindBuffer(GL_TEXTURE_BUFFER, this->m_buffer);
-    glBufferData(GL_TEXTURE_BUFFER, len, data, GL_STREAM_DRAW_ARB);
+    glBufferSubData(GL_TEXTURE_BUFFER, 0, len, data);
 }
 } // namespace library
