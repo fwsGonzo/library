@@ -33,11 +33,14 @@ union Color
     rgba8_t toBGRA() const;
     rgba8_t toRGBA() const;
 
-	Color mix(const Color&, float level);
+	Color mix(const Color, float level);
+	Color mix(const Color, Color mix);
 	void  addRGB (const Color&, float level);
 	void  addRGBA(const Color&, float level);
 
-    static Color mixColor(const Color& a, const Color& b, float mixlevel);
+    static Color mixColor(Color a, Color b, float mixlevel);
+    static Color mixColor(Color a, Color b, Color mixColor);
+    static Color multiply(Color a, Color mixColor);
     static void  addColorv(const Color& a, const Color& b, float level);
     static Color getGradientColor(float v, const Color* array, int size);
 };
@@ -63,9 +66,13 @@ inline constexpr Color::Color(int r, int g, int b, int a)
 }
 inline constexpr Color::Color(uint32_t full)
 	: whole(full) {}
-inline Color Color::mix(const Color& b, float mixlevel)
+inline Color Color::mix(const Color b, float mixlevel)
 {
 	return mixColor(*this, b, mixlevel);
+}
+inline Color Color::mix(const Color b, Color mix)
+{
+	return mixColor(*this, b, mix);
 }
 
 inline uint32_t Color::toRGBA() const {

@@ -60,7 +60,7 @@ public:
 	void merge(const int srcX, const int srcY, const int width, const int height,
 		Bitmap& dest, const int dstX, const int dstY) const;
 	// Conditionally blit tile at srcTileID into dest at destTileID
-	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty);
+	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t tone = 0);
 	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
 
     // tile operations

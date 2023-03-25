@@ -376,7 +376,8 @@ void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
 	callback(scan, this->buffer.size() - end);
 }
 
-void Bitmap::merge_tile(const int tileID, const Bitmap& other, unsigned tileSize, int tx, int ty)
+void Bitmap::merge_tile(const int tileID,
+	const Bitmap& other, unsigned tileSize, int tx, int ty, rgba8_t tone)
 {
     const int srcX = tx * tileSize;
     const int srcY = ty * tileSize;
@@ -384,6 +385,7 @@ void Bitmap::merge_tile(const int tileID, const Bitmap& other, unsigned tileSize
     assert(srcY + tileSize <= other.getHeight());
     // Merge with existing tileID
     const size_t offset = tileID * this->getWidth() * this->getHeight();
+	const Color toneColor(tone);
 
     auto* scan = this->buffer.data() + offset;
 
@@ -392,16 +394,19 @@ void Bitmap::merge_tile(const int tileID, const Bitmap& other, unsigned tileSize
         auto* src = other.buffer.data() + (srcY + (y % tileSize)) * other.width + srcX;
 
 		for (int x = 0; x < this->getWidth(); x++) {
-			const uint8_t alpha = src[x % tileSize] >> 24;
-			if (alpha > 0) {
-				if (alpha == 255)
-					scan[x] = src[x % tileSize];
-				else {
-					const float blend = alpha / 255.0f;
-					const Color srcColor(src[x % tileSize]);
-					const Color dstColor(scan[x]);
+			Color original(scan[x]);
+			Color merged(src[x % tileSize]);
 
-					scan[x] = Color::mixColor(srcColor, dstColor, blend).whole;
+			if (merged.a > 0)
+			{
+				const float blend = merged.a / 255.0f;
+
+				if (tone != 0) {
+					merged = Color::multiply(toneColor, merged);
+
+					scan[x] = Color::mixColor(original, merged, blend).whole;
+				} else {
+					scan[x] = Color::mixColor(original, merged, blend).whole;
 				}
 			}
 		}

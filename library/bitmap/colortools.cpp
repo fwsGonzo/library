@@ -4,12 +4,32 @@ using namespace glm;
 
 namespace library
 {
-Color Color::mixColor(const Color& a, const Color& b, float mixlevel)
+Color Color::mixColor(const Color a, const Color b, float mixlevel)
 {
     return Color((int) ((float) a.r * (1.0 - mixlevel) + (float) b.r * mixlevel),
                  (int) ((float) a.g * (1.0 - mixlevel) + (float) b.g * mixlevel),
                  (int) ((float) a.b * (1.0 - mixlevel) + (float) b.b * mixlevel),
                  (int) ((float) a.a * (1.0 - mixlevel) + (float) b.a * mixlevel));
+}
+Color Color::mixColor(Color a, Color b, Color mixColor)
+{
+	const float mix[4] {
+		mixColor.r / 255.0f, mixColor.g / 255.0f, mixColor.b / 255.0f, mixColor.a / 255.0f
+	};
+    return Color((int) ((float) a.r * (1.0 - mix[0]) + (float) b.r * mix[0]),
+                 (int) ((float) a.g * (1.0 - mix[1]) + (float) b.g * mix[1]),
+                 (int) ((float) a.b * (1.0 - mix[2]) + (float) b.b * mix[2]),
+                 (int) ((float) a.a * (1.0 - mix[3]) + (float) b.a * mix[3]));
+}
+Color Color::multiply(Color a, Color mixColor)
+{
+	const float mix[4] {
+		mixColor.r / 255.0f, mixColor.g / 255.0f, mixColor.b / 255.0f, mixColor.a / 255.0f
+	};
+    return Color((int) ((float) a.r * mix[0]),
+                 (int) ((float) a.g * mix[1]),
+                 (int) ((float) a.b * mix[2]),
+                 (int) ((float) a.a * mix[3]));
 }
 
 void Color::addRGB(const Color& color, float level)
