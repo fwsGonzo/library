@@ -391,9 +391,20 @@ void Bitmap::merge_tile(const int tileID, const Bitmap& other, unsigned tileSize
     {
         auto* src = other.buffer.data() + (srcY + (y % tileSize)) * other.width + srcX;
 
-		for (int x = 0; x < this->getWidth(); x++)
-			if (src[x % tileSize] >> 24)
-				scan[x] = src[x % tileSize];
+		for (int x = 0; x < this->getWidth(); x++) {
+			const uint8_t alpha = src[x % tileSize] >> 24;
+			if (alpha > 0) {
+				if (alpha == 255)
+					scan[x] = src[x % tileSize];
+				else {
+					const float blend = alpha / 255.0f;
+					const Color srcColor(src[x % tileSize]);
+					const Color dstColor(scan[x]);
+
+					scan[x] = Color::mixColor(srcColor, dstColor, blend).whole;
+				}
+			}
+		}
 
         scan += this->getWidth();
     }
