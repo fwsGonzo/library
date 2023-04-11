@@ -16,6 +16,7 @@ public:
     void bind(GLenum unit);
 
     void upload(const void* data, size_t len);
+	void upload(const void* data, size_t offset, size_t len);
 
 private:
     GLuint m_texture;

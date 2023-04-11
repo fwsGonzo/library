@@ -26,4 +26,10 @@ void BufferTexture::upload(const void* data, size_t len)
     glBindBuffer(GL_TEXTURE_BUFFER, this->m_buffer);
     glBufferSubData(GL_TEXTURE_BUFFER, 0, len, data);
 }
+
+void BufferTexture::upload(const void* data, size_t offset, size_t len)
+{
+    glBindBuffer(GL_TEXTURE_BUFFER, this->m_buffer);
+    glBufferSubData(GL_TEXTURE_BUFFER, offset, len, data);
+}
 } // namespace library

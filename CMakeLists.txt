@@ -47,6 +47,7 @@ if (LIBRARY_USE_GLFW)
 		library/opengl/oglfont.cpp
 		library/opengl/oglfont_shader.cpp
 		library/opengl/opengl.cpp
+		library/opengl/query.cpp
 		library/opengl/shader.cpp
 		library/opengl/shader.cpp
 		library/opengl/texture.cpp
