@@ -1,6 +1,7 @@
 #ifndef BITMAP_HPP
 #define BITMAP_HPP
 
+#include <cstdint>
 #include <functional>
 #include <string>
 #include <vector>
