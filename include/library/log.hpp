@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <cstdint>
 
 /**
  * To open a logfile:
