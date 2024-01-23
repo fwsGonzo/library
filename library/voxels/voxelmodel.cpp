@@ -5,7 +5,7 @@
 
 namespace library
 {
-VoxelModel::VoxelModel(GLsizei vertices, GLvoid* data)
+VoxelModel::VoxelModel(GLsizei vertices, const GLvoid* data)
 {
     vao.begin(sizeof(XModel::xvertex_t), vertices, data);
     vao.attrib(0, 3, GL_FLOAT, GL_FALSE, 0);

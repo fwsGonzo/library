@@ -14,7 +14,7 @@ namespace library
 class VoxelModel
 {
 public:
-    VoxelModel(GLsizei vertices, GLvoid* data);
+    VoxelModel(GLsizei vertices, const GLvoid* data);
     VoxelModel(const VoxelModel& vx);
 
     bool isGood() const { return vao.good(); }

@@ -29,29 +29,6 @@ char xm_tangent[6][3] = {
     {0, 0, -128}, {0, 0, 127}   // right left
 };
 
-// initialize xvertex dump
-XModel::xvertex_t* XModel::xv_dump = nullptr;
-
-// empty model
-XModel::XModel()
-{
-    this->vdata = nullptr;
-    this->verts = 0;
-}
-XModel::~XModel() { delete[] this->vdata; }
-
-// copy of existing model
-XModel::XModel(XModel& mod)
-{
-    this->vdata = mod.data();
-    this->verts = mod.vertices();
-}
-
-void XModel::initVoxelizer()
-{
-    xv_dump = (xvertex_t*) malloc(VOXELIZER_MAX_VERTICES * sizeof(xvertex_t));
-}
-
 inline bool culltest(XModel::xcolor_t value)
 {
     // returns true if the alpha-channel value is 0
@@ -105,18 +82,20 @@ short XModel::cull2D(const Bitmap& img, int x, int y)
 void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid, int vid,
                     xcolor_t vcolor)
 {
+	xvertex_t v;
+
     // position
-    this->vdata->x = offset.x + (x + xm_vertex[fid][vid * 3 + 0]) * scale.x;
-    this->vdata->y = offset.y + (y + xm_vertex[fid][vid * 3 + 1]) * scale.y;
-    this->vdata->z = offset.z + (0 + xm_vertex[fid][vid * 3 + 2]) * scale.z;
+    v.x = offset.x + (x + xm_vertex[fid][vid * 3 + 0]) * scale.x;
+    v.y = offset.y + (y + xm_vertex[fid][vid * 3 + 1]) * scale.y;
+    v.z = offset.z + (0 + xm_vertex[fid][vid * 3 + 2]) * scale.z;
     // normal
-    this->vdata->nx = xm_normal[fid][0];
-    this->vdata->ny = xm_normal[fid][1];
-    this->vdata->nz = xm_normal[fid][2];
+    v.nx = xm_normal[fid][0];
+    v.ny = xm_normal[fid][1];
+    v.nz = xm_normal[fid][2];
     // color
-    this->vdata->c = vcolor;
-    // next vertex
-    this->vdata += 1;
+    v.c = vcolor;
+
+    this->vdata.push_back(v);
 }
 
 void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& scale)
@@ -124,12 +103,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
     int w = fromImage.getWidth();
     int h = fromImage.getHeight();
 
-    int numfaces = 0; // counter for faces
-
-    // initialize static vertex dump, if null
-    if (xv_dump == nullptr) initVoxelizer();
-
-    this->vdata = xv_dump;
     xvertex_t* lastpz;
     xvertex_t* lastnz;
     short facing;
@@ -164,7 +137,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                         putv2D(offset, scale, x, y, 0, 1, c);
                         putv2D(offset, scale, x, y, 0, 2, c);
                         putv2D(offset, scale, x, y, 0, 3, c);
-                        numfaces += 1;
                     }
                 }
                 else
@@ -185,7 +157,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                         putv2D(offset, scale, x, y, 1, 1, c);
                         putv2D(offset, scale, x, y, 1, 2, c);
                         putv2D(offset, scale, x, y, 1, 3, c);
-                        numfaces += 1;
                     }
                 }
                 else
@@ -198,7 +169,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                     putv2D(offset, scale, x, y, 2, 1, c);
                     putv2D(offset, scale, x, y, 2, 2, c);
                     putv2D(offset, scale, x, y, 2, 3, c);
-                    numfaces += 1;
                 }
                 if (facing & 8) // -y
                 {
@@ -206,7 +176,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                     putv2D(offset, scale, x, y, 3, 1, c);
                     putv2D(offset, scale, x, y, 3, 2, c);
                     putv2D(offset, scale, x, y, 3, 3, c);
-                    numfaces += 1;
                 }
                 if (facing & 16) // +x
                 {
@@ -214,7 +183,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                     putv2D(offset, scale, x, y, 4, 1, c);
                     putv2D(offset, scale, x, y, 4, 2, c);
                     putv2D(offset, scale, x, y, 4, 3, c);
-                    numfaces += 1;
                 }
                 if (facing & 32) // -x
                 {
@@ -222,7 +190,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
                     putv2D(offset, scale, x, y, 5, 1, c);
                     putv2D(offset, scale, x, y, 5, 2, c);
                     putv2D(offset, scale, x, y, 5, 3, c);
-                    numfaces += 1;
                 }
             }
             else
@@ -234,16 +201,6 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
             cv += 1;
         } // x
     }     // y
-
-    // allocate vertices, using xv_dump as base
-    this->verts = numfaces * 4;
-
-    this->vdata = new xvertex_t[this->verts];
-    memcpy(this->vdata, this->xv_dump, this->verts * sizeof(xvertex_t));
 }
-
-XModel::xvertex_t* XModel::data() { return this->vdata; }
-
-int XModel::vertices() { return this->verts; }
 
 } // namespace library
