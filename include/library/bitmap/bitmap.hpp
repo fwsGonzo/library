@@ -68,6 +68,7 @@ public:
     void parse2D(int, int, bool invert_y = false);
     void convert_to_tilesheet(int tile_size, uint32_t tile_zero_color);
     void add_tile(const Bitmap&, int tx, int ty, bool fix_transparent_areas = true);
+    void add_colored_tile(uint32_t color);
 	/// @brief Add a new tile from remote memory through callback
 	/// @param callback Callback that provides the new tile
 	void add_tile(std::function<void(rgba8_t*, size_t)> callback);

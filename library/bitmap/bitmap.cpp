@@ -303,6 +303,16 @@ void Bitmap::convert_to_tilesheet(const int tile_size, const uint32_t color)
     this->tilesX = 1;
     this->tilesY = 1;
 }
+void Bitmap::add_colored_tile(uint32_t color)
+{
+	// Add a single tile with a given color
+	this->tilesX++;
+	buffer.resize(getTileCount() * getWidth() * getHeight());
+	// Resize already filled it with zeroes
+	if (color != 0) {
+		std::fill(buffer.end() - getWidth() * getHeight(), buffer.end(), color);
+	}
+}
 void Bitmap::add_tile(const Bitmap& other, int tx, int ty, bool fix_transparent_areas)
 {
     // we have to assume same tile size
