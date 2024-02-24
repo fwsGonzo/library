@@ -1,21 +1,26 @@
 #include <library/voxels/voxelmodel.hpp>
+#include <library/voxels/voxelizer.hpp>
 
 #include <library/opengl/opengl.hpp>
 #include <library/voxels/voxelizer.hpp>
 
 namespace library
 {
-VoxelModel::VoxelModel(GLsizei vertices, const GLvoid* data)
+VoxelModel::VoxelModel(const VoxelModel& vx)
 {
-    vao.begin(sizeof(XModel::xvertex_t), vertices, data);
-    vao.attrib(0, 3, GL_FLOAT, GL_FALSE, 0);
-    vao.attrib(1, 4, GL_BYTE, GL_TRUE, 12);
-    vao.attrib(2, 4, GL_UNSIGNED_BYTE, GL_TRUE, 16);
+	this->vao = vx.vao;
+}
+VoxelModel::VoxelModel(const XModel& xm)
+{
+	// Create VAO directly from XModel data
+	vao.begin(sizeof(XModel::xvertex_t), xm.vertices().size(), xm.vertices().data());
+	vao.attrib(0, 3, GL_FLOAT, false, 0);
+	vao.attrib(1, 4, GL_UNSIGNED_BYTE, true, 12);
+	vao.attrib(2, 4, GL_UNSIGNED_BYTE, true, 16);
+	vao.indexes(xm.indices().data(), xm.indices().size());
 }
 
-VoxelModel::VoxelModel(const VoxelModel& vx) { this->vao = vx.vao; }
-
-void VoxelModel::render() { vao.render(GL_QUADS); }
-void VoxelModel::render(GLint mode) { vao.render(mode); }
+void VoxelModel::render() { vao.renderIndexed(GL_TRIANGLES); }
+void VoxelModel::render(GLint mode) { vao.renderIndexed(mode); }
 
 } // namespace library

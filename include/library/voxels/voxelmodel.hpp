@@ -11,20 +11,22 @@
 
 namespace library
 {
-class VoxelModel
-{
-public:
-    VoxelModel(GLsizei vertices, const GLvoid* data);
-    VoxelModel(const VoxelModel& vx);
+	class XModel;
 
-    bool isGood() const { return vao.good(); }
+	class VoxelModel
+	{
+	public:
+		VoxelModel(const VoxelModel& vx);
+		VoxelModel(const XModel& xm);
 
-    void render();
-    void render(GLint mode);
+		bool isGood() const { return vao.good(); }
 
-private:
-    VAO vao;
-};
+		void render();
+		void render(GLint mode);
+
+	private:
+		VAO vao;
+	};
 } // namespace library
 
 #endif

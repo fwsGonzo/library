@@ -1,6 +1,5 @@
-#ifndef VOXELIZER_HPP
-#define VOXELIZER_HPP
-
+#pragma once
+#include <cstdint>
 #include <library/math/vector.hpp>
 #include <vector>
 
@@ -23,8 +22,8 @@ public:
     XModel() = default;
     XModel(XModel&) = default;
 
-    const xvertex_t* data() const noexcept { return vdata.data(); }
-    size_t vertices() const noexcept { return vdata.size(); };
+    auto& vertices() const noexcept { return vdata; };
+	auto& indices() const noexcept { return index; };
 
     void extrude(const Bitmap& fromImage, const glm::vec3& offset, const glm::vec3& scale);
 
@@ -36,6 +35,7 @@ private:
                 xcolor_t vcolor);
 
     std::vector<xvertex_t> vdata;
+	std::vector<uint16_t>  index;
 };
+
 } // namespace library
-#endif
