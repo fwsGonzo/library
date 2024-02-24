@@ -12,7 +12,7 @@ void QueryObject::init()
 
 bool QueryObject::available()
 {
-	if (m_target == 0)
+	if (this->m_target == 0)
 		return false;
 
 	GLint result = 0;
@@ -22,11 +22,17 @@ bool QueryObject::available()
 
 void QueryObject::begin(GLenum target)
 {
+	if (this->m_target != 0)
+		return;
+
 	glBeginQuery(target, this->m_id);
 	this->m_target = target;
 }
 void QueryObject::end()
 {
+	if (this->m_target != 0)
+		return;
+
 	glEndQuery(this->m_target);
 }
 
@@ -34,6 +40,7 @@ GLint QueryObject::getI32(bool wait)
 {
 	GLint result = 0;
 	glGetQueryObjectiv(this->m_id, wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result);
+	this->m_target = 0;
 	return result;
 }
 
@@ -41,6 +48,7 @@ GLuint QueryObject::getU32(bool wait)
 {
 	GLuint result = 0;
 	glGetQueryObjectuiv(this->m_id, wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result);
+	this->m_target = 0;
 	return result;
 }
 
