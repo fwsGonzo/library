@@ -22,18 +22,19 @@ bool QueryObject::available()
 
 void QueryObject::begin(GLenum target)
 {
-	if (this->m_target != 0)
+	if (this->m_target != 0 || this->m_query_active)
 		return;
 
 	glBeginQuery(target, this->m_id);
 	this->m_target = target;
+	this->m_query_active = true;
 }
 void QueryObject::end()
 {
-	if (this->m_target != 0)
-		return;
-
-	glEndQuery(this->m_target);
+	if (this->m_target != 0 && this->m_query_active) {
+		glEndQuery(this->m_target);
+		m_query_active = false;
+	}
 }
 
 GLint QueryObject::getI32(bool wait)

@@ -26,5 +26,6 @@ public:
 private:
     GLuint m_id;
 	GLenum m_target = 0;
+	bool m_query_active = false;
 };
 } // namespace library
