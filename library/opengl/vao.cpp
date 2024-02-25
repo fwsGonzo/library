@@ -164,7 +164,7 @@ void VAO::render(GLenum mode, GLint first, GLsizei count)
 void VAO::renderIndexed(GLenum mode, GLuint first, GLint count)
 {
     bind();
-    glDrawRangeElements(mode, first, first + count, count, GL_UNSIGNED_SHORT, 0);
+    glDrawElements(mode, count, GL_UNSIGNED_SHORT, (GLvoid*) (first * sizeof(GLushort)));
 
 #ifdef DEBUG
     if (OpenGL::checkError())
