@@ -22,7 +22,7 @@ void Log::open(std::string filename)
 {
     if (file.good()) file.close();
     // output logfile
-    this->file.open(filename.c_str(), ios::app | ios::out);
+    this->file.open(filename.c_str(), ios::out);
 }
 
 Log& operator<<(Log& out, const Log::LogLevel level)
@@ -57,14 +57,15 @@ Log& operator<<(Log& out, const Log::LogLevel level)
     }
     else // Log::log_level_t.ENDL
     {
+		out.log.append("\n", 1);
         if (out.outputConsole) {
-            // output to console, if enabled
-			out.log.append("\n", 1);
+            // Output to console, if enabled
             write(STDOUT_FILENO, out.log.c_str(), out.log.size());;
         }
-        // output to file
+        // Output to file with explicit flush in order to see the last
+		// log message if a crash occurs
         if (out.file.good())
-			out.file << out.log << endl;
+			out.file << out.log << std::flush;
         out.log.clear();
     }
     // outgoing = incoming Log, for chaining
