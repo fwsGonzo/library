@@ -128,6 +128,17 @@ T coslerp(T* weight, const R x, const R z)
 // cubic interpolation functions
 
 template <class T, typename R>
+inline float cubic(T* x, R t)
+{
+	float a = (3.0*x[1] - 3.0*x[2] + x[3] - x[0]) / 2.0;
+	float b = (2.0*x[0] - 5.0*x[1] + 4.0*x[2] - x[3]) / 2.0;
+	float c = (x[2] - x[0]) / 2.0;
+	float d = x[1];
+
+	return a * t*t*t + b * t*t + c * t + d;
+}
+
+template <class T, typename R>
 T cubic_fast(T* p, R x1)
 {
     // made by g0nz0
