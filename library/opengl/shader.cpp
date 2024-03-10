@@ -80,7 +80,7 @@ void Shader::printShaderStatus(GLuint shader, bool prog)
 }
 
 std::string Shader::shaderProcessor(const std::string& filename, Shader::processFunc tokenizer,
-									bool isVertex)
+									const std::string& extra_lines, bool isVertex)
 {
 	std::ifstream file(filename.c_str());
 
@@ -114,16 +114,22 @@ std::string Shader::shaderProcessor(const std::string& filename, Shader::process
 			if (findPath != filename.length()) line = filename.substr(0, findPath) + "/" + line;
 
 			// process included file
-			shaderText += shaderProcessor(line, tokenizer, isVertex);
+			shaderText += shaderProcessor(line, tokenizer, "", isVertex);
 		}
 		// preserve line numbers by commenting out when compiling vertex/fragment program
 		else if (line.compare(DEF_VERT_PROG) == 0)
 		{
-			if (isVertex == true) shaderText += line + "\n";
+			if (isVertex == true) {
+				shaderText += line + "\n";
+				shaderText += extra_lines + "\n";
+			}
 		}
 		else if (line.compare(DEF_FRAG_PROG) == 0)
 		{
-			if (isVertex == false) shaderText += line + "\n";
+			if (isVertex == false) {
+				shaderText += line + "\n";
+				shaderText += extra_lines + "\n";
+			}
 		}
 		else
 		{
@@ -139,17 +145,24 @@ std::string Shader::shaderProcessor(const std::string& filename, Shader::process
 	return shaderText;
 }
 
-Shader::Shader(const std::string& filename, const attributes_t& attr, const outputs_t& outputs)
-	: Shader(filename, nullptr, attr, outputs)
+Shader::Shader(const std::string& filename, const attributes_t& attr, const outputs_t& outputs, const defines_t& defines)
+	: Shader(filename, nullptr, attr, outputs, defines)
 {}
 
 // shader from external file
 Shader::Shader(const std::string& filename, processFunc tokenizer,
-			   const attributes_t& attributes, const outputs_t& outputs)
+			   const attributes_t& attributes, const outputs_t& outputs, const defines_t& defines)
 {
+	// combine defines into a single newline-separated string
+	std::string lines;
+	for (auto& line : defines)
+	{
+		lines += line + "\n";
+	}
+
 	// recursively process text from files and #includes
-	std::string vertshader = shaderProcessor(filename, tokenizer, true);
-	std::string fragshader = shaderProcessor(filename, tokenizer, false);
+	std::string vertshader = shaderProcessor(filename, tokenizer, lines, true);
+	std::string fragshader = shaderProcessor(filename, tokenizer, lines, false);
 
 	// use the separated vertex and fragment code to create the shader
 	createShader(vertshader, fragshader, filename, attributes, outputs);
@@ -206,7 +219,8 @@ void Shader::createShader(const std::string& vertshader, const std::string& frag
 	{
 		printShaderStatus(shader_v, false);
 		logger << Log::ERR << "*** Shader source: " << source << Log::ENDL;
-		throw std::runtime_error("Shader::load(): Shader compilation error");
+		logger << Log::ERR << "*** Vertex shader: " << vertshader << Log::ENDL;
+		throw std::runtime_error("Shader::load(): Vertex shader compilation error");
 	}
 	// fragment status
 	glGetShaderiv(shader_f, GL_COMPILE_STATUS, &status);
@@ -214,7 +228,8 @@ void Shader::createShader(const std::string& vertshader, const std::string& frag
 	{
 		printShaderStatus(shader_f, false);
 		logger << Log::ERR << "*** Shader source: " << source << Log::ENDL;
-		throw std::runtime_error("Shader::load(): Shader compilation error");
+		logger << Log::ERR << "*** Fragment shader: " << fragshader << Log::ENDL;
+		throw std::runtime_error("Shader::load(): Fragment shader compilation error");
 	}
 
 	checkErrors(source, "Shader compile error");

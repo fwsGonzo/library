@@ -19,13 +19,14 @@ public:
     typedef std::string (*processFunc)(std::string text);
 	using attributes_t = std::vector<std::string>;
 	using outputs_t    = std::vector<std::string>;
+	using defines_t    = std::vector<std::string>;
 
     // initializes empty shader object
     Shader() { this->shader = 0; };
     // creates shader from external file
-    Shader(const std::string& filename, const attributes_t& attributes, const outputs_t& = {});
+    Shader(const std::string& filename, const attributes_t& attributes, const outputs_t& = {}, const defines_t& = {});
     Shader(const std::string& filename, processFunc tokenizer,
-           const attributes_t& attributes, const outputs_t& = {});
+           const attributes_t& attributes, const outputs_t& = {}, const defines_t& = {});
     // create shader from string (as shader code)
     Shader(const std::string& vertex, const std::string& frag, const std::string& title,
            const attributes_t& attributes, const outputs_t& = {});
@@ -146,7 +147,8 @@ private:
     // get errors/warnings from OpenGL context
     void printShaderStatus(GLuint shader, bool linkstage);
     // preprocess files recursively
-    std::string shaderProcessor(const std::string& filename, processFunc tokenizer, bool isVertex);
+    std::string shaderProcessor(const std::string& filename, processFunc tokenizer,
+		const std::string&, bool isVertex);
 
     // keep track of last bound shader
     static GLuint lastShader;
