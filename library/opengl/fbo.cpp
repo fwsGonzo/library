@@ -160,7 +160,7 @@ void FBO::drawBuffer(GLenum buffer)
 #endif
 }
 
-void FBO::blitTo(FBO& dest_fbo, int w, int h, int mask, int filter)
+void FBO::blitTo(const FBO& dest_fbo, int w, int h, int mask, int filter)
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, this->fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest_fbo.getHandle());
@@ -171,7 +171,7 @@ void FBO::blitTo(FBO& dest_fbo, int w, int h, int mask, int filter)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
-void FBO::blitTo(FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter)
+void FBO::blitTo(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter)
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, this->fbo);
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest_fbo.getHandle());

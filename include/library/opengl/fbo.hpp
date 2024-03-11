@@ -66,8 +66,8 @@ public:
     static void drawBuffer(GLenum attachmentId = GL_COLOR_ATTACHMENT0);
 
     // blit from one framebuffer to another
-    void blitTo(FBO& dest_fbo, int w, int h, int mask, int filter);
-    void blitTo(FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter);
+    void blitTo(const FBO& dest_fbo, int w, int h, int mask, int filter);
+    void blitTo(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter);
 
     // returns true if the framebuffer is OK, and can be used
     // returns false if the framebuffer is incomplete, and thus cannot be used yet
