@@ -63,6 +63,8 @@ public:
 	// Conditionally blit tile at srcTileID into dest at destTileID
 	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t tone = 0);
 	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
+	// Rotate a tile 90 degrees
+	void rotate_tile(const int tileID, int times = 1);
 
     // tile operations
     void parse2D(int, int, bool invert_y = false);

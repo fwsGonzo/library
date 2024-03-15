@@ -448,4 +448,25 @@ void Bitmap::merge_tilemask(const int tileID, const Bitmap& other, unsigned tile
     }
 }
 
+void Bitmap::rotate_tile(const int tileID, int times)
+{
+	const size_t offset = tileID * this->getWidth() * this->getHeight();
+	auto* scan = this->buffer.data() + offset;
+
+	std::vector<rgba8_t> temp(this->getWidth() * this->getHeight());
+	auto* temp_scan = temp.data();
+
+	for (int i = 0; i < times; i++)
+	{
+		// Rotate 90 degrees clockwise
+		for (int x = 0; x < this->getWidth(); x++)
+		for (int y = 0; y < this->getHeight(); y++)
+		{
+			temp_scan[y * this->getWidth() + x] = scan[x * this->getWidth() + y];
+		}
+
+		std::copy(temp_scan, temp_scan + temp.size(), scan);
+	}
+} // rotate_tile
+
 } // library
