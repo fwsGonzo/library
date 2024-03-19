@@ -348,11 +348,6 @@ void Texture::raw_bind(GLenum unit, GLenum type, GLuint tex_id)
     }
 #endif
 }
-void Texture::bind(GLenum unit)
-{
-    raw_bind(unit, this->type, this->id);
-    this->boundUnit = unit;
-}
 void Texture::rebind(GLenum unit)
 {
 	lastid[unit] = 0;

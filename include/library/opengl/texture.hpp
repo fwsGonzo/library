@@ -122,6 +122,12 @@ private:
     static GLenum lastUnit;
 };
 
+inline void Texture::bind(GLenum unit)
+{
+    raw_bind(unit, this->type, this->id);
+    this->boundUnit = unit;
+}
+
 } // namespace library
 
 #endif
