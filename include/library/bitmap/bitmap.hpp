@@ -75,6 +75,13 @@ public:
 	/// @param callback Callback that provides the new tile
 	void add_tile(std::function<void(rgba8_t*, size_t)> callback);
 
+	/// @brief Replace color in a tile with another color
+	/// @param tileID The tile ID to replace the color in
+	/// @param color The color to replace
+	/// @param replaceColor The color to replace with
+	/// @param alsoReplace If not null, if a pixel in this bitmap matches, it will also replace the same pixel in the alsoReplace bitmap
+	void replace_tile_color(int tileID, rgba8_t color, rgba8_t replaceColor, Bitmap* alsoReplace = nullptr);
+
     Bitmap rotate90() const;
     Bitmap flipX() const;
     Bitmap flipY() const;

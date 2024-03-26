@@ -469,4 +469,22 @@ void Bitmap::rotate_tile(const int tileID, int times)
 	}
 } // rotate_tile
 
+void Bitmap::replace_tile_color(int tileID, rgba8_t color, rgba8_t replaceColor, Bitmap* alsoReplace)
+{
+	const size_t offset = tileID * this->getWidth() * this->getHeight();
+	auto* scan = this->buffer.data() + offset;
+
+	for (int p = 0; p < this->getWidth() * this->getHeight(); p++)
+	{
+		if (scan[p] == color) {
+			scan[p] = replaceColor;
+
+			if (alsoReplace) {
+				// Replace in the other bitmap as well, at the same position
+				alsoReplace->buffer[p] = replaceColor;
+			}
+		}
+	}
+} // replace_tile_color
+
 } // library
