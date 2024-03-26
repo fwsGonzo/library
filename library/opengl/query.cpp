@@ -5,52 +5,50 @@
 
 namespace library
 {
-void QueryObject::init()
+void QueryObject::initialize()
 {
-    glGenQueries(1, &this->m_id);
+	if (this->m_id[0] == ~0u)
+		glGenQueries(2, this->m_id);
 }
 
 bool QueryObject::available()
 {
-	if (this->m_target == 0)
+	this->initialize();
+
+	if (this->m_target == 0 || m_query_active)
 		return false;
 
-	GLint result = 0;
-	glGetQueryObjectiv(this->m_id, GL_QUERY_RESULT_AVAILABLE, &result);
+	GLuint result = 0;
+	glGetQueryObjectuiv(this->m_id[1], GL_QUERY_RESULT_AVAILABLE, &result);
 	return result == GL_TRUE;
 }
 
-void QueryObject::begin(GLenum target)
+void QueryObject::beginTimer()
 {
 	if (this->m_target != 0 || this->m_query_active)
 		return;
 
-	glBeginQuery(target, this->m_id);
-	this->m_target = target;
+	this->initialize();
+
+	glQueryCounter(this->m_id[0], GL_TIMESTAMP);
+	this->m_target = GL_TIMESTAMP;
 	this->m_query_active = true;
 }
-void QueryObject::end()
+void QueryObject::endTimer()
 {
-	if (this->m_target != 0 && this->m_query_active) {
-		glEndQuery(this->m_target);
+	if (this->m_query_active) {
+		glQueryCounter(this->m_id[1], GL_TIMESTAMP);
 		m_query_active = false;
 	}
 }
 
-GLint QueryObject::getI32(bool wait)
+GLuint64 QueryObject::getU64(bool wait)
 {
-	GLint result = 0;
-	glGetQueryObjectiv(this->m_id, wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result);
+	GLuint64 result[2] = {0, 0};
+	glGetQueryObjectui64v(this->m_id[0], wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result[0]);
+	glGetQueryObjectui64v(this->m_id[1], wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result[1]);
 	this->m_target = 0;
-	return result;
-}
-
-GLuint QueryObject::getU32(bool wait)
-{
-	GLuint result = 0;
-	glGetQueryObjectuiv(this->m_id, wait ? GL_QUERY_RESULT : GL_QUERY_RESULT_NO_WAIT, &result);
-	this->m_target = 0;
-	return result;
+	return result[1] - result[0];
 }
 
 } // namespace library
