@@ -387,7 +387,7 @@ void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
 }
 
 void Bitmap::merge_tile(const int tileID,
-	const Bitmap& other, unsigned tileSize, int tx, int ty, rgba8_t tone)
+	const Bitmap& other, unsigned tileSize, int tx, int ty, rgba8_t tone, bool keepMergedAlpha)
 {
     const int srcX = tx * tileSize;
     const int srcY = ty * tileSize;
@@ -419,6 +419,8 @@ void Bitmap::merge_tile(const int tileID,
 					const float blend = merged.a / 255.0f;
 					scan[x] = Color::mixColor(original, merged, blend).whole;
 				}
+				if (keepMergedAlpha)
+					scan[x] |= src[x % tileSize] & 0xFF000000;
 			}
 		}
 
@@ -486,5 +488,18 @@ void Bitmap::replace_tile_color(int tileID, rgba8_t color, rgba8_t replaceColor,
 		}
 	}
 } // replace_tile_color
+
+void Bitmap::add_tile_alpha(int tileID, const Bitmap& src, int src_tileID)
+{
+	const size_t offset = tileID * this->getWidth() * this->getHeight();
+	auto* scan = this->buffer.data() + offset;
+	const size_t src_offset = src_tileID * src.getWidth() * src.getHeight();
+	auto* src_scan = src.buffer.data() + src_offset;
+
+	for (int p = 0; p < this->getWidth() * this->getHeight(); p++)
+	{
+		scan[p] |= src_scan[p] & 0xFF000000;
+	}
+} // add_tile_alpha
 
 } // library

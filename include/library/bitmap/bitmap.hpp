@@ -61,7 +61,8 @@ public:
 	void merge(const int srcX, const int srcY, const int width, const int height,
 		Bitmap& dest, const int dstX, const int dstY) const;
 	// Conditionally blit tile at srcTileID into dest at destTileID
-	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t tone = 0);
+	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty,
+		rgba8_t tone = 0, bool keepMergedAlpha = false);
 	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
 	// Rotate a tile 90 degrees
 	void rotate_tile(const int tileID, int times = 1);
@@ -81,6 +82,12 @@ public:
 	/// @param replaceColor The color to replace with
 	/// @param alsoReplace If not null, if a pixel in this bitmap matches, it will also replace the same pixel in the alsoReplace bitmap
 	void replace_tile_color(int tileID, rgba8_t color, rgba8_t replaceColor, Bitmap* alsoReplace = nullptr);
+
+	/// @brief Add non-zero alpha from a tile to another tile
+	/// @param tileID The tile ID to add alpha to
+	/// @param src The source bitmap to add alpha from
+	/// @param src_tileID The source tile ID to add alpha from
+	void add_tile_alpha(int tileID, const Bitmap& src, int src_tileID);
 
     Bitmap rotate90() const;
     Bitmap flipX() const;
