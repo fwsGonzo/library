@@ -318,8 +318,12 @@ void Bitmap::add_tile(const Bitmap& other, int tx, int ty, bool fix_transparent_
     // we have to assume same tile size
     const int srcX = tx * this->getWidth();
     const int srcY = ty * this->getHeight();
-    assert(srcX + this->getWidth() <= other.getWidth());
-    assert(srcY + this->getHeight() <= other.getHeight());
+    if (other.getTilesX() > 0) {
+        assert(srcX + this->getWidth() * this->getHeight() <= other.getTilesX() * other.getHeight() * other.getWidth());
+    } else {
+        assert(srcX + this->getWidth() <= other.getWidth());
+        assert(srcY + this->getHeight() <= other.getHeight());
+    }
     // add single tile
     const size_t end = buffer.size();
     this->tilesX++;
