@@ -23,11 +23,11 @@ static const char xm_normal[6][3] = {
     {127, 0, 0}, {-128, 0, 0}  // right left
 };
 
-static const char xm_tangent[6][3] = {
+/*static const char xm_tangent[6][3] = {
     {127, 0, 0},  {-128, 0, 0}, // front back
     {127, 0, 0},  {-128, 0, 0}, // top   bottom
     {0, 0, -128}, {0, 0, 127}   // right left
-};
+};*/
 
 static inline bool culltest(XModel::xcolor_t value)
 {
