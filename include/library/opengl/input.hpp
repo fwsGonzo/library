@@ -39,12 +39,18 @@ public:
 	// public keyboard functions
 	input_t key_ex(int key) const { return this->m_keys.at(key); }
 	key_t key(int key) const { return key_ex(key).action; }
+
 	// "holds" a key, allowing code to see that a single-fire event has been executed already
 	void key_hold(int key) { m_keys.at(key).action = KEY_LOCKED; }
+
 	// releases the hold of a key, setting state from KEY_LOCKED back to KEY_PRESSED
-	void key_release(int key)
-	{
+	void key_release(int key) {
 		if (m_keys.at(key).action == KEY_LOCKED) m_keys[key].action = KEY_PRESSED;
+	}
+
+	// clears a key, setting state from KEY_PRESSED or KEY_LOCKED back to KEY_RELEASED
+	void key_clear(int key) {
+		m_keys.at(key).action = KEY_RELEASED;
 	}
 
 	// public mouse functions
