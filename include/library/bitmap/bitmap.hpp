@@ -60,12 +60,6 @@ public:
 	// Conditionally blit from here into dest, where alpha is non-zero
 	void merge(const int srcX, const int srcY, const int width, const int height,
 		Bitmap& dest, const int dstX, const int dstY) const;
-	// Conditionally blit tile at srcTileID into dest at destTileID
-	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty,
-		rgba8_t tone = 0, bool keepMergedAlpha = false);
-	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
-	// Rotate a tile 90 degrees
-	void rotate_tile(const int tileID, int times = 1);
 
     // tile operations
     void parse2D(int, int, bool invert_y = false);
@@ -75,6 +69,18 @@ public:
 	/// @brief Add a new tile from remote memory through callback
 	/// @param callback Callback that provides the new tile
 	void add_tile(std::function<void(rgba8_t*, size_t)> callback);
+
+	/// @brief Get the pixel data of a tile from the bitmap
+	/// @param tileID The tile ID to get the pixel data from
+	/// @return Returns a tuple with the pixel data and the size of the tile
+	std::tuple<const rgba8_t*, size_t> get_tile(int tileID) const;
+
+	// Conditionally blit tile at srcTileID into dest at destTileID
+	void merge_tile(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty,
+		rgba8_t tone = 0, bool keepMergedAlpha = false);
+	void merge_tilemask(const int tileID, const Bitmap& src, unsigned tileSize, int tx, int ty, rgba8_t color);
+	// Rotate a tile 90 degrees
+	void rotate_tile(const int tileID, int times = 1);
 
 	/// @brief Replace color in a tile with another color
 	/// @param tileID The tile ID to replace the color in

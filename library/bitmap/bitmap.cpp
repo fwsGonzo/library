@@ -390,6 +390,16 @@ void Bitmap::add_tile(std::function<void(rgba8_t*, size_t)> callback)
 	callback(scan, this->buffer.size() - end);
 }
 
+std::tuple<const rgba8_t*, size_t> Bitmap::get_tile(int tileID) const
+{
+	const size_t offset = tileID * this->getWidth() * this->getHeight();
+	const size_t size = this->getWidth() * this->getHeight();
+	if (offset + size >= this->buffer.size())
+		throw std::runtime_error("Bitmap::get_tile(): Invalid tile ID");
+
+	return std::make_tuple(&this->buffer.at(offset), this->getWidth());
+}
+
 void Bitmap::merge_tile(const int tileID,
 	const Bitmap& other, unsigned tileSize, int tx, int ty, rgba8_t tone, bool keepMergedAlpha)
 {
