@@ -9,6 +9,15 @@ namespace library
 {
 typedef uint32_t rgba8_t;
 
+inline constexpr rgba8_t saturateRGBA8(int r, int g, int b, int a)
+{
+	r = clamp(0, 255, r);
+	g = clamp(0, 255, g);
+	b = clamp(0, 255, b);
+	a = clamp(0, 255, a);
+    return ((rgba8_t) r) + ((rgba8_t) g << 8) + ((rgba8_t) b << 16) + ((rgba8_t) a << 24);
+}
+
 inline constexpr rgba8_t RGBA8(int r, int g, int b, int a)
 {
     return ((rgba8_t) r) + ((rgba8_t) g << 8) + ((rgba8_t) b << 16) + ((rgba8_t) a << 24);
