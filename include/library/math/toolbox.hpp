@@ -33,20 +33,20 @@ inline int signum(const T v)
 
 // returns the smallest number of T and R
 template <class T, class R>
-inline T min(T a, R b)
+inline constexpr T min(T a, R b)
 {
     return (a <= b ? a : b);
 }
 
 // returns the biggest number of T and R
 template <class T, class R>
-inline T max(const T a, const R b)
+inline constexpr T max(const T a, const R b)
 {
     return (a >= b ? a : b);
 }
 
 template <class R, class S, class T>
-inline R clamp(const R min, const S max, const T v)
+inline constexpr R clamp(const R min, const S max, const T v)
 {
     if (v < min)
         return min;
