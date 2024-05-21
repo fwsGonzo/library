@@ -86,11 +86,11 @@ glm::vec4 colorToVector(rgba8_t color)
 
 rgba8_t vectorToColor(const glm::vec4& vector)
 {
-    int r = int(vector.x * 255);
-    int g = int(vector.y * 255) << 8;
-    int b = int(vector.y * 255) << 16;
-    int a = int(vector.y * 255) << 24;
-    return BGRA8(r, g, b, a);
+    int r = int(vector.r * 255.0f);
+    int g = int(vector.g * 255.0f) << 8;
+    int b = int(vector.b * 255.0f) << 16;
+    int a = int(vector.a * 255.0f) << 24;
+    return r | g | b | a;
 }
 
 } // namespace library
