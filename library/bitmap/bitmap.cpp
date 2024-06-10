@@ -158,29 +158,27 @@ void Bitmap::loadBMP(const std::string& file)
 
 void Bitmap::loadPNG(const std::string& file)
 {
-    std::vector<unsigned char> image, png;
+    unsigned char* out = nullptr;
+	unsigned int w, h;
     // load file from disk
-    if (lodepng::load_file(png, file.c_str()) == false)
-    {
-        logger << Log::ERR << "Bitmap::loadPNG(): File not found: " << file << Log::ENDL;
-        throw std::runtime_error("Missing image file: " + file);
-    }
-    // decode it
-    unsigned w, h;
-    // throw if there are any decoding errors
-    auto error = lodepng::decode(image, w, h, png);
-    if (error)
-    {
-        logger << Log::ERR << "Bitmap::loadPNG(): Error " << error << ": "
-               << lodepng_error_text(error) << Log::ENDL;
-        throw std::runtime_error("Image decode error for file: " + file);
-    }
+	lodepng_decode_file(&out, &w, &h, file.c_str(), LCT_RGBA, 8);
+	if (out == nullptr)
+	{
+		logger << Log::ERR << "Bitmap::loadPNG(): Error loading file: " << file << Log::ENDL;
+		throw std::runtime_error("Image decode error for file: " + file);
+	}
     this->format = GL_RGBA;
-    this->width = w;
+    this->width  = w;
     this->height = h;
 
-    this->buffer.resize(w * h);
-    memcpy(buffer.data(), image.data(), sizeof(rgba8_t) * w * h);
+	try {
+		this->buffer.reserve(w * h);
+    	this->buffer.insert(buffer.begin(), (rgba8_t*) out, (rgba8_t*) (out + w * h * 4));
+	} catch (...) {
+		free(out);
+		throw;
+	}
+	free(out);
 }
 
 void Bitmap::blit(Bitmap& dest, const int srcX, const int srcY, const int width, const int height,
