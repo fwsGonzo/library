@@ -69,6 +69,9 @@ public:
     void blitTo(const FBO& dest_fbo, int w, int h, int mask, int filter);
     void blitTo(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter);
 
+    void blitToUsingMode(const FBO& dest_fbo, int w, int h, int mask, int filter, GLenum src_mode, GLenum dst_mode);
+    void blitToUsingMode(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter, GLenum src_mode, GLenum dst_mode);
+
     // returns true if the framebuffer is OK, and can be used
     // returns false if the framebuffer is incomplete, and thus cannot be used yet
     static bool isComplete();

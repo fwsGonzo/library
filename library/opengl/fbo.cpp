@@ -171,6 +171,22 @@ void FBO::blitTo(const FBO& dest_fbo, int w, int h, int mask, int filter)
     glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
+void FBO::blitToUsingMode(const FBO& dest_fbo, int w, int h, int mask, int filter, GLenum srcMode, GLenum dstMode)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, this->fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest_fbo.getHandle());
+	glReadBuffer(srcMode);
+	glDrawBuffer(dstMode);
+
+	glBlitFramebuffer(0, 0, w, h, 0, 0, w, h, mask, filter);
+
+	// reset to default
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
 void FBO::blitTo(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter)
 {
     glBindFramebuffer(GL_READ_FRAMEBUFFER, this->fbo);
@@ -180,6 +196,20 @@ void FBO::blitTo(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, in
 
     // glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
     // glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+}
+
+void FBO::blitToUsingMode(const FBO& dest_fbo, int w, int h, int w2, int h2, int mask, int filter, GLenum src_mode, GLenum dst_mode)
+{
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, this->fbo);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, dest_fbo.getHandle());
+	glReadBuffer(src_mode);
+
+	glBlitFramebuffer(0, 0, w, h, 0, 0, w2, h2, mask, filter);
+
+	// reset to default
+	glReadBuffer(GL_COLOR_ATTACHMENT0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER, 0);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 }
 
 bool FBO::isComplete()
