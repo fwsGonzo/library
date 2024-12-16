@@ -115,7 +115,7 @@ void Bitmap::loadBMP(const std::string& file)
         // width of image in memory in bytes
         const int SCANLINE = width * 3 + pad; // pitch
 
-        auto scanbuffer = std::unique_ptr<uint8_t>(new uint8_t[SCANLINE]);
+        auto scanbuffer = std::unique_ptr<uint8_t[]>(new uint8_t[SCANLINE]);
 
         for (int y = 0; y < height; y++)
         {
@@ -211,7 +211,7 @@ void Bitmap::merge(const int srcX, const int srcY, const int width, const int he
 
 // splits a bitmap in a 1d continous memory array
 // of tiles used by GL_TEXTURE_2D_ARRAY (GL 3.x)
-void Bitmap::parse2D(const int tw, const int th, bool invert_y)
+void Bitmap::parse2D(const int tw, const int th)
 {
     // nearest tilew/h multiple floor
     const int maxx = int(this->width / tw) * tw;

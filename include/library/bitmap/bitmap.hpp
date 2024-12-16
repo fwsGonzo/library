@@ -62,7 +62,7 @@ public:
 		Bitmap& dest, const int dstX, const int dstY) const;
 
     // tile operations
-    void parse2D(int, int, bool invert_y = false);
+    void parse2D(int tileWidth, int tileHeight);
     void convert_to_tilesheet(int tile_size, uint32_t tile_zero_color);
     void add_tile(const Bitmap&, int tx, int ty, bool fix_transparent_areas = true);
     void add_colored_tile(uint32_t color);
