@@ -34,7 +34,8 @@ public:
         ENDL,
         INFO,
         WARN,
-        ERR
+        ERR,
+		ERROR = ERR,
     };
 
 	template <typename T>
@@ -58,6 +59,7 @@ private:
     friend Log& operator<<(Log& out, const LogLevel level);
 	friend Log& operator<<(Log& out, const std::string& str);
 	friend Log& operator<<(Log& out, const char* str);
+	friend Log& operator<<(Log& out, char* str);
 	friend Log& operator<<(Log& out, void* const ptr);
     template <class T>
     friend Log& operator<<(Log& out, const T t);
@@ -71,6 +73,11 @@ inline Log& operator<<(Log& out, const std::string& str)
 inline Log& operator<<(Log& out, const char* str)
 {
     out.log.append(str);
+    return out;
+}
+inline Log& operator<<(Log& out, char* str)
+{
+    out.log.append((const char*)str);
     return out;
 }
 inline Log& operator<<(Log& out, void* const ptr)
