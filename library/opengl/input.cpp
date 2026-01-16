@@ -84,12 +84,17 @@ void Input::keyboard(GLFWwindow* window, int key, int, int action, int mods)
 
 void Input::rotate_degrees(glm::vec2 degrees)
 {
-	static const float PI = 4 * atan(1);
 	static const float degToRad = PI / 180;
-	static const float maxX = 89 * degToRad;
-	static const float maxY = PI * 2.0;
 
 	this->m_rot += degrees * degToRad;
+	this->clamp_rotation();
+}
+void Input::clamp_rotation()
+{
+	static const float PI = 4 * atan(1);
+	static const float maxX = 89 * (PI / 180);
+	static const float maxY = PI * 2.0;
+
 	// clamping
 	if (this->m_rot.x > maxX) this->m_rot.x = maxX;
 	if (this->m_rot.x < -maxX) this->m_rot.x = -maxX;

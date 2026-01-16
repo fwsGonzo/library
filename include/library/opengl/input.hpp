@@ -89,6 +89,7 @@ public:
 	void set_rotation(glm::vec2 rot) { this->m_rot = rot; }
 	void add_rotation(glm::vec2 rot) { this->m_rot += rot; }
 	void rotate_degrees(glm::vec2 degrees);
+	void clamp_rotation();
 
 	// mouse speed and sensitivity (for action manager)
 	double mouse_speed() const noexcept { return this->m_speed; }
