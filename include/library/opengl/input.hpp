@@ -4,6 +4,7 @@
 #include <array>
 #include <glm/vec2.hpp>
 #include <string>
+#include <cstdint>
 
 struct GLFWwindow;
 
@@ -30,6 +31,24 @@ public:
 
 		int action;
 		int mods;
+	};
+
+	// Gamepad state structure (poll-safe copy of GLFW gamepad data)
+	struct GamepadState
+	{
+		bool connected = false;
+		std::array<uint8_t, 15> buttons{};  // GLFW_GAMEPAD_BUTTON_* states
+		std::array<float, 6> axes{};        // GLFW_GAMEPAD_AXIS_* values
+		std::string name;                    // Gamepad name
+	};
+
+	// Modifier key state (cached for thread-safe access)
+	struct ModifierState
+	{
+		bool shift = false;
+		bool control = false;
+		bool alt = false;
+		bool super = false;
 	};
 
 	// initialize input using the current context
@@ -60,6 +79,7 @@ public:
 	void mouse_grab(bool grab);
 	// mouse position
 	glm::vec2 mouse_xy() const { return this->m_mouse_xy; }
+	glm::vec2 last_mouse_xy() const { return this->m_last_mouse_xy; }
 	void set_mouse_xy(glm::vec2 pos) { this->m_mouse_xy = pos; this->m_last_mouse_xy = pos; }
 	input_t mouse_button_ex(int btn) const { return this->m_mouse.at(btn); }
 	key_t mouse_button(int btn) const { return this->m_mouse.at(btn).action; }
@@ -69,6 +89,10 @@ public:
 	void set_rotation(glm::vec2 rot) { this->m_rot = rot; }
 	void add_rotation(glm::vec2 rot) { this->m_rot += rot; }
 	void rotate_degrees(glm::vec2 degrees);
+
+	// mouse speed and sensitivity (for action manager)
+	double mouse_speed() const noexcept { return this->m_speed; }
+	double mouse_sensitivity() const noexcept { return this->m_sensitivity; }
 
 	// returns mousewheel status _AND_ resets it internally
 	int mouse_wheel() const; // 0 = no change, down < 0, up > 0
@@ -82,6 +106,17 @@ public:
 	static void mouseWheel(GLFWwindow*, double x, double y);
 
 	auto* window() { return m_window; }
+	const auto* window() const { return m_window; }
+
+	// Gamepad state accessors (thread-safe)
+	const GamepadState& gamepad_state() const { return m_gamepad_state; }
+	int gamepad_index() const { return m_gamepad_index; }
+
+	// Modifier key state accessors (thread-safe)
+	const ModifierState& modifiers() const { return m_modifiers; }
+
+	// Poll gamepad and modifier state (call from main thread)
+	void poll_gamepad_state();
 protected:
 	GLFWwindow* m_window = nullptr;
 	double m_speed;
@@ -103,6 +138,13 @@ protected:
 
 private:
 	static Input* inputFromWindow(GLFWwindow*);
+
+	// Gamepad state (updated from main thread, read from physics thread)
+	GamepadState m_gamepad_state;
+	int m_gamepad_index = -1;  // Active gamepad joystick index
+
+	// Modifier key state (updated from main thread, read from physics thread)
+	ModifierState m_modifiers;
 };
 } // namespace library
 

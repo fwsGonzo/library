@@ -60,7 +60,7 @@ void Input::mouse_grab(const bool grab)
 
 int Input::mouse_wheel() const
 {
-	int wheel = this->m_wheel;
+	const int wheel = this->m_wheel;
 	this->m_wheel = 0;
 	return wheel;
 }
@@ -151,4 +151,68 @@ void Input::mouseWheel(GLFWwindow* window, double, double y)
 }
 
 Input* Input::inputFromWindow(GLFWwindow*) { return currentInput; }
+
+void Input::poll_gamepad_state()
+{
+	// Update gamepad state
+	m_gamepad_state.connected = false;
+	m_gamepad_state.buttons = {};
+	m_gamepad_state.axes = {};
+
+	// Check if current gamepad is still connected
+	if (m_gamepad_index >= 0 && glfwJoystickPresent(m_gamepad_index))
+	{
+		if (glfwJoystickIsGamepad(m_gamepad_index))
+		{
+			GLFWgamepadstate state;
+			if (glfwGetGamepadState(m_gamepad_index, &state))
+			{
+				m_gamepad_state.connected = true;
+
+				// Copy button states
+				for (size_t i = 0; i < m_gamepad_state.buttons.size() && i <= GLFW_GAMEPAD_BUTTON_LAST; i++)
+				{
+					m_gamepad_state.buttons[i] = state.buttons[i];
+				}
+
+				// Copy axis states
+				for (size_t i = 0; i < m_gamepad_state.axes.size() && i <= GLFW_GAMEPAD_AXIS_LAST; i++)
+				{
+					m_gamepad_state.axes[i] = state.axes[i];
+				}
+
+				// Update name if empty
+				if (m_gamepad_state.name.empty())
+				{
+					const char* name = glfwGetGamepadName(m_gamepad_index);
+					if (name) m_gamepad_state.name = name;
+				}
+			}
+		}
+	}
+	else
+	{
+		// Try to find a connected gamepad
+		for (int i = 0; i <= GLFW_JOYSTICK_LAST; i++)
+		{
+			if (glfwJoystickPresent(i) && glfwJoystickIsGamepad(i))
+			{
+				m_gamepad_index = i;
+				const char* name = glfwGetGamepadName(i);
+				if (name) m_gamepad_state.name = name;
+				break;
+			}
+		}
+	}
+
+	// Update modifier key state
+	m_modifiers.shift = (glfwGetKey(m_window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS ||
+	                     glfwGetKey(m_window, GLFW_KEY_RIGHT_SHIFT) == GLFW_PRESS);
+	m_modifiers.control = (glfwGetKey(m_window, GLFW_KEY_LEFT_CONTROL) == GLFW_PRESS ||
+	                       glfwGetKey(m_window, GLFW_KEY_RIGHT_CONTROL) == GLFW_PRESS);
+	m_modifiers.alt = (glfwGetKey(m_window, GLFW_KEY_LEFT_ALT) == GLFW_PRESS ||
+	                   glfwGetKey(m_window, GLFW_KEY_RIGHT_ALT) == GLFW_PRESS);
+	m_modifiers.super = (glfwGetKey(m_window, GLFW_KEY_LEFT_SUPER) == GLFW_PRESS ||
+	                     glfwGetKey(m_window, GLFW_KEY_RIGHT_SUPER) == GLFW_PRESS);
+}
 } // namespace library
