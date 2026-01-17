@@ -167,8 +167,11 @@ void Input::poll_gamepad_state()
 	// Check if current gamepad is still connected
 	if (m_gamepad_index >= 0 && glfwJoystickPresent(m_gamepad_index))
 	{
-		if (glfwJoystickIsGamepad(m_gamepad_index))
+		bool is_gamepad = glfwJoystickIsGamepad(m_gamepad_index);
+
+		if (is_gamepad)
 		{
+			// Use GLFW gamepad API for standard controllers
 			GLFWgamepadstate state;
 			if (glfwGetGamepadState(m_gamepad_index, &state))
 			{
@@ -194,16 +197,55 @@ void Input::poll_gamepad_state()
 				}
 			}
 		}
+		else
+		{
+			// Fall back to raw joystick API for non-standard controllers (e.g., Steam Controller)
+			int button_count;
+			const unsigned char* buttons = glfwGetJoystickButtons(m_gamepad_index, &button_count);
+
+			int axis_count;
+			const float* axes = glfwGetJoystickAxes(m_gamepad_index, &axis_count);
+
+			if (buttons && axes)
+			{
+				m_gamepad_state.connected = true;
+
+				// Copy button states (clamp to array size)
+				for (size_t i = 0; i < m_gamepad_state.buttons.size(); i++)
+				{
+					if (i < (size_t)button_count)
+						m_gamepad_state.buttons[i] = buttons[i];
+					else
+						m_gamepad_state.buttons[i] = 0;
+				}
+
+				// Copy axis states (clamp to array size)
+				for (size_t i = 0; i < m_gamepad_state.axes.size(); i++)
+				{
+					if (i < (size_t)axis_count)
+						m_gamepad_state.axes[i] = axes[i];
+					else
+						m_gamepad_state.axes[i] = 0.0f;
+				}
+
+				// Update name if empty
+				if (m_gamepad_state.name.empty())
+				{
+					const char* name = glfwGetJoystickName(m_gamepad_index);
+					if (name) m_gamepad_state.name = name;
+				}
+			}
+		}
 	}
 	else
 	{
-		// Try to find a connected gamepad
+		// Try to find a connected gamepad/joystick
 		for (int i = 0; i <= GLFW_JOYSTICK_LAST; i++)
 		{
-			if (glfwJoystickPresent(i) && glfwJoystickIsGamepad(i))
+			if (glfwJoystickPresent(i))
 			{
 				m_gamepad_index = i;
-				const char* name = glfwGetGamepadName(i);
+				const char* name = glfwGetJoystickName(i);
 				if (name) m_gamepad_state.name = name;
 				break;
 			}
