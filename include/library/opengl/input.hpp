@@ -37,7 +37,7 @@ public:
 	struct GamepadState
 	{
 		bool connected = false;
-		std::array<uint8_t, 15> buttons{};  // GLFW_GAMEPAD_BUTTON_* states
+		std::array<uint8_t, 18> buttons{};  // GLFW_GAMEPAD_BUTTON_* states
 		std::array<float, 6> axes{};        // GLFW_GAMEPAD_AXIS_* values
 		std::string name;                    // Gamepad name
 	};

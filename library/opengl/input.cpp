@@ -160,9 +160,7 @@ Input* Input::inputFromWindow(GLFWwindow*) { return currentInput; }
 void Input::poll_gamepad_state()
 {
 	// Update gamepad state
-	m_gamepad_state.connected = false;
-	m_gamepad_state.buttons = {};
-	m_gamepad_state.axes = {};
+	bool connected = false;
 
 	// Check if current gamepad is still connected
 	if (m_gamepad_index >= 0 && glfwJoystickPresent(m_gamepad_index))
@@ -175,7 +173,7 @@ void Input::poll_gamepad_state()
 			GLFWgamepadstate state;
 			if (glfwGetGamepadState(m_gamepad_index, &state))
 			{
-				m_gamepad_state.connected = true;
+				connected = true;
 
 				// Copy button states
 				for (size_t i = 0; i < m_gamepad_state.buttons.size() && i <= GLFW_GAMEPAD_BUTTON_LAST; i++)
@@ -208,7 +206,7 @@ void Input::poll_gamepad_state()
 
 			if (buttons && axes)
 			{
-				m_gamepad_state.connected = true;
+				connected = true;
 
 				// Copy button states (clamp to array size)
 				for (size_t i = 0; i < m_gamepad_state.buttons.size(); i++)
@@ -250,6 +248,14 @@ void Input::poll_gamepad_state()
 				break;
 			}
 		}
+	}
+
+	m_gamepad_state.connected = connected;
+	if (!connected)
+	{
+		// Clear state if not connected
+		m_gamepad_state.buttons = {};
+		m_gamepad_state.axes = {};
 	}
 
 	// Update modifier key state
