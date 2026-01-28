@@ -35,6 +35,7 @@ public:
         INFO,
         WARN,
         ERR,
+		WARNING = WARN,
 		ERROR = ERR,
     };
 
