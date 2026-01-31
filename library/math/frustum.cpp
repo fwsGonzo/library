@@ -210,6 +210,11 @@ bool Frustum::cube(float x, float y, float z, float size) const
 
 // Column in frustum (multiple levels of "Sectors" stacked on top)
 
+#ifdef __GNUG__
+#	pragma GCC optimize("O3")
+#elif defined(__clang__)
+#	pragma clang optimize("O3")
+#endif
 bool Frustum::column(float x, float z, int cy, int height, float size) const
 {
     float size_y = cy + height;
