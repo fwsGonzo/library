@@ -134,7 +134,7 @@ void VAO::renderScreenspaceNow()
 	vao.renderIndexed(GL_TRIANGLES);
 }
 
-void VAO::bind()
+void VAO::bind() const
 {
 	if (lastVAO != vao)
 	{
@@ -149,7 +149,7 @@ void VAO::unbind()
 	lastVAO = 0;
 }
 
-void VAO::render(GLenum mode, GLint first, GLsizei count)
+void VAO::render(GLenum mode, GLint first, GLsizei count) const
 {
 	bind();
 	glDrawArrays(mode, first, count);
@@ -165,7 +165,7 @@ void VAO::render(GLenum mode, GLint first, GLsizei count)
 #endif
 }
 
-void VAO::renderIndexed(GLenum mode, GLuint first, GLint count)
+void VAO::renderIndexed(GLenum mode, GLuint first, GLint count) const
 {
 	bind();
 	glDrawElements(mode, count, indexSize == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, (GLvoid*)uintptr_t(first * indexSize));
@@ -178,7 +178,7 @@ void VAO::renderIndexed(GLenum mode, GLuint first, GLint count)
 	}
 #endif
 }
-void VAO::renderIndexed(GLenum mode)
+void VAO::renderIndexed(GLenum mode) const
 {
 	bind();
 	glDrawElements(mode, this->indices, indexSize == 2 ? GL_UNSIGNED_SHORT : GL_UNSIGNED_INT, 0);

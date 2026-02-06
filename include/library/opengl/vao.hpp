@@ -74,16 +74,16 @@ public:
 	static void renderScreenspaceNow();
 
 	// bind / unbind mesh
-	void bind();
+	void bind() const;
 	static void unbind();
 
 	// bind and render all vertices
-	inline void render(GLenum mode) { render(mode, 0, this->vertices); }
+	inline void render(GLenum mode) const { render(mode, 0, this->vertices); }
 	// render a part of the mesh
-	void render(GLenum mode, GLint first, GLsizei count);
+	void render(GLenum mode, GLint first, GLsizei count) const;
 	// render using indexed buffer
-	void renderIndexed(GLenum mode);
-	void renderIndexed(GLenum mode, GLuint first, GLint count);
+	void renderIndexed(GLenum mode) const;
+	void renderIndexed(GLenum mode, GLuint first, GLint count) const;
 
 private:
 	void uploadIndices(const GLvoid* data, const GLsizei dataSize, GLsizei count, GLenum usage);
