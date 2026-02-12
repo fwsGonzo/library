@@ -9,7 +9,7 @@ Shader* SimpleFont::createShader()
 {
     const std::string font_vertex_shader =
         R"(
-			#version 130
+			#version 150
 			uniform mat4 mvp;
 			
 			in vec3 in_vertex;
@@ -26,13 +26,13 @@ Shader* SimpleFont::createShader()
 		)";
     const std::string font_fragment_shader =
         R"(
-			#version 130
+			#version 150
 			uniform sampler2D fontimage;
 			uniform vec4 bgcolor;
 			uniform vec4 fcolor;
 			
 			in vec2 texCoord;
-      out vec4 color;
+			out vec4 color;
 			
 			void main(void)
 			{
