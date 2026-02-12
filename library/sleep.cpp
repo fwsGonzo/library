@@ -1,9 +1,9 @@
 #include <library/sleep.hpp>
 
-#ifdef __unix__
+#if defined(__unix__) || defined(__APPLE__)
 #include <unistd.h>
 #define msleep(x) usleep(1000 * x)
-#elif defined _WIN32
+#elif defined(_WIN32)
 #include <windows.h>
 #define msleep(x) Sleep(x)
 #endif
