@@ -34,9 +34,6 @@ SET(LIBRARY_SOURCES
     library/math/matrix.cpp
 
     library/timing/integrator.cpp
-
-    library/voxels/voxelizer.cpp
-    library/voxels/voxelmodel.cpp
   )
 
 if (LIBRARY_USE_GLFW)
@@ -55,6 +52,9 @@ if (LIBRARY_USE_GLFW)
 		library/opengl/window.cpp
 		library/opengl/ubo.cpp
 		library/opengl/vao.cpp
+
+		library/voxels/voxelizer.cpp
+		library/voxels/voxelmodel.cpp
 	)
 endif()
 
