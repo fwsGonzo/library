@@ -80,7 +80,7 @@ short XModel::cull2D(const Bitmap& img, int x, int y)
 }
 
 void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid, int vid,
-                    xcolor_t vcolor)
+                    xcolor_t vcolor, xcolor_t vcolor2)
 {
 	xvertex_t v;
 
@@ -92,8 +92,10 @@ void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid
     v.nx = xm_normal[fid][0];
     v.ny = xm_normal[fid][1];
     v.nz = xm_normal[fid][2];
-    // color
-    v.c = vcolor;
+    v.p1 = 0;
+    // colors
+    v.c  = vcolor;
+    v.c2 = vcolor2;
 
 	for (size_t i = 0; i < vdata.size(); i++) {
 		if (memcmp(&v, &vdata[i], sizeof(xvertex_t)) == 0) {
@@ -106,7 +108,8 @@ void XModel::putv2D(const vec3& offset, const vec3& scale, int x, int y, int fid
     this->vdata.push_back(v);
 }
 
-void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& scale)
+void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& scale,
+                     xcolor_t fallbackTone)
 {
     int w = fromImage.getWidth();
     int h = fromImage.getHeight();
@@ -128,18 +131,59 @@ void XModel::extrude(const Bitmap& fromImage, const vec3& offset, const vec3& sc
 				for (int i = 0; i < 6; i++) {
 					if (facing & (1 << i)) {
 						// 6 vertices in two triangles
-						putv2D(offset, scale, x, y, i, 0, c);
-						putv2D(offset, scale, x, y, i, 1, c);
-						putv2D(offset, scale, x, y, i, 2, c);
+						putv2D(offset, scale, x, y, i, 0, c, fallbackTone);
+						putv2D(offset, scale, x, y, i, 1, c, fallbackTone);
+						putv2D(offset, scale, x, y, i, 2, c, fallbackTone);
 
-						putv2D(offset, scale, x, y, i, 2, c);
-						putv2D(offset, scale, x, y, i, 3, c);
-						putv2D(offset, scale, x, y, i, 0, c);
+						putv2D(offset, scale, x, y, i, 2, c, fallbackTone);
+						putv2D(offset, scale, x, y, i, 3, c, fallbackTone);
+						putv2D(offset, scale, x, y, i, 0, c, fallbackTone);
 					}
 				}
             }
 
             cv += 1;
+        } // x
+    }     // y
+}
+
+void XModel::extrude(const Bitmap& fromImage, const Bitmap& tonemapImage,
+                     const vec3& offset, const vec3& scale)
+{
+    int w = fromImage.getWidth();
+    int h = fromImage.getHeight();
+    short facing;
+
+    for (int y = 0; y < h; y++)
+    {
+        const xcolor_t* cv   = fromImage.data()    + (y * w);
+        const xcolor_t* tone = tonemapImage.data() + (y * w);
+
+        for (int x = 0; x < w; x++)
+        {
+            // if this pixel has alpha
+            if (cv[0] >> 24)
+            {
+                xcolor_t c  = cv[0];
+                xcolor_t c2 = tone[0];
+                // cull from bottoms up (different coordinate system)
+                facing = cull2D(fromImage, x, y);
+
+				for (int i = 0; i < 6; i++) {
+					if (facing & (1 << i)) {
+						putv2D(offset, scale, x, y, i, 0, c, c2);
+						putv2D(offset, scale, x, y, i, 1, c, c2);
+						putv2D(offset, scale, x, y, i, 2, c, c2);
+
+						putv2D(offset, scale, x, y, i, 2, c, c2);
+						putv2D(offset, scale, x, y, i, 3, c, c2);
+						putv2D(offset, scale, x, y, i, 0, c, c2);
+					}
+				}
+            }
+
+            cv   += 1;
+            tone += 1;
         } // x
     }     // y
 }
