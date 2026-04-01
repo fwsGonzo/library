@@ -26,7 +26,7 @@ public:
 	static timespec time_now()
 	{
 		timespec t;
-		clock_gettime(CLOCK_MONOTONIC_RAW, &t);
+		clock_gettime(CLOCK_MONOTONIC, &t);
 		return t;
 	}
 	static double nanodiff(timespec start_time, timespec end_time)
