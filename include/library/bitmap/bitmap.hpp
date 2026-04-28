@@ -32,6 +32,23 @@ public:
     // copy constructor (creates new copy)
     Bitmap(const Bitmap& bmp) { this->operator=(bmp); }
 
+    // move constructor and assignment
+    Bitmap(Bitmap&& bmp) noexcept
+        : buffer(std::move(bmp.buffer)), width(bmp.width), height(bmp.height),
+          format(bmp.format), tilesX(bmp.tilesX), tilesY(bmp.tilesY)
+    {
+        bmp.width = bmp.height = bmp.tilesX = bmp.tilesY = 0;
+    }
+    Bitmap& operator=(Bitmap&& bmp) noexcept {
+        if (this != &bmp) {
+            buffer = std::move(bmp.buffer);
+            width = bmp.width; height = bmp.height;
+            format = bmp.format; tilesX = bmp.tilesX; tilesY = bmp.tilesY;
+            bmp.width = bmp.height = bmp.tilesX = bmp.tilesY = 0;
+        }
+        return *this;
+    }
+
     // getters
     int getWidth() const { return this->width; }
     int getHeight() const { return this->height; }
