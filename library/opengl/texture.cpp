@@ -30,7 +30,12 @@ Texture::Texture(Texture&& other)
 }
 void Texture::init(GLenum target, GLint format)
 {
-    if (this->id) { glDeleteTextures(1, &this->id); }
+    if (this->id) {
+        for (int i = 0; i < TEXTURE_UNITS; i++) {
+            if (lastid[i] == this->id) lastid[i] = 0;
+        }
+        glDeleteTextures(1, &this->id);
+    }
     glGenTextures(1, &this->id);
     this->type = target;
     this->format = format;
@@ -41,6 +46,9 @@ void Texture::reset()
 {
     if (this->id)
     {
+        for (int i = 0; i < TEXTURE_UNITS; i++) {
+            if (lastid[i] == this->id) lastid[i] = 0;
+        }
         glDeleteTextures(1, &this->id);
         this->id = 0;
     }
