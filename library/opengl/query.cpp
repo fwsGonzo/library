@@ -51,4 +51,58 @@ GLuint64 QueryObject::getU64(bool wait)
 	return result[1] - result[0];
 }
 
+OcclusionQuery::~OcclusionQuery()
+{
+	if (m_id != 0)
+		glDeleteQueries(1, &m_id);
+}
+
+OcclusionQuery::OcclusionQuery(OcclusionQuery&& other) noexcept
+	: m_id(other.m_id)
+{
+	other.m_id = 0;
+}
+
+OcclusionQuery& OcclusionQuery::operator=(OcclusionQuery&& other) noexcept
+{
+	if (this != &other) {
+		if (m_id != 0)
+			glDeleteQueries(1, &m_id);
+		m_id = other.m_id;
+		other.m_id = 0;
+	}
+	return *this;
+}
+
+void OcclusionQuery::initialize()
+{
+	if (m_id == 0)
+		glGenQueries(1, &m_id);
+}
+
+void OcclusionQuery::begin()
+{
+	initialize();
+	glBeginQuery(GL_ANY_SAMPLES_PASSED, m_id);
+}
+
+void OcclusionQuery::end()
+{
+	glEndQuery(GL_ANY_SAMPLES_PASSED);
+}
+
+bool OcclusionQuery::isResultAvailable() const
+{
+	GLuint available = GL_FALSE;
+	glGetQueryObjectuiv(m_id, GL_QUERY_RESULT_AVAILABLE, &available);
+	return available == GL_TRUE;
+}
+
+bool OcclusionQuery::isPassed() const
+{
+	GLuint result = GL_TRUE;
+	glGetQueryObjectuiv(m_id, GL_QUERY_RESULT, &result);
+	return result != 0;
+}
+
 } // namespace library

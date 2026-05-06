@@ -28,4 +28,26 @@ private:
 	GLenum m_target = 0;
 	bool m_query_active = false;
 };
+
+class OcclusionQuery
+{
+public:
+	OcclusionQuery() = default;
+	~OcclusionQuery();
+
+	OcclusionQuery(const OcclusionQuery&) = delete;
+	OcclusionQuery& operator=(const OcclusionQuery&) = delete;
+	OcclusionQuery(OcclusionQuery&& other) noexcept;
+	OcclusionQuery& operator=(OcclusionQuery&& other) noexcept;
+
+	void begin();
+	void end();
+	bool isResultAvailable() const;
+	bool isPassed() const;
+
+private:
+	void initialize();
+	GLuint m_id = 0;
+};
+
 } // namespace library
