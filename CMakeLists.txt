@@ -54,6 +54,7 @@ if (LIBRARY_USE_GLFW)
 		library/opengl/vao.cpp
 		library/opengl/gpu_mesh.cpp
 		library/opengl/render_state.cpp
+		library/opengl/texture_binding.cpp
 
 		library/voxels/voxelizer.cpp
 		library/voxels/voxelmodel.cpp
