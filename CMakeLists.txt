@@ -52,6 +52,7 @@ if (LIBRARY_USE_GLFW)
 		library/opengl/window.cpp
 		library/opengl/ubo.cpp
 		library/opengl/vao.cpp
+		library/opengl/gpu_mesh.cpp
 
 		library/voxels/voxelizer.cpp
 		library/voxels/voxelmodel.cpp
